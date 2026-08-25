@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Sparkles, Menu, X, Gift, Users, Trophy } from 'lucide-react';
-import { WHATSAPP_GROUP_LINK } from '../data/community';
+import { Download, Menu, X, Gift, Trophy } from 'lucide-react';
 
 const GithubIcon = ({ className }) => (
   <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -76,7 +75,7 @@ export default function MinimalHeader({
           </div>
         </div>
 
-        {/* Section Navigation Tabs */}
+        {/* Section Navigation Tabs (Colección & Códigos Only) */}
         <nav className="hidden md:flex items-center gap-1 bg-slate-950/80 p-1.5 rounded-full border border-white/10 text-xs font-semibold">
           <button 
             onClick={() => onSelectTab('coleccion')}
@@ -96,16 +95,6 @@ export default function MinimalHeader({
           >
             <Gift className="w-3.5 h-3.5" />
             Códigos
-          </button>
-
-          <button 
-            onClick={() => onSelectTab('comunidad')}
-            className={`px-3.5 py-1.5 rounded-full transition flex items-center gap-1.5 ${
-              activeTab === 'comunidad' ? 'bg-purple-500 text-white font-black shadow' : 'text-slate-300 hover:text-purple-400'
-            }`}
-          >
-            <Users className="w-3.5 h-3.5" />
-            Comunidad
           </button>
         </nav>
 
@@ -138,17 +127,6 @@ export default function MinimalHeader({
             <Download className="w-3.5 h-3.5 stroke-[3]" />
             <span className="font-extrabold tracking-wider uppercase">DESCARGAR</span>
           </button>
-
-          {/* WhatsApp Group Link */}
-          <a
-            href={WHATSAPP_GROUP_LINK}
-            target="_blank"
-            rel="noreferrer"
-            className="hidden lg:flex items-center gap-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl text-xs font-bold transition"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-            Grupo ↗
-          </a>
 
           {/* Mobile Menu Toggle */}
           <button
@@ -184,16 +162,6 @@ export default function MinimalHeader({
             >
               <Gift className="w-4 h-4" />
               Códigos Secretos
-            </button>
-
-            <button 
-              onClick={() => { onSelectTab('comunidad'); setMobileMenuOpen(false); }}
-              className={`px-3.5 py-2 rounded-xl text-left flex items-center gap-2.5 ${
-                activeTab === 'comunidad' ? 'bg-purple-500 text-white font-black' : 'text-slate-200 hover:bg-white/5'
-              }`}
-            >
-              <Users className="w-4 h-4" />
-              Comunidad y Vendedores
             </button>
 
             <a

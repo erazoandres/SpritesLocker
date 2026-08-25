@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import MinimalHeader from './components/MinimalHeader';
 import MinimalSpriteGrid from './components/MinimalSpriteGrid';
 import MinimalCodes from './components/MinimalCodes';
-import MinimalCommunity from './components/MinimalCommunity';
 import ExportModal from './components/ExportModal';
 import Toast from './components/Toast';
 
@@ -24,7 +23,7 @@ const GithubIcon = ({ className }) => (
 
 export default function App() {
   const [activeGen, setActiveGen] = useState(2); // Default to Gen 2 Override
-  const [activeTab, setActiveTab] = useState('coleccion'); // 'coleccion', 'codigos', 'comunidad'
+  const [activeTab, setActiveTab] = useState('coleccion'); // 'coleccion', 'codigos'
   const [userState, setUserState] = useState({}); // Always 100% unmarked by default
   const [redeemedCodes, setRedeemedCodes] = useState([]);
   const [toastMessage, setToastMessage] = useState('');
@@ -166,12 +165,6 @@ export default function App() {
             onCopyCode={handleCopyText}
             redeemedCodes={redeemedCodes}
             onToggleRedeemed={handleToggleRedeemed}
-          />
-        )}
-
-        {activeTab === 'comunidad' && (
-          <MinimalCommunity 
-            onCopyText={handleCopyText}
           />
         )}
 
