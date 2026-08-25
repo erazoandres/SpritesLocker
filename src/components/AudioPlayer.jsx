@@ -11,10 +11,6 @@ const CHILL_PLAYLIST = [
   {
     title: 'Midnight Chill',
     url: `${BASE_PATH}audio/chill2.mp3`.replace(/\/+/g, '/')
-  },
-  {
-    title: 'Cozy Ambient',
-    url: `${BASE_PATH}audio/chill3.mp3`.replace(/\/+/g, '/')
   }
 ];
 
@@ -138,7 +134,7 @@ export default function AudioPlayer({ triggerHint = true }) {
     });
   }, [trackIndex, isMounted]);
 
-  const currentTrack = CHILL_PLAYLIST[trackIndex];
+  const currentTrack = CHILL_PLAYLIST[trackIndex] || CHILL_PLAYLIST[0];
 
   // Play / Pause toggle
   const togglePlay = (e) => {
