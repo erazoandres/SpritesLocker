@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Search, Check, Star, RotateCcw, CheckCircle2, XCircle } from 'lucide-react';
 
 export default function MinimalSpriteGrid({ 
@@ -14,6 +14,9 @@ export default function MinimalSpriteGrid({
   const [hoveredFamily, setHoveredFamily] = useState(null);
   const [tooltipSpirit, setTooltipSpirit] = useState(null);
   const [activeMode, setActiveMode] = useState('tengo'); // 'tengo' or 'faltan'
+  const [isPaused, setIsPaused] = useState(false);
+
+  const familyBarRef = useRef(null);
 
   // Group spirits by family
   const familyList = useMemo(() => {
@@ -30,6 +33,29 @@ export default function MinimalSpriteGrid({
       return matchFam && matchSearch;
     });
   }, [spirits, searchQuery, selectedFamily]);
+
+  // Smooth continuous 60fps auto-scroll for family category pills (sliding left)
+  useEffect(() => {
+    const container = familyBarRef.current;
+    if (!container) return;
+
+    let animId;
+    const speed = 0.6; // Silky smooth sliding speed
+
+    const step = () => {
+      if (!isPaused && container) {
+        if (container.scrollLeft >= container.scrollWidth - container.clientWidth - 1) {
+          container.scrollLeft = 0; // Seamless loop reset
+        } else {
+          container.scrollLeft += speed;
+        }
+      }
+      animId = requestAnimationFrame(step);
+    };
+
+    animId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(animId);
+  }, [isPaused]);
 
   // Handle tile tap based on active mode
   const handleTileTap = (id) => {
@@ -114,8 +140,15 @@ export default function MinimalSpriteGrid({
 
       </div>
 
-      {/* ULTRA-CLEAN FAMILY PILLS ROW */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pt-0.5 scrollbar-none font-mono text-xs">
+      {/* AUTO-SLIDING FAMILY PILLS ROW (Slides left, pauses on hover/touch) */}
+      <div 
+        ref={familyBarRef}
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        onTouchStart={() => setIsPaused(true)}
+        onTouchEnd={() => setIsPaused(false)}
+        className="flex items-center gap-1.5 overflow-x-auto pb-1 pt-0.5 scrollbar-none font-mono text-xs select-none"
+      >
         {familyList.map(fam => {
           if (fam === 'Todas') {
             return (

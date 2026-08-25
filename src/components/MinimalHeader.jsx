@@ -37,21 +37,21 @@ export default function MinimalHeader({
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-3">
         
-        {/* Brand Logo & Title: EL CASILLERO · Andrés Erazo */}
+        {/* Brand Logo & Title Stack: EL CASILLERO with BY ANDRÉS ERAZO below logo */}
         <div className="flex items-center gap-3">
           <a href="#coleccion" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-lime-400 p-[1px] shadow-md shadow-cyan-500/20">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-lime-400 p-[1px] shadow-md shadow-cyan-500/20 shrink-0">
               <div className="w-full h-full bg-slate-950 rounded-[7px] flex items-center justify-center font-black text-cyan-400 text-xs tracking-tighter">
                 EC
               </div>
             </div>
-            <div className="hidden sm:block">
-              <strong className="text-xs font-black tracking-wider text-slate-100 uppercase block leading-none">
+            <div className="flex flex-col justify-center">
+              <strong className="text-xs sm:text-sm font-black tracking-wider text-slate-100 uppercase block leading-none">
                 EL CASILLERO
               </strong>
-              <small className="text-[9px] font-mono text-cyan-400 block leading-none mt-0.5">
-                ANDRÉS ERAZO
-              </small>
+              <span className="text-[9px] font-mono text-cyan-400 font-extrabold block leading-none mt-1 uppercase tracking-tight">
+                BY ANDRÉS ERAZO
+              </span>
             </div>
           </a>
 
@@ -102,7 +102,7 @@ export default function MinimalHeader({
         {/* Live Progress Pill, Visit Counter & Action Buttons */}
         <div className="flex items-center gap-2">
           
-          {/* Real Live Visit Counter Badge (Only displays when real numeric API data is present) */}
+          {/* Real Live Visit Counter Badge */}
           {totalVisits !== null && totalVisits !== undefined && totalVisits > 0 && (
             <div className="flex items-center gap-1 bg-slate-950 px-2.5 py-1.5 rounded-xl border border-white/10 text-xs font-mono text-slate-400" title="Visitas reales acumuladas a El Casillero">
               <Eye className="w-3.5 h-3.5 text-lime-400" />
