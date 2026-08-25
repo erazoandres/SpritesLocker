@@ -4,23 +4,23 @@ import { Volume2, VolumeX, Play, Pause, SkipForward, SkipBack, Music } from 'luc
 const CHILL_PLAYLIST = [
   {
     title: 'Lofi Study Beats',
-    url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3'
+    url: 'https://ia801503.us.archive.org/15/items/chill-lofi-beats-collection/Lofi1.mp3'
   },
   {
     title: 'Midnight Chill',
-    url: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a7315b.mp3?filename=chill-lofi-song-8444.mp3'
+    url: 'https://ia801503.us.archive.org/15/items/chill-lofi-beats-collection/Lofi2.mp3'
   },
   {
     title: 'Cozy Ambient',
-    url: 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=lofi-background-music-18158.mp3'
+    url: 'https://ia801503.us.archive.org/15/items/chill-lofi-beats-collection/Lofi3.mp3'
   },
   {
     title: 'Sunset Waves',
-    url: 'https://cdn.pixabay.com/download/audio/2022/11/06/audio_c9a0b12753.mp3?filename=lofi-chill-medium-version-124968.mp3'
+    url: 'https://ia801503.us.archive.org/15/items/chill-lofi-beats-collection/Lofi4.mp3'
   },
   {
     title: 'Rainy Night Lofi',
-    url: 'https://cdn.pixabay.com/download/audio/2023/04/18/audio_2d36d8d672.mp3?filename=rainy-day-lofi-147348.mp3'
+    url: 'https://ia801503.us.archive.org/15/items/chill-lofi-beats-collection/Lofi5.mp3'
   }
 ];
 
@@ -31,16 +31,16 @@ export default function AudioPlayer() {
   const [isMounted, setIsMounted] = useState(false);
   const audioRef = useRef(null);
 
-  // Initial startup: set volume to 10% (0.10) and attempt autoplay
+  // Initial startup: set volume strictly to 5% (0.05) and attempt autoplay
   useEffect(() => {
     setIsMounted(true);
     if (!audioRef.current) return;
     
-    audioRef.current.volume = 0.10;
+    audioRef.current.volume = 0.05;
 
     const startPlay = () => {
       if (!audioRef.current) return;
-      audioRef.current.volume = 0.10;
+      audioRef.current.volume = 0.05;
       audioRef.current.play().then(() => {
         setIsPlaying(true);
       }).catch(() => {
@@ -71,11 +71,11 @@ export default function AudioPlayer() {
     };
   }, []);
 
-  // Track change handler: reload audio & play seamlessly
+  // Track change handler: reload audio & play seamlessly at 5% volume
   useEffect(() => {
     if (!isMounted || !audioRef.current) return;
     const audio = audioRef.current;
-    audio.volume = 0.10;
+    audio.volume = 0.05;
     audio.load(); // Force HTML5 audio decoder to load new track
 
     audio.play().then(() => {
@@ -95,7 +95,7 @@ export default function AudioPlayer() {
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current.volume = 0.10;
+      audioRef.current.volume = 0.05;
       audioRef.current.play().then(() => {
         setIsPlaying(true);
       }).catch(err => {
@@ -140,7 +140,7 @@ export default function AudioPlayer() {
       }`}>
         
         {/* Animated Equalizer Sound Waves */}
-        <div className="flex items-center gap-1 shrink-0" title="Volumen: 10%">
+        <div className="flex items-center gap-1 shrink-0" title="Volumen: 5%">
           {isPlaying ? (
             <div className="flex items-end gap-0.5 h-4 w-3.5">
               <span className="w-0.5 bg-emerald-400 rounded-full animate-[bounce_1s_infinite_100ms] h-2"></span>
@@ -158,7 +158,7 @@ export default function AudioPlayer() {
             {currentTrack.title}
           </span>
           <span className="text-[9px] font-mono text-emerald-400/80 leading-none mt-0.5">
-            VOL 10% · CANCIÓN {trackIndex + 1}/{CHILL_PLAYLIST.length}
+            VOL 5% · CANCIÓN {trackIndex + 1}/{CHILL_PLAYLIST.length}
           </span>
         </div>
 
@@ -178,7 +178,7 @@ export default function AudioPlayer() {
           <button
             onClick={togglePlay}
             className="w-7 h-7 rounded-lg bg-emerald-400 text-slate-950 flex items-center justify-center font-bold shadow-md shadow-emerald-500/20 active:scale-95 transition"
-            title={isPlaying ? 'Pausar' : 'Reproducir (Volumen 10%)'}
+            title={isPlaying ? 'Pausar' : 'Reproducir (Volumen 5%)'}
           >
             {isPlaying ? <Pause className="w-3.5 h-3.5 fill-slate-950" /> : <Play className="w-3.5 h-3.5 fill-slate-950 ml-0.5" />}
           </button>
@@ -196,7 +196,7 @@ export default function AudioPlayer() {
           <button
             onClick={toggleMute}
             className="p-1 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition ml-0.5"
-            title={isMuted ? 'Activar sonido (10%)' : 'Silenciar'}
+            title={isMuted ? 'Activar sonido (5%)' : 'Silenciar'}
           >
             {isMuted ? <VolumeX className="w-3.5 h-3.5 text-rose-400" /> : <Volume2 className="w-3.5 h-3.5 text-emerald-400" />}
           </button>
