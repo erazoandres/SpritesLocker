@@ -232,8 +232,8 @@ export default function App() {
         </a>
       </footer>
 
-      {/* Floating Chill Audio Music Player */}
-      <AudioPlayer />
+      {/* Floating Chill Audio Music Player (Triggers hint after Welcome Modal closes) */}
+      <AudioPlayer triggerHint={!welcomeOpen} />
 
       {/* First-Time Welcome Portal Modal */}
       {welcomeOpen && (

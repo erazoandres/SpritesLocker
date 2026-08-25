@@ -18,15 +18,35 @@ const CHILL_PLAYLIST = [
   }
 ];
 
-export default function AudioPlayer() {
+export default function AudioPlayer({ triggerHint = true }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [trackIndex, setTrackIndex] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
-  const [showHint, setShowHint] = useState(true);
+  const [showHint, setShowHint] = useState(false);
 
   const audioRef = useRef(null);
   const tabIdRef = useRef(Math.random().toString(36).substring(2, 9));
+
+  // Trigger delicate hint card ONLY AFTER welcome portal has closed!
+  useEffect(() => {
+    if (triggerHint) {
+      const timer = setTimeout(() => {
+        setShowHint(true);
+      }, 400); // 400ms delay right after Cyber Warp transition ends!
+
+      const autoDismiss = setTimeout(() => {
+        setShowHint(false);
+      }, 10000); // Auto dismiss after 10s
+
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(autoDismiss);
+      };
+    } else {
+      setShowHint(false);
+    }
+  }, [triggerHint]);
 
   // Helper to broadcast audio lock signal to all other open tabs
   const broadcastAudioPlayback = () => {
@@ -96,13 +116,7 @@ export default function AudioPlayer() {
     window.addEventListener('keydown', handleFirstGesture);
     window.addEventListener('touchstart', handleFirstGesture);
 
-    // Auto dismiss hint after 10 seconds
-    const timer = setTimeout(() => {
-      setShowHint(false);
-    }, 10000);
-
     return () => {
-      clearTimeout(timer);
       window.removeEventListener('click', handleFirstGesture);
       window.removeEventListener('keydown', handleFirstGesture);
       window.removeEventListener('touchstart', handleFirstGesture);
@@ -165,7 +179,7 @@ export default function AudioPlayer() {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-40 select-none animate-fadeIn font-sans flex flex-col items-end">
+    <div className="fixed bottom-4 right-4 z-40 select-none font-sans flex flex-col items-end">
       <audio
         ref={audioRef}
         src={currentTrack.url}
@@ -173,10 +187,10 @@ export default function AudioPlayer() {
         preload="auto"
       />
 
-      {/* Onboarding Micro-Hint Card pointing to Audio Controls (Delicate Smooth Entrance) */}
+      {/* Onboarding Micro-Hint Card pointing to Audio Controls (Delicate Smooth Entrance AFTER Welcome Screen) */}
       {showHint && (
         <div className="relative mb-2.5 max-w-xs transition-all duration-700 ease-out animate-fadeIn">
-          <div className="bg-[#101322]/90 border border-emerald-400/50 rounded-2xl p-3 shadow-xl shadow-emerald-500/15 backdrop-blur-md text-xs font-sans text-slate-200 relative">
+          <div className="bg-[#101322]/95 border border-emerald-400/60 rounded-2xl p-3 shadow-2xl shadow-emerald-500/20 backdrop-blur-md text-xs font-sans text-slate-200 relative">
             <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-1 mb-1">
               <span className="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
                 <Sparkles className="w-3 h-3 text-lime-400" />
@@ -194,7 +208,7 @@ export default function AudioPlayer() {
               Puedes <strong>pausar</strong> (⏸), <strong>cambiar canción</strong> (⏮ / ⏭) y <strong>silenciar</strong> (🔇) en cualquier momento.
             </p>
             {/* Soft Arrow Pointer Pointing Down */}
-            <div className="absolute -bottom-1.5 right-7 w-3 h-3 bg-[#101322] border-r border-b border-emerald-400/50 rotate-45"></div>
+            <div className="absolute -bottom-1.5 right-7 w-3 h-3 bg-[#101322] border-r border-b border-emerald-400/60 rotate-45"></div>
           </div>
         </div>
       )}
