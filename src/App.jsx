@@ -3,6 +3,7 @@ import MinimalHeader from './components/MinimalHeader';
 import MinimalSpriteGrid from './components/MinimalSpriteGrid';
 import MinimalCodes from './components/MinimalCodes';
 import ExportModal from './components/ExportModal';
+import AudioPlayer from './components/AudioPlayer';
 import Toast from './components/Toast';
 
 import { GEN2_SPIRITS } from './data/gen2_spirits';
@@ -158,7 +159,7 @@ export default function App() {
   }, [activeSpirits, userState]);
 
   return (
-    <div className="min-h-screen bg-[#08090d] text-slate-100 selection:bg-cyan-400 selection:text-slate-950 max-w-full overflow-x-hidden">
+    <div className="min-h-screen bg-[#0a0b12] text-slate-100 selection:bg-emerald-400 selection:text-slate-950 max-w-full overflow-x-hidden">
       
       {/* Streamlined HUD Header */}
       <MinimalHeader 
@@ -198,19 +199,22 @@ export default function App() {
       </main>
 
       {/* Minimal Footer with direct link to GitHub profile (https://github.com/erazoandres) */}
-      <footer className="border-t border-white/5 bg-slate-950/80 py-6 text-center text-xs text-slate-500 font-mono flex items-center justify-center gap-1.5 flex-wrap px-4 w-full">
+      <footer className="border-t border-white/5 bg-[#08090f]/90 py-6 text-center text-xs text-slate-500 font-mono flex items-center justify-center gap-1.5 flex-wrap px-4 w-full">
         <span>EL CASILLERO · Creado por</span>
         <a
           href="https://github.com/erazoandres"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-cyan-400 hover:text-cyan-300 font-bold underline decoration-cyan-400/40 underline-offset-4 flex items-center gap-1 transition"
+          className="text-emerald-400 hover:text-emerald-300 font-bold underline decoration-emerald-400/40 underline-offset-4 flex items-center gap-1 transition"
           title="Ver perfil de GitHub de Andrés Erazo"
         >
           <GithubIcon className="w-3.5 h-3.5" />
           <span>Andrés Erazo (@erazoandres)</span>
         </a>
       </footer>
+
+      {/* Floating Chill Audio Music Player */}
+      <AudioPlayer />
 
       {/* Export Canvas Capture Modal */}
       {exportModalOpen && (
