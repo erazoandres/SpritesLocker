@@ -23,22 +23,12 @@ export default function AudioPlayer() {
   const [isMuted, setIsMuted] = useState(false);
   const [trackIndex, setTrackIndex] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
-  const [showHint, setShowHint] = useState(() => {
-    try {
-      const seen = localStorage.getItem('el-casillero-music-hint-seen');
-      return !seen;
-    } catch {
-      return true;
-    }
-  });
+  const [showHint, setShowHint] = useState(true); // Always display hint on load by default
 
   const audioRef = useRef(null);
 
   const dismissHint = () => {
     setShowHint(false);
-    try {
-      localStorage.setItem('el-casillero-music-hint-seen', 'true');
-    } catch {}
   };
 
   // Initial startup: set volume strictly to 5% (0.05) and attempt autoplay
@@ -74,7 +64,13 @@ export default function AudioPlayer() {
     window.addEventListener('keydown', handleFirstGesture);
     window.addEventListener('touchstart', handleFirstGesture);
 
+    // Auto dismiss hint after 10 seconds
+    const timer = setTimeout(() => {
+      setShowHint(false);
+    }, 10000);
+
     return () => {
+      clearTimeout(timer);
       window.removeEventListener('click', handleFirstGesture);
       window.removeEventListener('keydown', handleFirstGesture);
       window.removeEventListener('touchstart', handleFirstGesture);
@@ -100,7 +96,6 @@ export default function AudioPlayer() {
   // Play / Pause toggle
   const togglePlay = (e) => {
     e?.stopPropagation();
-    if (showHint) dismissHint();
     if (!audioRef.current) return;
     if (isPlaying) {
       audioRef.current.pause();
@@ -118,7 +113,6 @@ export default function AudioPlayer() {
   // Change Track (Next / Previous)
   const changeTrack = (direction, e) => {
     e?.stopPropagation();
-    if (showHint) dismissHint();
     let nextIndex;
     if (direction === 'next') {
       nextIndex = (trackIndex + 1) % CHILL_PLAYLIST.length;
@@ -131,7 +125,6 @@ export default function AudioPlayer() {
   // Mute / Unmute toggle
   const toggleMute = (e) => {
     e?.stopPropagation();
-    if (showHint) dismissHint();
     if (!audioRef.current) return;
     audioRef.current.muted = !isMuted;
     setIsMuted(!isMuted);
@@ -148,26 +141,26 @@ export default function AudioPlayer() {
 
       {/* Onboarding Micro-Hint Card pointing to Audio Controls */}
       {showHint && (
-        <div className="relative mb-2 max-w-xs animate-pulse">
-          <div className="bg-[#101322]/95 border border-emerald-400/80 rounded-2xl p-3 shadow-2xl shadow-emerald-500/20 text-xs font-sans text-slate-200 relative">
+        <div className="relative mb-2.5 max-w-xs animate-bounce">
+          <div className="bg-[#101322]/95 border-2 border-emerald-400 rounded-2xl p-3 shadow-2xl shadow-emerald-500/30 text-xs font-sans text-slate-200 relative">
             <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-1 mb-1">
-              <span className="text-[10px] font-mono font-extrabold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-lime-400" />
+              <span className="text-[10px] font-mono font-black text-emerald-400 uppercase tracking-wider flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5 text-lime-400" />
                 CONTROLES DE MÚSICA CHILL
               </span>
               <button 
                 onClick={dismissHint}
-                className="text-[10px] text-slate-400 hover:text-white font-bold px-1 py-0.5 rounded hover:bg-white/10"
+                className="text-[10px] text-slate-400 hover:text-white font-bold px-1.5 py-0.5 rounded hover:bg-white/10"
                 title="Cerrar aviso"
               >
                 ✕
               </button>
             </div>
-            <p className="text-[11px] text-slate-300 leading-snug">
-              Puedes <strong>pausar</strong> (⏸), <strong>cambiar de canción</strong> (⏮ / ⏭) y <strong>silenciar</strong> (🔇) la música ambiental cuando quieras.
+            <p className="text-[11px] text-slate-200 leading-snug font-medium">
+              ¡Puedes <strong>pausar</strong> (⏸), <strong>cambiar de canción</strong> (⏮ / ⏭) y <strong>silenciar</strong> (🔇) la música ambiental cuando quieras!
             </p>
             {/* Arrow Pointer Pointing Down */}
-            <div className="absolute -bottom-1.5 right-6 w-3 h-3 bg-[#101322] border-r border-b border-emerald-400/80 rotate-45"></div>
+            <div className="absolute -bottom-2 right-8 w-3.5 h-3.5 bg-[#101322] border-r-2 border-b-2 border-emerald-400 rotate-45"></div>
           </div>
         </div>
       )}
@@ -179,8 +172,12 @@ export default function AudioPlayer() {
           : 'bg-[#101322]/85 border-white/10 hover:border-emerald-400/40 text-slate-300'
       }`}>
         
-        {/* Animated Equalizer Sound Waves */}
-        <div className="flex items-center gap-1 shrink-0" title="Volumen: 5%">
+        {/* Animated Equalizer Sound Waves or Toggle Hint Button */}
+        <button
+          onClick={() => setShowHint(!showHint)}
+          className="flex items-center gap-1 shrink-0 hover:scale-110 transition"
+          title="Ver o guardar controles de música"
+        >
           {isPlaying ? (
             <div className="flex items-end gap-0.5 h-4 w-3.5">
               <span className="w-0.5 bg-emerald-400 rounded-full animate-[bounce_1s_infinite_100ms] h-2"></span>
@@ -190,7 +187,7 @@ export default function AudioPlayer() {
           ) : (
             <Music className="w-4 h-4 text-emerald-400" />
           )}
-        </div>
+        </button>
 
         {/* Track Title Info */}
         <div className="hidden sm:flex flex-col justify-center max-w-[130px]">
