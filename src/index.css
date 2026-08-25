@@ -98,66 +98,102 @@ body {
   animation: portalWarp 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Animated Tour Demarcation Glow for Active Element being Explained */
+@keyframes tourHighlightPulse {
+  0% {
+    box-shadow: 0 0 0 3.5px #34d399, 0 0 30px rgba(52, 211, 153, 0.95), 0 0 55px rgba(167, 139, 250, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 4.5px #a78bfa, 0 0 45px rgba(167, 139, 250, 1), 0 0 80px rgba(52, 211, 153, 0.9);
+  }
+  100% {
+    box-shadow: 0 0 0 3.5px #34d399, 0 0 30px rgba(52, 211, 153, 0.95), 0 0 55px rgba(167, 139, 250, 0.7);
+  }
+}
+
+.driver-active-element {
+  outline: 3px solid #34d399 !important;
+  outline-offset: 4px !important;
+  border-radius: 18px !important;
+  animation: tourHighlightPulse 2s infinite ease-in-out !important;
+  z-index: 100001 !important;
+  position: relative !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
 /* Driver.js Obsidian Neon Theme Overrides */
 .driver-popover {
-  background-color: #101322 !important;
+  background: linear-gradient(145deg, #101322, #0c0e18) !important;
   color: #f8fafc !important;
-  border: 1px solid rgba(16, 185, 129, 0.4) !important;
-  border-radius: 20px !important;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(16, 185, 129, 0.15) !important;
+  border: 2px solid #34d399 !important;
+  border-radius: 24px !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95), 0 0 40px rgba(52, 211, 153, 0.3) !important;
   font-family: 'Outfit', sans-serif !important;
-  padding: 18px !important;
+  padding: 22px !important;
+  max-width: 340px !important;
 }
 
 .driver-popover-title {
   font-family: 'Space Grotesk', sans-serif !important;
   font-weight: 900 !important;
-  font-size: 14px !important;
+  font-size: 15px !important;
   color: #34d399 !important;
   text-transform: uppercase !important;
-  letter-spacing: 0.05em !important;
-  margin-bottom: 6px !important;
+  letter-spacing: 0.06em !important;
+  margin-bottom: 8px !important;
 }
 
 .driver-popover-description {
-  font-size: 12px !important;
-  color: #cbd5e1 !important;
-  line-height: 1.5 !important;
+  font-size: 12.5px !important;
+  color: #e2e8f0 !important;
+  line-height: 1.55 !important;
 }
 
 .driver-popover-progress-text {
   font-family: 'JetBrains Mono', monospace !important;
   font-size: 11px !important;
   color: #a78bfa !important;
-  font-weight: 700 !important;
+  font-weight: 800 !important;
 }
 
 .driver-popover-footer {
-  margin-top: 14px !important;
+  margin-top: 16px !important;
 }
 
 .driver-popover-navigation-btns {
-  gap: 6px !important;
+  gap: 8px !important;
 }
 
 .driver-popover-prev-btn, .driver-popover-next-btn {
   font-family: 'JetBrains Mono', monospace !important;
   font-size: 11px !important;
-  font-weight: 700 !important;
-  padding: 6px 12px !important;
-  border-radius: 10px !important;
+  font-weight: 800 !important;
+  padding: 8px 16px !important;
+  border-radius: 12px !important;
   text-shadow: none !important;
   transition: all 0.2s !important;
+  cursor: pointer !important;
 }
 
 .driver-popover-next-btn {
   background: linear-gradient(135deg, #34d399, #8b5cf6) !important;
   color: #090a0f !important;
   border: none !important;
+  box-shadow: 0 4px 14px rgba(52, 211, 153, 0.4) !important;
+}
+
+.driver-popover-next-btn:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 20px rgba(52, 211, 153, 0.6) !important;
 }
 
 .driver-popover-prev-btn {
   background: #1e293b !important;
-  color: #94a3b8 !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #cbd5e1 !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.driver-popover-prev-btn:hover {
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
 }
