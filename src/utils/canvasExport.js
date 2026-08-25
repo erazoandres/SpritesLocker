@@ -18,24 +18,38 @@ function blobToImage(blob) {
 }
 
 /**
- * Safely fetches and converts an image URL into a Base64 Data URI using a 3-tier fallback pipeline.
+ * Safely fetches and converts an image URL into a Base64 Data URI using a strict 4-tier fallback pipeline.
+ * GUARANTEES zero canvas tainting by resolving null if CORS verification fails.
  */
 async function loadImageAsDataUrl(url) {
   if (!url) return null;
 
-  // Tier 1: Direct fetch
+  // Tier 1: Direct CORS fetch
   try {
-    const res = await fetch(url);
+    const res = await fetch(url, { mode: 'cors' });
     if (res.ok) {
       const blob = await res.blob();
       const img = await blobToImage(blob);
       if (img) return img;
     }
   } catch (err) {
-    // Direct fetch blocked by CORS headers
+    // Direct CORS fetch blocked
   }
 
-  // Tier 2: CORS Proxy fetch
+  // Tier 2: Primary CORS Proxy (corsproxy.io)
+  try {
+    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+    const res = await fetch(proxyUrl);
+    if (res.ok) {
+      const blob = await res.blob();
+      const img = await blobToImage(blob);
+      if (img) return img;
+    }
+  } catch (err) {
+    // Primary proxy failed
+  }
+
+  // Tier 3: Secondary CORS Proxy (allorigins.win)
   try {
     const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
     const res = await fetch(proxyUrl);
@@ -45,20 +59,15 @@ async function loadImageAsDataUrl(url) {
       if (img) return img;
     }
   } catch (err) {
-    // Proxy fetch failed
+    // Secondary proxy failed
   }
 
-  // Tier 3: Standard Image element loader
+  // Tier 4: Anonymous Image Loader (STRICT: resolve null on error to PREVENT canvas tainting)
   return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => resolve(img);
-    img.onerror = () => {
-      const fallbackImg = new Image();
-      fallbackImg.onload = () => resolve(fallbackImg);
-      fallbackImg.onerror = () => resolve(null);
-      fallbackImg.src = url;
-    };
+    img.onerror = () => resolve(null); // Resolve NULL to guarantee zero canvas tainting!
     img.src = url;
   });
 }
@@ -175,7 +184,7 @@ export async function generateCollectionImage(spirits, state, generationNumber, 
         console.warn(`Could not draw image for ${item.family}:`, err);
       }
     } else {
-      // Fallback clean graphic badge
+      // Fallback clean graphic badge (guarantees zero canvas tainting)
       ctx.textAlign = 'center';
       ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
       ctx.font = '900 32px Arial, sans-serif';
