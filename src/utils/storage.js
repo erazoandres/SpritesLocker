@@ -1,9 +1,10 @@
 const STORAGE_KEY_GEN2 = 'el-casillero-user-state-gen2';
 const STORAGE_KEY_GEN1 = 'el-casillero-user-state-gen1';
+const ACTIVE_GEN_KEY = 'el-casillero-active-gen';
 
 /**
  * Encodes the user state object into a URL-safe Base64 string.
- * Example state: { 'g2-arbustin-base': 1, 'g2-arbustin-oro': 2 }
+ * Example state: { 'g2-arbustin-base': 1, 'g2-arbustin-oro': 2, 'g2-arbustin-maestro': 3 }
  */
 export function encodeStateToHash(state) {
   try {
@@ -42,7 +43,29 @@ export function decodeHashToState(hash) {
 }
 
 /**
+ * Loads last active generation from LocalStorage (defaults to 2).
+ */
+export function loadActiveGen() {
+  try {
+    const saved = localStorage.getItem(ACTIVE_GEN_KEY);
+    return saved ? Number(saved) : 2;
+  } catch {
+    return 2;
+  }
+}
+
+/**
+ * Saves current active generation to LocalStorage.
+ */
+export function saveActiveGen(gen) {
+  try {
+    localStorage.setItem(ACTIVE_GEN_KEY, String(gen));
+  } catch {}
+}
+
+/**
  * Loads saved state from LocalStorage or URL hash for specified generation.
+ * Preserves status 1 (Obtenido), status 2 (Dominado), and status 3 (Faltante Marcado).
  */
 export function loadSavedState(gen = 2) {
   // Check URL hash for explicit shareable link
@@ -65,7 +88,7 @@ export function loadSavedState(gen = 2) {
 }
 
 /**
- * Saves current user selections into LocalStorage.
+ * Saves current user selections (Obtenidos, Dominados, Faltantes) into LocalStorage.
  */
 export function saveLocalState(state, gen = 2) {
   try {

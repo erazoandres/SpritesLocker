@@ -10,6 +10,8 @@ import { GEN1_SPIRITS } from './data/gen1_spirits';
 import { 
   loadSavedState, 
   saveLocalState, 
+  loadActiveGen,
+  saveActiveGen,
   loadRedeemedCodes, 
   saveRedeemedCodes 
 } from './utils/storage';
@@ -23,7 +25,7 @@ const GithubIcon = ({ className }) => (
 );
 
 export default function App() {
-  const [activeGen, setActiveGen] = useState(2); // Default to Gen 2 Override
+  const [activeGen, setActiveGen] = useState(() => loadActiveGen());
   const [activeTab, setActiveTab] = useState('coleccion'); // 'coleccion', 'codigos'
   const [userState, setUserState] = useState({});
   const [redeemedCodes, setRedeemedCodes] = useState([]);
@@ -31,9 +33,9 @@ export default function App() {
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [totalVisits, setTotalVisits] = useState(null);
 
-  // Initialize startup: load saved user selections from LocalStorage
+  // Initialize startup: load saved active generation & user selections (Tengo, Dominados, Faltantes)
   useEffect(() => {
-    const saved = loadSavedState(2);
+    const saved = loadSavedState(activeGen);
     setUserState(saved);
 
     const savedCodes = loadRedeemedCodes();
@@ -49,12 +51,13 @@ export default function App() {
   const handleSelectGen = (newGen) => {
     if (newGen === activeGen) return;
     saveLocalState(userState, activeGen);
+    saveActiveGen(newGen);
     setActiveGen(newGen);
     const savedForNewGen = loadSavedState(newGen);
     setUserState(savedForNewGen);
   };
 
-  // Update a single spirit status and save to LocalStorage
+  // Update a single spirit status and save to LocalStorage (preserves 1=Tengo, 2=Dominado, 3=Faltante)
   const handleToggleSpirit = (id) => {
     setUserState(prev => {
       const current = prev[id] || 0;
