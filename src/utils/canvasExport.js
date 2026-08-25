@@ -24,16 +24,16 @@ function blobToImage(blob) {
 async function loadImageAsDataUrl(url) {
   if (!url) return null;
 
-  // Tier 1: Direct CORS fetch
+  // Tier 1: Direct same-origin or CORS fetch
   try {
-    const res = await fetch(url, { mode: 'cors' });
+    const res = await fetch(url);
     if (res.ok) {
       const blob = await res.blob();
       const img = await blobToImage(blob);
       if (img) return img;
     }
   } catch (err) {
-    // Direct CORS fetch blocked
+    // Direct fetch blocked
   }
 
   // Tier 2: Primary CORS Proxy (corsproxy.io)
@@ -74,9 +74,9 @@ async function loadImageAsDataUrl(url) {
 
 /**
  * Generates an HD PNG image containing EXCLUSIVELY the marked/selected spirits.
- * Attributed to EL CASILLERO · Andrés Erazo.
+ * Stamps official URL watermark and total visits badge. Attributed to EL CASILLERO · Andrés Erazo.
  */
-export async function generateCollectionImage(spirits, state, generationNumber, filterType = 'todos') {
+export async function generateCollectionImage(spirits, state, generationNumber, filterType = 'todos', totalVisits = null) {
   // Filter dataset to include STRICTLY marked/selected spirits (status >= 1 || status === 3)
   const markedSpirits = spirits.filter(item => {
     const status = state[item.id] || 0;
@@ -130,6 +130,15 @@ export async function generateCollectionImage(spirits, state, generationNumber, 
   ctx.fillStyle = '#b7ff24';
   ctx.font = '900 56px Arial, sans-serif';
   ctx.fillText('EL CASILLERO', 60, 75);
+
+  // Live Visit Counter Stamp on Top Right
+  if (totalVisits !== null && totalVisits !== undefined) {
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#b7ff24';
+    ctx.font = '800 22px Arial, sans-serif';
+    ctx.fillText(`👁 ${Number(totalVisits).toLocaleString()} VISITAS`, canvasWidth - 60, 75);
+    ctx.textAlign = 'left';
+  }
 
   ctx.fillStyle = '#00f0ff';
   ctx.font = '800 24px Arial, sans-serif';
@@ -207,10 +216,18 @@ export async function generateCollectionImage(spirits, state, generationNumber, 
     ctx.textAlign = 'left';
   }
 
-  // Footer Credit
+  // Footer Credit (Left Side)
   ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
   ctx.font = '700 16px Arial, sans-serif';
   ctx.fillText(`El Casillero · Andrés Erazo`, 60, canvasHeight - 25);
+
+  // OFFICIAL WATERMARK URL (Bottom Right Corner)
+  const watermarkUrl = 'https://erazoandres.github.io/SpritesLocker/';
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#00f0ff';
+  ctx.font = '800 16px Arial, sans-serif';
+  ctx.fillText(watermarkUrl, canvasWidth - 60, canvasHeight - 25);
+  ctx.textAlign = 'left';
 
   let dataUrl;
   try {

@@ -199,6 +199,7 @@ export default function App() {
           spirits={activeSpirits}
           userState={userState}
           activeGen={activeGen}
+          totalVisits={totalVisits}
           onClose={() => setExportModalOpen(false)}
           onShowToast={showToast}
         />

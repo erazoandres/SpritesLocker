@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Download, Share2, Loader2, CheckCircle2 } from 'lucide-react';
 import { generateCollectionImage } from '../utils/canvasExport';
 
-export default function ExportModal({ spirits, userState, activeGen, onClose, onShowToast }) {
+export default function ExportModal({ spirits, userState, activeGen, totalVisits, onClose, onShowToast }) {
   const [loading, setLoading] = useState(true);
   const [exportResult, setExportResult] = useState(null);
 
@@ -11,7 +11,7 @@ export default function ExportModal({ spirits, userState, activeGen, onClose, on
     let active = true;
     async function runExport() {
       try {
-        const result = await generateCollectionImage(spirits, userState, activeGen, 'todos');
+        const result = await generateCollectionImage(spirits, userState, activeGen, 'todos', totalVisits);
         if (active) {
           setExportResult(result);
         }
@@ -24,7 +24,7 @@ export default function ExportModal({ spirits, userState, activeGen, onClose, on
     }
     runExport();
     return () => { active = false; };
-  }, [spirits, userState, activeGen]);
+  }, [spirits, userState, activeGen, totalVisits]);
 
   const handleDownload = () => {
     if (!exportResult) return;
@@ -81,7 +81,7 @@ export default function ExportModal({ spirits, userState, activeGen, onClose, on
             COLECCIÓN EXPORTADA A IMAGEN
           </h2>
           <p className="text-xs text-slate-400">
-            Tu casillero de espíritus ha sido generado en una captura PNG HD.
+            Tu casillero de espíritus ha sido generado en una captura PNG HD con marca de agua oficial.
           </p>
         </div>
 
