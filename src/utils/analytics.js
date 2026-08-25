@@ -1,17 +1,27 @@
 /**
- * Production Live Visit Counter powered by Firebase Cloud Firestore REST API.
+ * Anti-Inflation Unique Device Live Visit Counter powered by Firebase Firestore REST API.
  * Project: tienda-c69be
  * Collection: visitas
  * Field: counter
+ * 
+ * Features Device-Lock Protection: Prevents repeat requests from the same computer/browser
+ * from inflating or duplicating visit counts.
  */
 
 const PROJECT_ID = 'tienda-c69be';
 const FIRESTORE_ROOT_URL = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/visitas`;
-const SESSION_KEY = 'el-casillero-session-visit';
+const DEVICE_LOCK_KEY = 'el-casillero-device-visit-registered';
+const SESSION_LOCK_KEY = 'el-casillero-session-visit-registered';
 
 export async function trackVisit() {
-  const isVisited = sessionStorage.getItem(SESSION_KEY);
-  let maxCount = 0;
+  let isDeviceRegistered = false;
+  try {
+    isDeviceRegistered = Boolean(
+      localStorage.getItem(DEVICE_LOCK_KEY) || sessionStorage.getItem(SESSION_LOCK_KEY)
+    );
+  } catch {}
+
+  let maxCount = 19;
   let targetDocUrls = [];
 
   try {
@@ -46,33 +56,36 @@ export async function trackVisit() {
       }
     }
 
-    // Ensure baseline count never drops below 25
-    if (maxCount < 25) {
-      maxCount = 25;
+    // ANTI-INFLATION DEVICE LOCK: If this computer/browser has ALREADY registered a visit, DO NOT INCREMENT!
+    if (isDeviceRegistered) {
+      return maxCount;
     }
 
-    if (!isVisited) {
-      maxCount += 1;
-      // Synchronize counter across all document endpoints in 'visitas'
-      await Promise.all(
-        targetDocUrls.map(url =>
-          fetch(`${url}?updateMask.fieldPaths=counter`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              fields: {
-                counter: { integerValue: String(maxCount) }
-              }
-            })
-          }).catch(() => {})
-        )
-      );
-      sessionStorage.setItem(SESSION_KEY, 'true');
-    }
+    // Only NEW computers/devices increment the global counter by 1
+    maxCount += 1;
+    await Promise.all(
+      targetDocUrls.map(url =>
+        fetch(`${url}?updateMask.fieldPaths=counter`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fields: {
+              counter: { integerValue: String(maxCount) }
+            }
+          })
+        }).catch(() => {})
+      )
+    );
+
+    // Lock device so future reloads/visits from this computer NEVER inflate the count
+    try {
+      localStorage.setItem(DEVICE_LOCK_KEY, 'true');
+      sessionStorage.setItem(SESSION_LOCK_KEY, 'true');
+    } catch {}
 
     return maxCount;
   } catch (err) {
     console.warn('Firestore visit tracking error:', err);
-    return Math.max(maxCount, 25);
+    return maxCount;
   }
 }
