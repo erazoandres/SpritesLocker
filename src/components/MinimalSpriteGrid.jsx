@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Download, Check, Star, RotateCcw, CheckCircle2, XCircle } from 'lucide-react';
+import { Search, Check, Star, RotateCcw, CheckCircle2, XCircle } from 'lucide-react';
 
 export default function MinimalSpriteGrid({ 
   spirits, 
@@ -7,8 +7,7 @@ export default function MinimalSpriteGrid({
   onToggleSpirit, 
   onBatchUpdate,
   activeGen,
-  onResetGen,
-  onOpenExportModal
+  onResetGen
 }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFamily, setSelectedFamily] = useState('Todas');
@@ -101,23 +100,15 @@ export default function MinimalSpriteGrid({
           />
         </div>
 
-        {/* Action Buttons */}
+        {/* Action Buttons: Reset Progress */}
         <div className="flex items-center gap-2 w-full md:w-auto justify-end font-mono">
           <button
-            onClick={onOpenExportModal}
-            className="flex items-center gap-1.5 bg-cyan-400 hover:bg-cyan-300 text-slate-950 px-3.5 py-1.5 rounded-xl text-xs font-black active:scale-95 transition"
-            title="Descargar captura en HD PNG de tu lista"
-          >
-            <Download className="w-3.5 h-3.5 stroke-[3]" />
-            <span>DESCARGAR CAPTURA</span>
-          </button>
-
-          <button
             onClick={onResetGen}
-            className="p-1.5 rounded-xl bg-[#050609] border border-white/10 hover:border-rose-500/40 text-slate-400 hover:text-rose-400 transition"
+            className="p-2 rounded-xl bg-[#050609] border border-white/10 hover:border-rose-500/40 text-slate-400 hover:text-rose-400 transition flex items-center gap-1 text-xs"
             title={`Reiniciar progreso de Gen ${activeGen}`}
           >
             <RotateCcw className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">REINICIAR</span>
           </button>
         </div>
 
