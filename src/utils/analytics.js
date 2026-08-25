@@ -1,18 +1,20 @@
 /**
- * Real Production Visit Counter powered by Firebase Realtime Database.
- * Firebase Project: tienda-c69be (Andrés Erazo)
+ * Real Production Visit Counter powered by Firebase.
+ * Project: tienda-c69be
+ * Collection/Node: visitas
+ * Field: counter
  */
 
-const FIREBASE_PRIMARY_URL = 'https://tienda-c69be-default-rtdb.firebaseio.com';
+const FIREBASE_DB_URL = 'https://tienda-c69be-default-rtdb.firebaseio.com';
 const FIREBASE_FALLBACK_URL = 'https://tienda-c69be.firebaseio.com';
 const SESSION_KEY = 'el-casillero-session-visit';
 
 export async function trackVisit() {
   const isVisited = sessionStorage.getItem(SESSION_KEY);
-  let dbUrl = FIREBASE_PRIMARY_URL;
+  let dbUrl = FIREBASE_PRIMARY_URL_RESOLVE(FIREBASE_DB_URL);
   
   try {
-    // 1. Fetch current visit count from your Firebase Project tienda-c69be
+    // 1. Fetch current visit count from collection 'visitas' field 'counter'
     let res = await fetch(`${dbUrl}/visitas.json`);
     if (!res.ok) {
       dbUrl = FIREBASE_FALLBACK_URL;
@@ -22,20 +24,20 @@ export async function trackVisit() {
     let currentCount = 0;
     if (res.ok) {
       const data = await res.json();
-      if (data && typeof data === 'object' && data.count !== undefined) {
-        currentCount = Number(data.count) || 0;
+      if (data && typeof data === 'object') {
+        currentCount = Number(data.counter ?? data.count ?? 0);
       } else if (typeof data === 'number') {
         currentCount = data;
       }
     }
 
-    // 2. If new user session, increment count in your Firebase Database
+    // 2. If new user session, increment field 'counter' in collection 'visitas'
     if (!isVisited) {
       currentCount = Math.max(1, currentCount + 1);
       await fetch(`${dbUrl}/visitas.json`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ count: currentCount, lastUpdated: new Date().toISOString() })
+        body: JSON.stringify({ counter: currentCount, lastUpdated: new Date().toISOString() })
       });
       sessionStorage.setItem(SESSION_KEY, 'true');
     }
@@ -46,4 +48,8 @@ export async function trackVisit() {
   }
 
   return null;
+}
+
+function FIREBASE_PRIMARY_URL_RESOLVE(url) {
+  return url;
 }
