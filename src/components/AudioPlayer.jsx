@@ -1,26 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Volume2, VolumeX, Play, Pause, SkipForward, SkipBack, Music } from 'lucide-react';
 
+const BASE_PATH = import.meta.env.BASE_URL || '/';
+
 const CHILL_PLAYLIST = [
   {
     title: 'Lofi Study Beats',
-    url: 'https://ia801503.us.archive.org/15/items/chill-lofi-beats-collection/Lofi1.mp3'
+    url: `${BASE_PATH}audio/chill1.mp3`.replace(/\/+/g, '/')
   },
   {
     title: 'Midnight Chill',
-    url: 'https://ia801503.us.archive.org/15/items/chill-lofi-beats-collection/Lofi2.mp3'
+    url: `${BASE_PATH}audio/chill2.mp3`.replace(/\/+/g, '/')
   },
   {
     title: 'Cozy Ambient',
-    url: 'https://ia801503.us.archive.org/15/items/chill-lofi-beats-collection/Lofi3.mp3'
-  },
-  {
-    title: 'Sunset Waves',
-    url: 'https://ia801503.us.archive.org/15/items/chill-lofi-beats-collection/Lofi4.mp3'
-  },
-  {
-    title: 'Rainy Night Lofi',
-    url: 'https://ia801503.us.archive.org/15/items/chill-lofi-beats-collection/Lofi5.mp3'
+    url: `${BASE_PATH}audio/chill3.mp3`.replace(/\/+/g, '/')
   }
 ];
 
@@ -71,17 +65,17 @@ export default function AudioPlayer() {
     };
   }, []);
 
-  // Track change handler: reload audio & play seamlessly at 5% volume
+  // Track change handler: reload local audio & play seamlessly at 5% volume
   useEffect(() => {
     if (!isMounted || !audioRef.current) return;
     const audio = audioRef.current;
     audio.volume = 0.05;
-    audio.load(); // Force HTML5 audio decoder to load new track
+    audio.load(); // Force HTML5 audio decoder to load new local track
 
     audio.play().then(() => {
       setIsPlaying(true);
     }).catch(err => {
-      console.warn('Track playback error:', err);
+      console.warn('Local track playback error:', err);
     });
   }, [trackIndex, isMounted]);
 
