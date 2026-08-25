@@ -28,13 +28,14 @@ export default function AudioPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [trackIndex, setTrackIndex] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
   const audioRef = useRef(null);
 
-  // Attempt Autoplay with 10% volume on mount + fallback on first user gesture
+  // Initial startup: set volume to 10% (0.10) and attempt autoplay
   useEffect(() => {
+    setIsMounted(true);
     if (!audioRef.current) return;
     
-    // Set volume strictly to 10% (0.10)
     audioRef.current.volume = 0.10;
 
     const startPlay = () => {
@@ -43,13 +44,13 @@ export default function AudioPlayer() {
       audioRef.current.play().then(() => {
         setIsPlaying(true);
       }).catch(() => {
-        // Handle browser autoplay policies
+        // Autoplay policy blocked initial playback until user gesture
       });
     };
 
     startPlay();
 
-    // Listen for first interaction if autoplay policy blocked initial play
+    // Listen for first interaction if browser blocked initial autoplay
     const handleFirstGesture = () => {
       if (audioRef.current && audioRef.current.paused) {
         startPlay();
@@ -69,6 +70,20 @@ export default function AudioPlayer() {
       window.removeEventListener('touchstart', handleFirstGesture);
     };
   }, []);
+
+  // Track change handler: reload audio & play seamlessly
+  useEffect(() => {
+    if (!isMounted || !audioRef.current) return;
+    const audio = audioRef.current;
+    audio.volume = 0.10;
+    audio.load(); // Force HTML5 audio decoder to load new track
+
+    audio.play().then(() => {
+      setIsPlaying(true);
+    }).catch(err => {
+      console.warn('Track playback error:', err);
+    });
+  }, [trackIndex, isMounted]);
 
   const currentTrack = CHILL_PLAYLIST[trackIndex];
 
@@ -99,14 +114,6 @@ export default function AudioPlayer() {
       nextIndex = (trackIndex - 1 + CHILL_PLAYLIST.length) % CHILL_PLAYLIST.length;
     }
     setTrackIndex(nextIndex);
-
-    if (audioRef.current) {
-      audioRef.current.src = CHILL_PLAYLIST[nextIndex].url;
-      audioRef.current.volume = 0.10;
-      audioRef.current.play().then(() => {
-        setIsPlaying(true);
-      }).catch(() => {});
-    }
   };
 
   // Mute / Unmute toggle
@@ -161,10 +168,10 @@ export default function AudioPlayer() {
           {/* Previous Track Button */}
           <button
             onClick={(e) => changeTrack('prev', e)}
-            className="p-1 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition"
+            className="p-1.5 text-slate-300 hover:text-emerald-400 hover:bg-white/10 rounded-lg transition active:scale-90"
             title="Canción anterior"
           >
-            <SkipBack className="w-3.5 h-3.5" />
+            <SkipBack className="w-4 h-4" />
           </button>
 
           {/* Play/Pause Button */}
@@ -179,10 +186,10 @@ export default function AudioPlayer() {
           {/* Next Track Button */}
           <button
             onClick={(e) => changeTrack('next', e)}
-            className="p-1 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition"
+            className="p-1.5 text-slate-300 hover:text-emerald-400 hover:bg-white/10 rounded-lg transition active:scale-90"
             title="Siguiente canción"
           >
-            <SkipForward className="w-3.5 h-3.5" />
+            <SkipForward className="w-4 h-4" />
           </button>
 
           {/* Mute Button */}
