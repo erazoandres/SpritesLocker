@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Menu, X, Gift, Trophy } from 'lucide-react';
+import { Download, Menu, X, Gift, Trophy, Eye } from 'lucide-react';
 
 const GithubIcon = ({ className }) => (
   <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -13,6 +13,7 @@ export default function MinimalHeader({
   activeGen, 
   totalObtained, 
   totalSpirits,
+  totalVisits,
   activeTab,
   onSelectTab,
   onSelectGen
@@ -75,7 +76,7 @@ export default function MinimalHeader({
           </div>
         </div>
 
-        {/* Section Navigation Tabs (Colección & Códigos Only) */}
+        {/* Section Navigation Tabs */}
         <nav className="hidden md:flex items-center gap-1 bg-slate-950/80 p-1.5 rounded-full border border-white/10 text-xs font-semibold">
           <button 
             onClick={() => onSelectTab('coleccion')}
@@ -98,8 +99,17 @@ export default function MinimalHeader({
           </button>
         </nav>
 
-        {/* Live Progress Pill, GitHub Link & Action Buttons */}
+        {/* Live Progress Pill, Visit Counter & Action Buttons */}
         <div className="flex items-center gap-2">
+          
+          {/* Live Visit Counter Micro Badge */}
+          {totalVisits !== null && totalVisits !== undefined && (
+            <div className="hidden sm:flex items-center gap-1 bg-slate-950 px-2.5 py-1.5 rounded-xl border border-white/10 text-xs font-mono text-slate-400" title="Visitas totales a El Casillero">
+              <Eye className="w-3.5 h-3.5 text-lime-400" />
+              <span className="font-bold text-slate-200">{Number(totalVisits).toLocaleString()}</span>
+            </div>
+          )}
+
           {/* Live Progress Pill */}
           <div className="flex items-center gap-1.5 bg-slate-950 px-3 py-1.5 rounded-xl border border-cyan-500/30 text-xs font-mono">
             <span className="text-cyan-400 font-extrabold">{totalObtained}/{totalSpirits}</span>

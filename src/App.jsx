@@ -13,6 +13,7 @@ import {
   loadRedeemedCodes, 
   saveRedeemedCodes 
 } from './utils/storage';
+import { trackVisit } from './utils/analytics';
 
 const GithubIcon = ({ className }) => (
   <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -28,8 +29,9 @@ export default function App() {
   const [redeemedCodes, setRedeemedCodes] = useState([]);
   const [toastMessage, setToastMessage] = useState('');
   const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [totalVisits, setTotalVisits] = useState(null);
 
-  // Initialize startup: ALWAYS purge local storage and start 100% clean and unmarked
+  // Initialize startup: purge local storage, start clean, and track global visits
   useEffect(() => {
     try {
       localStorage.removeItem('icharly-sprite-locker-v2');
@@ -47,6 +49,11 @@ export default function App() {
 
     const savedCodes = loadRedeemedCodes();
     setRedeemedCodes(savedCodes);
+
+    // Track global visit and fetch total visits count
+    trackVisit().then(count => {
+      if (count !== null) setTotalVisits(count);
+    });
   }, []);
 
   // Update a single spirit status
@@ -140,6 +147,7 @@ export default function App() {
         activeGen={activeGen}
         totalObtained={activeStats.obtained}
         totalSpirits={activeSpirits.length}
+        totalVisits={totalVisits}
         activeTab={activeTab}
         onSelectTab={setActiveTab}
         onSelectGen={setActiveGen}
