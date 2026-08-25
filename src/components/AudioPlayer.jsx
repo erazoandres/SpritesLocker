@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Volume2, VolumeX, Play, Pause, SkipForward, SkipBack, Music } from 'lucide-react';
+import { Volume2, VolumeX, Play, Pause, SkipForward, SkipBack, Music, Sparkles } from 'lucide-react';
 
 const BASE_PATH = import.meta.env.BASE_URL || '/';
 
@@ -23,7 +23,23 @@ export default function AudioPlayer() {
   const [isMuted, setIsMuted] = useState(false);
   const [trackIndex, setTrackIndex] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
+  const [showHint, setShowHint] = useState(() => {
+    try {
+      const seen = localStorage.getItem('el-casillero-music-hint-seen');
+      return !seen;
+    } catch {
+      return true;
+    }
+  });
+
   const audioRef = useRef(null);
+
+  const dismissHint = () => {
+    setShowHint(false);
+    try {
+      localStorage.setItem('el-casillero-music-hint-seen', 'true');
+    } catch {}
+  };
 
   // Initial startup: set volume strictly to 5% (0.05) and attempt autoplay
   useEffect(() => {
@@ -84,6 +100,7 @@ export default function AudioPlayer() {
   // Play / Pause toggle
   const togglePlay = (e) => {
     e?.stopPropagation();
+    if (showHint) dismissHint();
     if (!audioRef.current) return;
     if (isPlaying) {
       audioRef.current.pause();
@@ -101,6 +118,7 @@ export default function AudioPlayer() {
   // Change Track (Next / Previous)
   const changeTrack = (direction, e) => {
     e?.stopPropagation();
+    if (showHint) dismissHint();
     let nextIndex;
     if (direction === 'next') {
       nextIndex = (trackIndex + 1) % CHILL_PLAYLIST.length;
@@ -113,13 +131,14 @@ export default function AudioPlayer() {
   // Mute / Unmute toggle
   const toggleMute = (e) => {
     e?.stopPropagation();
+    if (showHint) dismissHint();
     if (!audioRef.current) return;
     audioRef.current.muted = !isMuted;
     setIsMuted(!isMuted);
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-40 select-none animate-fadeIn font-sans">
+    <div className="fixed bottom-4 right-4 z-40 select-none animate-fadeIn font-sans flex flex-col items-end">
       <audio
         ref={audioRef}
         src={currentTrack.url}
@@ -127,6 +146,33 @@ export default function AudioPlayer() {
         preload="auto"
       />
 
+      {/* Onboarding Micro-Hint Card pointing to Audio Controls */}
+      {showHint && (
+        <div className="relative mb-2 max-w-xs animate-pulse">
+          <div className="bg-[#101322]/95 border border-emerald-400/80 rounded-2xl p-3 shadow-2xl shadow-emerald-500/20 text-xs font-sans text-slate-200 relative">
+            <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-1 mb-1">
+              <span className="text-[10px] font-mono font-extrabold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-lime-400" />
+                CONTROLES DE MÚSICA CHILL
+              </span>
+              <button 
+                onClick={dismissHint}
+                className="text-[10px] text-slate-400 hover:text-white font-bold px-1 py-0.5 rounded hover:bg-white/10"
+                title="Cerrar aviso"
+              >
+                ✕
+              </button>
+            </div>
+            <p className="text-[11px] text-slate-300 leading-snug">
+              Puedes <strong>pausar</strong> (⏸), <strong>cambiar de canción</strong> (⏮ / ⏭) y <strong>silenciar</strong> (🔇) la música ambiental cuando quieras.
+            </p>
+            {/* Arrow Pointer Pointing Down */}
+            <div className="absolute -bottom-1.5 right-6 w-3 h-3 bg-[#101322] border-r border-b border-emerald-400/80 rotate-45"></div>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Audio Player Widget */}
       <div className={`flex items-center gap-2.5 p-2 sm:px-3.5 sm:py-2 rounded-2xl border transition-all duration-300 shadow-2xl backdrop-blur-md ${
         isPlaying 
           ? 'bg-[#101322]/95 border-emerald-400/60 text-emerald-400 shadow-emerald-500/20 ring-2 ring-emerald-400/20' 
