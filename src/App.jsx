@@ -136,7 +136,7 @@ export default function App() {
     });
   };
 
-  // Execute interactive real usage simulation sequence with calm timing & smooth transitions
+  // Execute interactive real usage simulation sequence with exact element scrolling & focus glow
   const handleAcceptDemo = () => {
     setDemoPromptOpen(false);
     showToast('🎬 INICIANDO DEMOSTRACIÓN GUIADA DE USO REAL...');
@@ -144,65 +144,82 @@ export default function App() {
     // Ensure view is on collection grid tab
     setActiveTab('coleccion');
 
-    // Step 1 (600ms): Smooth scroll to spirit grid
-    setTimeout(() => {
-      const gridEl = document.getElementById('tour-sprite-grid');
-      if (gridEl) gridEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 600);
+    const focusElement = (elemId) => {
+      // Remove any existing focus active classes
+      document.querySelectorAll('.demo-focus-active').forEach(el => el.classList.remove('demo-focus-active'));
+      const target = document.getElementById(elemId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        target.classList.add('demo-focus-active');
+        setTimeout(() => {
+          target.classList.remove('demo-focus-active');
+        }, 2200);
+      }
+    };
 
-    // Step 2 (1800ms): Auto-mark Spirit 0 as Tengo (1)
+    // Step 1 (1200ms): Scroll & focus Spirit 0, then mark as Tengo (1)
     setTimeout(() => {
       if (activeSpirits[0]) {
-        handleToggleSpirit(activeSpirits[0].id);
+        const spiritId = activeSpirits[0].id;
+        focusElement(`spirit-tile-${spiritId}`);
+        handleToggleSpirit(spiritId);
         showToast(`✓ Paso 1: Marcado ${activeSpirits[0].family} (Obtenido)`);
       }
-    }, 1800);
+    }, 1200);
 
-    // Step 3 (3800ms): Auto-mark Spirit 0 as Dominado (2)
+    // Step 2 (3600ms): Focus Spirit 0 again, then mark as Dominado (2)
     setTimeout(() => {
       if (activeSpirits[0]) {
-        handleToggleSpirit(activeSpirits[0].id);
+        const spiritId = activeSpirits[0].id;
+        focusElement(`spirit-tile-${spiritId}`);
+        handleToggleSpirit(spiritId);
         showToast(`★ Paso 2: Dominado ${activeSpirits[0].family} (Dorado)`);
       }
-    }, 3800);
+    }, 3600);
 
-    // Step 4 (5800ms): Auto-mark Spirit 1 as Tengo (1)
+    // Step 3 (6000ms): Scroll & focus Spirit 1, then mark as Tengo (1)
     setTimeout(() => {
       if (activeSpirits[1]) {
-        handleToggleSpirit(activeSpirits[1].id);
+        const spiritId = activeSpirits[1].id;
+        focusElement(`spirit-tile-${spiritId}`);
+        handleToggleSpirit(spiritId);
         showToast(`✓ Paso 3: Marcado ${activeSpirits[1].family} (Obtenido)`);
       }
-    }, 5800);
+    }, 6000);
 
-    // Step 5 (7800ms): Auto-mark Spirit 2 as Tengo (1)
+    // Step 4 (8400ms): Scroll & focus Spirit 2, then mark as Tengo (1)
     setTimeout(() => {
       if (activeSpirits[2]) {
-        handleToggleSpirit(activeSpirits[2].id);
+        const spiritId = activeSpirits[2].id;
+        focusElement(`spirit-tile-${spiritId}`);
+        handleToggleSpirit(spiritId);
         showToast(`✓ Paso 4: Marcado ${activeSpirits[2].family} (Obtenido)`);
       }
-    }, 7800);
+    }, 8400);
 
-    // Step 6 (10000ms): Batch mark Corona family as Dominado
+    // Step 5 (10800ms): Batch mark Corona family as Dominado
     setTimeout(() => {
       const coronaSpirits = activeSpirits.filter(s => s.family === 'Corona' || s.family === 'Bandido');
       if (coronaSpirits.length > 0) {
+        focusElement(`spirit-tile-${coronaSpirits[0].id}`);
         const batchUpdates = {};
         coronaSpirits.forEach(s => { batchUpdates[s.id] = 2; });
         handleBatchUpdate(batchUpdates);
         showToast(`★ Paso 5: Familia ${coronaSpirits[0].family} dominada por completo`);
       }
-    }, 10000);
+    }, 10800);
 
-    // Step 7 (12800ms): Scroll smoothly to top header
+    // Step 6 (13400ms): Scroll smoothly to top header Download button
     setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 12800);
+      focusElement('tour-download-btn');
+    }, 13400);
 
-    // Step 8 (14200ms): Open HD Canvas Export Poster Modal
+    // Step 7 (15000ms): Open HD Canvas Export Poster Modal
     setTimeout(() => {
+      document.querySelectorAll('.demo-focus-active').forEach(el => el.classList.remove('demo-focus-active'));
       showToast('📸 Paso 6: Generando y Exportando Póster HD...');
       setExportModalOpen(true);
-    }, 14200);
+    }, 15000);
   };
 
   // Copy plain text helper (codes, handles)

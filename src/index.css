@@ -121,6 +121,30 @@ body {
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
+/* Real Usage Demo Active Element Pulsing Highlight Focus Glow */
+@keyframes demoFocusGlow {
+  0% {
+    box-shadow: 0 0 0 3.5px #34d399, 0 0 35px rgba(52, 211, 153, 0.95), 0 0 60px rgba(167, 139, 250, 0.8);
+    transform: scale(1.04);
+  }
+  50% {
+    box-shadow: 0 0 0 4.5px #fbbf24, 0 0 45px rgba(251, 191, 36, 1), 0 0 85px rgba(52, 211, 153, 0.9);
+    transform: scale(1.06);
+  }
+  100% {
+    box-shadow: 0 0 0 3.5px #34d399, 0 0 35px rgba(52, 211, 153, 0.95), 0 0 60px rgba(167, 139, 250, 0.8);
+    transform: scale(1.04);
+  }
+}
+
+.demo-focus-active {
+  outline: 3px solid #34d399 !important;
+  outline-offset: 4px !important;
+  animation: demoFocusGlow 1.8s infinite ease-in-out !important;
+  z-index: 30 !important;
+  position: relative !important;
+}
+
 /* Driver.js Obsidian Neon Theme Overrides */
 .driver-popover {
   background: linear-gradient(145deg, #101322, #0c0e18) !important;

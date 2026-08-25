@@ -243,6 +243,7 @@ export default function MinimalSpriteGrid({
           return (
             <div
               key={spirit.id}
+              id={`spirit-tile-${spirit.id}`}
               onClick={() => handleTileTap(spirit.id)}
               onMouseEnter={() => setTooltipSpirit(spirit)}
               onMouseLeave={() => setTooltipSpirit(null)}
