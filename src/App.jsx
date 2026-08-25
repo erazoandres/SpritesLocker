@@ -3,6 +3,7 @@ import MinimalHeader from './components/MinimalHeader';
 import MinimalSpriteGrid from './components/MinimalSpriteGrid';
 import MinimalCodes from './components/MinimalCodes';
 import ExportModal from './components/ExportModal';
+import WelcomeModal from './components/WelcomeModal';
 import AudioPlayer from './components/AudioPlayer';
 import Toast from './components/Toast';
 
@@ -32,10 +33,16 @@ export default function App() {
   const [redeemedCodes, setRedeemedCodes] = useState([]);
   const [toastMessage, setToastMessage] = useState('');
   const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [welcomeOpen, setWelcomeOpen] = useState(false);
   const [totalVisits, setTotalVisits] = useState(null);
 
-  // Initialize startup: load saved active generation & user selections (Tengo, Dominados, Faltantes)
+  // Initialize startup: check first-time visitor & load saved user selections
   useEffect(() => {
+    try {
+      const seen = localStorage.getItem('el-casillero-welcome-seen');
+      if (!seen) setWelcomeOpen(true);
+    } catch {}
+
     const saved = loadSavedState(activeGen);
     setUserState(saved);
 
@@ -171,6 +178,7 @@ export default function App() {
         activeTab={activeTab}
         onSelectTab={setActiveTab}
         onSelectGen={handleSelectGen}
+        onOpenWelcome={() => setWelcomeOpen(true)}
       />
 
       <main className="pb-12 max-w-7xl mx-auto px-2.5 sm:px-6 w-full overflow-x-hidden">
@@ -215,6 +223,11 @@ export default function App() {
 
       {/* Floating Chill Audio Music Player */}
       <AudioPlayer />
+
+      {/* First-Time Welcome Portal Modal */}
+      {welcomeOpen && (
+        <WelcomeModal onClose={() => setWelcomeOpen(false)} />
+      )}
 
       {/* Export Canvas Capture Modal */}
       {exportModalOpen && (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Menu, X, Gift, Trophy, Eye } from 'lucide-react';
+import { Download, Menu, X, Gift, Trophy, Eye, Info } from 'lucide-react';
 
 const GithubIcon = ({ className }) => (
   <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -16,7 +16,8 @@ export default function MinimalHeader({
   totalVisits,
   activeTab,
   onSelectTab,
-  onSelectGen
+  onSelectGen,
+  onOpenWelcome
 }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -41,21 +42,34 @@ export default function MinimalHeader({
         <div className="flex items-center justify-between gap-2 w-full">
           
           {/* Logo & Title Stack: EL CASILLERO with BY ANDRÉS ERAZO */}
-          <a href="#coleccion" className="flex items-center gap-2.5 group shrink-0">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-400 via-teal-400 to-violet-500 p-[1.5px] shadow-lg shadow-emerald-500/20 shrink-0">
-              <div className="w-full h-full bg-[#0a0b12] rounded-[10px] flex items-center justify-center font-black text-emerald-400 text-xs tracking-tighter font-display">
-                EC
+          <div className="flex items-center gap-2 group shrink-0">
+            <button 
+              onClick={onOpenWelcome} 
+              className="flex items-center gap-2.5 text-left group-hover:opacity-90 transition"
+              title="Ver portal de bienvenida e información del proyecto"
+            >
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-400 via-teal-400 to-violet-500 p-[1.5px] shadow-lg shadow-emerald-500/20 shrink-0">
+                <div className="w-full h-full bg-[#0a0b12] rounded-[10px] flex items-center justify-center font-black text-emerald-400 text-xs tracking-tighter font-display">
+                  EC
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col justify-center">
-              <strong className="text-xs sm:text-sm font-bold tracking-wider text-slate-100 uppercase block leading-none font-display">
-                EL CASILLERO
-              </strong>
-              <span className="text-[9px] font-mono text-emerald-400 font-extrabold block leading-none mt-1 uppercase tracking-tight">
-                BY ANDRÉS ERAZO
-              </span>
-            </div>
-          </a>
+              <div className="flex flex-col justify-center">
+                <strong className="text-xs sm:text-sm font-bold tracking-wider text-slate-100 uppercase block leading-none font-display">
+                  EL CASILLERO
+                </strong>
+                <span className="text-[9px] font-mono text-emerald-400 font-extrabold block leading-none mt-1 uppercase tracking-tight">
+                  BY ANDRÉS ERAZO
+                </span>
+              </div>
+            </button>
+            <button
+              onClick={onOpenWelcome}
+              className="p-1 text-slate-400 hover:text-emerald-400 transition rounded-lg hover:bg-white/5"
+              title="Información del proyecto"
+            >
+              <Info className="w-3.5 h-3.5" />
+            </button>
+          </div>
 
           {/* Desktop Only Gen Switcher Pills */}
           <div className="hidden sm:flex items-center bg-[#111320] p-1 rounded-xl border border-white/10 text-xs font-mono shrink-0">
@@ -214,6 +228,14 @@ export default function MinimalHeader({
             >
               <Gift className="w-4 h-4" />
               Códigos Secretos
+            </button>
+
+            <button
+              onClick={() => { onOpenWelcome(); setMobileMenuOpen(false); }}
+              className="px-3.5 py-2 rounded-xl text-left flex items-center gap-2.5 text-emerald-400 hover:bg-white/5 font-mono"
+            >
+              <Info className="w-4 h-4" />
+              Información del Proyecto
             </button>
 
             <a

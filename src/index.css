@@ -89,3 +89,26 @@
 .hover-lift:hover {
   transform: translateY(-2px) scale(1.02);
 }
+
+/* Super Cool Cyber Warp Transition Animation for Welcome Screen Entrance */
+@keyframes portalWarp {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px);
+  }
+  40% {
+    opacity: 0.9;
+    transform: scale(1.04);
+    filter: blur(3px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.18);
+    filter: blur(20px);
+  }
+}
+
+.animate-portalWarp {
+  animation: portalWarp 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
