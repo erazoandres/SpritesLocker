@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Volume2, VolumeX, Play, Pause, SkipForward, SkipBack, Music, Sparkles } from 'lucide-react';
+import { Volume2, VolumeX, Play, Pause, Music, Sparkles } from 'lucide-react';
 
 const BASE_PATH = import.meta.env.BASE_URL || '/';
 
@@ -7,10 +7,6 @@ const CHILL_PLAYLIST = [
   {
     title: 'Luffy Lofi Ambient',
     url: `${BASE_PATH}audio/chill1.mp3`.replace(/\/+/g, '/')
-  },
-  {
-    title: 'Monkey D. Chill',
-    url: `${BASE_PATH}audio/chill2.mp3`.replace(/\/+/g, '/')
   }
 ];
 
@@ -134,7 +130,7 @@ export default function AudioPlayer({ triggerHint = true }) {
     });
   }, [trackIndex, isMounted]);
 
-  const currentTrack = CHILL_PLAYLIST[trackIndex] || CHILL_PLAYLIST[0];
+  const currentTrack = CHILL_PLAYLIST[0];
 
   // Play / Pause toggle
   const togglePlay = (e) => {
@@ -154,18 +150,6 @@ export default function AudioPlayer({ triggerHint = true }) {
     }
   };
 
-  // Change Track (Next / Previous)
-  const changeTrack = (direction, e) => {
-    e?.stopPropagation();
-    let nextIndex;
-    if (direction === 'next') {
-      nextIndex = (trackIndex + 1) % CHILL_PLAYLIST.length;
-    } else {
-      nextIndex = (trackIndex - 1 + CHILL_PLAYLIST.length) % CHILL_PLAYLIST.length;
-    }
-    setTrackIndex(nextIndex);
-  };
-
   // Mute / Unmute toggle
   const toggleMute = (e) => {
     e?.stopPropagation();
@@ -179,7 +163,7 @@ export default function AudioPlayer({ triggerHint = true }) {
       <audio
         ref={audioRef}
         src={currentTrack.url}
-        onEnded={(e) => changeTrack('next', e)}
+        loop
         preload="auto"
       />
 
@@ -201,7 +185,7 @@ export default function AudioPlayer({ triggerHint = true }) {
               </button>
             </div>
             <p className="text-[11px] text-slate-300 leading-snug font-normal">
-              Puedes <strong>pausar</strong> (⏸), <strong>cambiar canción</strong> (⏮ / ⏭) y <strong>silenciar</strong> (🔇) en cualquier momento.
+              Puedes <strong>pausar</strong> (⏸) y <strong>silenciar</strong> (🔇) la música en cualquier momento.
             </p>
             {/* Soft Arrow Pointer Pointing Down */}
             <div className="absolute -bottom-1.5 right-7 w-3 h-3 bg-[#101322] border-r border-b border-emerald-400/60 rotate-45"></div>
@@ -239,22 +223,13 @@ export default function AudioPlayer({ triggerHint = true }) {
             {currentTrack.title}
           </span>
           <span className="text-[9px] font-mono text-emerald-400/80 leading-none mt-0.5">
-            VOL 5% · LUFFY {trackIndex + 1}/{CHILL_PLAYLIST.length}
+            VOL 5% · LUFFY LOFI
           </span>
         </div>
 
-        {/* Track Switcher & Playback Controls */}
+        {/* Playback Controls */}
         <div className="flex items-center gap-1 shrink-0">
           
-          {/* Previous Track Button */}
-          <button
-            onClick={(e) => changeTrack('prev', e)}
-            className="p-1.5 text-slate-300 hover:text-emerald-400 hover:bg-white/10 rounded-lg transition active:scale-90"
-            title="Canción anterior"
-          >
-            <SkipBack className="w-4 h-4" />
-          </button>
-
           {/* Play/Pause Button */}
           <button
             onClick={togglePlay}
@@ -262,15 +237,6 @@ export default function AudioPlayer({ triggerHint = true }) {
             title={isPlaying ? 'Pausar' : 'Reproducir (Volumen 5%)'}
           >
             {isPlaying ? <Pause className="w-3.5 h-3.5 fill-slate-950" /> : <Play className="w-3.5 h-3.5 fill-slate-950 ml-0.5" />}
-          </button>
-
-          {/* Next Track Button */}
-          <button
-            onClick={(e) => changeTrack('next', e)}
-            className="p-1.5 text-slate-300 hover:text-emerald-400 hover:bg-white/10 rounded-lg transition active:scale-90"
-            title="Siguiente canción"
-          >
-            <SkipForward className="w-4 h-4" />
           </button>
 
           {/* Mute Button */}
