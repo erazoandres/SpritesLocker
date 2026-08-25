@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowRight, Sparkles, Code2, Heart, ExternalLink } from 'lucide-react';
 
 const GithubIcon = ({ className }) => (
@@ -10,6 +10,24 @@ const GithubIcon = ({ className }) => (
 
 export default function WelcomeModal({ onClose }) {
   const [isWarping, setIsWarping] = useState(false);
+  const [typedAuthor, setTypedAuthor] = useState("");
+  const fullAuthorText = "BY ANDRÉS ERAZO";
+
+  // Typewriter animation effect for author name
+  useEffect(() => {
+    let index = 0;
+    setTypedAuthor("");
+    const timer = setInterval(() => {
+      if (index < fullAuthorText.length) {
+        setTypedAuthor(fullAuthorText.slice(0, index + 1));
+        index++;
+      } else {
+        clearInterval(timer);
+      }
+    }, 85); // 85ms per character typing speed
+
+    return () => clearInterval(timer);
+  }, []);
 
   const handleEnterApp = () => {
     setIsWarping(true); // Trigger super cool cyber warp transition animation
@@ -39,13 +57,14 @@ export default function WelcomeModal({ onClose }) {
           <span>PORTAL OFICIAL DE COLECCIÓN</span>
         </div>
 
-        {/* Title & Creator Attribution */}
+        {/* Title & Creator Attribution with Typewriter Effect */}
         <div className="space-y-1">
           <h1 className="text-3xl sm:text-4xl font-black uppercase tracking-tight font-display bg-gradient-to-r from-emerald-400 via-teal-300 to-violet-400 bg-clip-text text-transparent">
             EL CASILLERO
           </h1>
-          <p className="text-xs font-mono font-extrabold text-emerald-400 tracking-wider uppercase">
-            BY ANDRÉS ERAZO
+          <p className="text-xs font-mono font-extrabold text-emerald-400 tracking-wider uppercase flex items-center justify-center gap-0.5 min-h-[18px]">
+            <span>{typedAuthor}</span>
+            <span className="w-1.5 h-3.5 bg-emerald-400 inline-block animate-pulse"></span>
           </p>
         </div>
 
