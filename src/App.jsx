@@ -206,8 +206,8 @@ export default function App() {
 
       </main>
 
-      {/* Minimal Footer with direct links to GitHub profile and iCharly-Afton original project */}
-      <footer className="border-t border-white/5 bg-[#08090f]/90 py-6 text-center text-xs text-slate-500 font-mono flex items-center justify-center gap-2 flex-wrap px-4 w-full">
+      {/* Minimal Footer with direct link to GitHub profile (https://github.com/erazoandres) */}
+      <footer className="border-t border-white/5 bg-[#08090f]/90 py-6 text-center text-xs text-slate-500 font-mono flex items-center justify-center gap-1.5 flex-wrap px-4 w-full">
         <span>EL CASILLERO · Creado por</span>
         <a
           href="https://github.com/erazoandres"
@@ -218,17 +218,6 @@ export default function App() {
         >
           <GithubIcon className="w-3.5 h-3.5" />
           <span>Andrés Erazo (@erazoandres)</span>
-        </a>
-        <span className="text-slate-600">·</span>
-        <span>Basado en el proyecto de</span>
-        <a
-          href="https://icharly-afton-sprite-locker.icharly-afton.chatgpt.site/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-violet-400 hover:text-violet-300 font-bold underline decoration-violet-400/40 underline-offset-4 transition"
-          title="Ver sitio original de iCharly-Afton"
-        >
-          iCharly-Afton
         </a>
       </footer>
 
