@@ -32,8 +32,8 @@ export default function MinimalHeader({
   return (
     <header className={`sticky top-0 z-40 transition-all duration-300 w-full overflow-x-hidden ${
       scrolled 
-        ? 'bg-[#08090d]/95 backdrop-blur-md border-b border-cyan-500/20 py-2 shadow-xl shadow-black/80' 
-        : 'bg-[#08090d]/80 backdrop-blur-sm py-2 sm:py-3.5 border-b border-white/5'
+        ? 'bg-[#0a0b12]/95 backdrop-blur-md border-b border-emerald-500/20 py-2 shadow-xl shadow-black/80' 
+        : 'bg-[#0a0b12]/80 backdrop-blur-sm py-2.5 sm:py-3.5 border-b border-white/5'
     }`}>
       <div className="max-w-7xl mx-auto px-3 sm:px-6 space-y-2 sm:space-y-0 w-full">
         
@@ -41,36 +41,36 @@ export default function MinimalHeader({
         <div className="flex items-center justify-between gap-2 w-full">
           
           {/* Logo & Title Stack: EL CASILLERO with BY ANDRÉS ERAZO */}
-          <a href="#coleccion" className="flex items-center gap-2 group shrink-0">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-lime-400 p-[1px] shadow-md shadow-cyan-500/20 shrink-0">
-              <div className="w-full h-full bg-slate-950 rounded-[7px] flex items-center justify-center font-black text-cyan-400 text-xs tracking-tighter">
+          <a href="#coleccion" className="flex items-center gap-2.5 group shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-400 via-teal-400 to-violet-500 p-[1.5px] shadow-lg shadow-emerald-500/20 shrink-0">
+              <div className="w-full h-full bg-[#0a0b12] rounded-[10px] flex items-center justify-center font-black text-emerald-400 text-xs tracking-tighter font-display">
                 EC
               </div>
             </div>
             <div className="flex flex-col justify-center">
-              <strong className="text-xs sm:text-sm font-black tracking-wider text-slate-100 uppercase block leading-none">
+              <strong className="text-xs sm:text-sm font-bold tracking-wider text-slate-100 uppercase block leading-none font-display">
                 EL CASILLERO
               </strong>
-              <span className="text-[9px] font-mono text-cyan-400 font-extrabold block leading-none mt-1 uppercase tracking-tight">
+              <span className="text-[9px] font-mono text-emerald-400 font-extrabold block leading-none mt-1 uppercase tracking-tight">
                 BY ANDRÉS ERAZO
               </span>
             </div>
           </a>
 
           {/* Desktop Only Gen Switcher Pills */}
-          <div className="hidden sm:flex items-center bg-slate-950 p-1 rounded-xl border border-white/10 text-xs font-mono shrink-0">
+          <div className="hidden sm:flex items-center bg-[#111320] p-1 rounded-xl border border-white/10 text-xs font-mono shrink-0">
             <button
               onClick={() => onSelectGen(2)}
-              className={`px-2.5 py-1 rounded-lg font-bold transition ${
-                activeGen === 2 ? 'bg-cyan-400 text-slate-950 shadow' : 'text-slate-400 hover:text-white'
+              className={`px-3 py-1 rounded-lg font-bold transition ${
+                activeGen === 2 ? 'bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/20 font-extrabold' : 'text-slate-400 hover:text-white'
               }`}
             >
               GEN 2
             </button>
             <button
               onClick={() => onSelectGen(1)}
-              className={`px-2.5 py-1 rounded-lg font-bold transition ${
-                activeGen === 1 ? 'bg-pink-500 text-white shadow' : 'text-slate-400 hover:text-white'
+              className={`px-3 py-1 rounded-lg font-bold transition ${
+                activeGen === 1 ? 'bg-violet-500 text-white shadow-md shadow-violet-500/20 font-extrabold' : 'text-slate-400 hover:text-white'
               }`}
             >
               GEN 1
@@ -78,11 +78,11 @@ export default function MinimalHeader({
           </div>
 
           {/* Section Navigation Tabs (Desktop only) */}
-          <nav className="hidden md:flex items-center gap-1 bg-slate-950/80 p-1.5 rounded-full border border-white/10 text-xs font-semibold">
+          <nav className="hidden md:flex items-center gap-1 bg-[#111320] p-1.5 rounded-full border border-white/10 text-xs font-semibold">
             <button 
               onClick={() => onSelectTab('coleccion')}
-              className={`px-3.5 py-1.5 rounded-full transition flex items-center gap-1.5 ${
-                activeTab === 'coleccion' ? 'bg-cyan-400 text-slate-950 font-black shadow' : 'text-slate-300 hover:text-cyan-400'
+              className={`px-4 py-1.5 rounded-full transition flex items-center gap-1.5 ${
+                activeTab === 'coleccion' ? 'bg-emerald-400 text-slate-950 font-black shadow-md shadow-emerald-500/20 font-display' : 'text-slate-300 hover:text-emerald-400'
               }`}
             >
               <Trophy className="w-3.5 h-3.5" />
@@ -91,8 +91,8 @@ export default function MinimalHeader({
 
             <button 
               onClick={() => onSelectTab('codigos')}
-              className={`px-3.5 py-1.5 rounded-full transition flex items-center gap-1.5 ${
-                activeTab === 'codigos' ? 'bg-pink-500 text-white font-black shadow' : 'text-slate-300 hover:text-pink-400'
+              className={`px-4 py-1.5 rounded-full transition flex items-center gap-1.5 ${
+                activeTab === 'codigos' ? 'bg-violet-500 text-white font-black shadow-md shadow-violet-500/20 font-display' : 'text-slate-300 hover:text-violet-400'
               }`}
             >
               <Gift className="w-3.5 h-3.5" />
@@ -104,15 +104,15 @@ export default function MinimalHeader({
           <div className="hidden sm:flex items-center gap-2 shrink-0">
             {/* Visit Counter */}
             {totalVisits !== null && totalVisits !== undefined && totalVisits > 0 && (
-              <div className="flex items-center gap-1 bg-slate-950 px-2.5 py-1.5 rounded-xl border border-white/10 text-xs font-mono text-slate-400" title="Visitas reales acumuladas">
+              <div className="flex items-center gap-1.5 bg-[#111320] px-3 py-1.5 rounded-xl border border-white/10 text-xs font-mono text-slate-400" title="Visitas reales acumuladas">
                 <Eye className="w-3.5 h-3.5 text-lime-400" />
                 <span className="font-bold text-slate-200">{Number(totalVisits).toLocaleString()}</span>
               </div>
             )}
 
             {/* Progress Pill */}
-            <div className="flex items-center gap-1.5 bg-slate-950 px-3 py-1.5 rounded-xl border border-cyan-500/30 text-xs font-mono">
-              <span className="text-cyan-400 font-extrabold">{totalObtained}/{totalSpirits}</span>
+            <div className="flex items-center gap-1.5 bg-[#111320] px-3 py-1.5 rounded-xl border border-emerald-500/30 text-xs font-mono">
+              <span className="text-emerald-400 font-extrabold">{totalObtained}/{totalSpirits}</span>
               <span className="text-slate-500 font-bold">· {pct}%</span>
             </div>
 
@@ -121,7 +121,7 @@ export default function MinimalHeader({
               href="https://github.com/erazoandres"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white border border-white/10 px-3 py-1.5 rounded-xl text-xs font-bold transition font-mono active:scale-95"
+              className="flex items-center gap-1.5 bg-[#111320] hover:bg-[#181a2c] text-slate-300 hover:text-white border border-white/10 px-3 py-1.5 rounded-xl text-xs font-bold transition font-mono active:scale-95"
               title="Perfil de GitHub de Andrés Erazo (erazoandres)"
             >
               <GithubIcon className="w-3.5 h-3.5" />
@@ -133,16 +133,16 @@ export default function MinimalHeader({
           <div className="flex items-center gap-1.5 shrink-0">
             <button 
               onClick={onDownloadCapture}
-              className="flex items-center gap-1 bg-gradient-to-r from-cyan-400 via-lime-400 to-emerald-400 hover:from-cyan-300 hover:to-emerald-300 text-slate-950 px-3 py-1.5 sm:px-3.5 sm:py-1.5 rounded-xl text-xs font-black shadow-lg shadow-cyan-500/20 active:scale-95 transition shrink-0"
+              className="flex items-center gap-1.5 bg-gradient-to-r from-emerald-400 via-teal-400 to-violet-500 hover:from-emerald-300 hover:to-violet-400 text-slate-950 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs font-black shadow-lg shadow-emerald-500/20 active:scale-95 transition shrink-0 font-display uppercase tracking-wider"
               title="Descargar captura en imagen HD de la lista de espíritus"
             >
               <Download className="w-3.5 h-3.5 stroke-[3]" />
-              <span className="font-extrabold tracking-wider uppercase">DESCARGAR</span>
+              <span>DESCARGAR</span>
             </button>
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden text-slate-300 hover:text-cyan-400 p-1 shrink-0"
+              className="md:hidden text-slate-300 hover:text-emerald-400 p-1 shrink-0"
               aria-label="Abrir menú"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -152,21 +152,21 @@ export default function MinimalHeader({
         </div>
 
         {/* Second Row on Mobile: Gen Switcher & Progress Pill & Visits */}
-        <div className="flex sm:hidden items-center justify-between gap-1.5 pt-1 border-t border-white/5 font-mono text-[11px] w-full">
+        <div className="flex sm:hidden items-center justify-between gap-1.5 pt-1.5 border-t border-white/5 font-mono text-[11px] w-full">
           {/* Mobile Gen Switcher */}
-          <div className="flex items-center bg-slate-950 p-0.5 rounded-xl border border-white/10">
+          <div className="flex items-center bg-[#111320] p-0.5 rounded-xl border border-white/10">
             <button
               onClick={() => onSelectGen(2)}
-              className={`px-2 py-0.5 rounded-lg font-bold transition ${
-                activeGen === 2 ? 'bg-cyan-400 text-slate-950' : 'text-slate-400'
+              className={`px-2.5 py-0.5 rounded-lg font-bold transition ${
+                activeGen === 2 ? 'bg-emerald-400 text-slate-950 font-extrabold' : 'text-slate-400'
               }`}
             >
               GEN 2
             </button>
             <button
               onClick={() => onSelectGen(1)}
-              className={`px-2 py-0.5 rounded-lg font-bold transition ${
-                activeGen === 1 ? 'bg-pink-500 text-white' : 'text-slate-400'
+              className={`px-2.5 py-0.5 rounded-lg font-bold transition ${
+                activeGen === 1 ? 'bg-violet-500 text-white font-extrabold' : 'text-slate-400'
               }`}
             >
               GEN 1
@@ -176,15 +176,15 @@ export default function MinimalHeader({
           <div className="flex items-center gap-1.5">
             {/* Mobile Visit Counter */}
             {totalVisits !== null && totalVisits !== undefined && totalVisits > 0 && (
-              <div className="flex items-center gap-1 bg-slate-950 px-2 py-0.5 rounded-xl border border-white/10 text-slate-400">
+              <div className="flex items-center gap-1 bg-[#111320] px-2 py-0.5 rounded-xl border border-white/10 text-slate-400">
                 <Eye className="w-3 h-3 text-lime-400" />
                 <span className="font-bold text-slate-200">{Number(totalVisits).toLocaleString()}</span>
               </div>
             )}
 
             {/* Mobile Progress Pill */}
-            <div className="flex items-center gap-1 bg-slate-950 px-2 py-0.5 rounded-xl border border-cyan-500/30">
-              <span className="text-cyan-400 font-extrabold">{totalObtained}/{totalSpirits}</span>
+            <div className="flex items-center gap-1 bg-[#111320] px-2 py-0.5 rounded-xl border border-emerald-500/30">
+              <span className="text-emerald-400 font-extrabold">{totalObtained}/{totalSpirits}</span>
               <span className="text-slate-500 font-bold">· {pct}%</span>
             </div>
           </div>
@@ -194,12 +194,12 @@ export default function MinimalHeader({
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-slate-950/95 border-b border-cyan-500/20 px-4 py-3 space-y-2 animate-fadeIn w-full">
-          <nav className="flex flex-col gap-1.5 text-xs font-bold">
+        <div className="md:hidden bg-[#0c0e18]/95 border-b border-emerald-500/20 px-4 py-3 space-y-2 animate-fadeIn w-full">
+          <nav className="flex flex-col gap-1.5 text-xs font-bold font-display">
             <button 
               onClick={() => { onSelectTab('coleccion'); setMobileMenuOpen(false); }}
-              className={`px-3 py-2 rounded-xl text-left flex items-center gap-2.5 ${
-                activeTab === 'coleccion' ? 'bg-cyan-400 text-slate-950 font-black' : 'text-slate-200 hover:bg-white/5'
+              className={`px-3.5 py-2 rounded-xl text-left flex items-center gap-2.5 ${
+                activeTab === 'coleccion' ? 'bg-emerald-400 text-slate-950 font-black' : 'text-slate-200 hover:bg-white/5'
               }`}
             >
               <Trophy className="w-4 h-4" />
@@ -208,8 +208,8 @@ export default function MinimalHeader({
 
             <button 
               onClick={() => { onSelectTab('codigos'); setMobileMenuOpen(false); }}
-              className={`px-3 py-2 rounded-xl text-left flex items-center gap-2.5 ${
-                activeTab === 'codigos' ? 'bg-pink-500 text-white font-black' : 'text-slate-200 hover:bg-white/5'
+              className={`px-3.5 py-2 rounded-xl text-left flex items-center gap-2.5 ${
+                activeTab === 'codigos' ? 'bg-violet-500 text-white font-black' : 'text-slate-200 hover:bg-white/5'
               }`}
             >
               <Gift className="w-4 h-4" />
@@ -220,7 +220,7 @@ export default function MinimalHeader({
               href="https://github.com/erazoandres"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3 py-2 rounded-xl text-left flex items-center gap-2.5 text-cyan-400 hover:bg-white/5"
+              className="px-3.5 py-2 rounded-xl text-left flex items-center gap-2.5 text-emerald-400 hover:bg-white/5 font-mono"
             >
               <GithubIcon className="w-4 h-4" />
               GitHub de Andrés Erazo (erazoandres)

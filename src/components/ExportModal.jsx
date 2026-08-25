@@ -10,7 +10,7 @@ export default function ExportModal({ spirits, userState, activeGen, totalVisits
   // Check marked count
   const markedCount = spirits.filter(s => (userState[s.id] || 0) >= 1 || (userState[s.id] || 0) === 3).length;
 
-  // Automatically generate PNG image for full collection on mount (Zero options)
+  // Automatically generate PNG image for full collection on mount
   useEffect(() => {
     let active = true;
     async function runExport() {
@@ -73,8 +73,8 @@ export default function ExportModal({ spirits, userState, activeGen, totalVisits
   // Render Warning Card if 0 marked spirits or error occurred
   if (!loading && (markedCount === 0 || errorMsg)) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fadeIn">
-        <div className="bg-slate-900 border border-rose-500/40 rounded-3xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl relative font-sans">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0a0b12]/90 backdrop-blur-md animate-fadeIn">
+        <div className="bg-[#101322] border border-rose-500/40 rounded-3xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl relative font-sans">
           
           <button
             onClick={onClose}
@@ -89,7 +89,7 @@ export default function ExportModal({ spirits, userState, activeGen, totalVisits
           </div>
 
           <div className="space-y-1.5">
-            <h3 className="text-lg font-black text-white uppercase tracking-tight font-mono">
+            <h3 className="text-lg font-black text-white uppercase tracking-tight font-display">
               NINGÚN ESPÍRITU MARCADO
             </h3>
             <p className="text-xs text-slate-300 leading-relaxed">
@@ -99,7 +99,7 @@ export default function ExportModal({ spirits, userState, activeGen, totalVisits
 
           <button
             onClick={onClose}
-            className="w-full bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-black py-3 px-4 rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-cyan-500/20 active:scale-95 transition font-mono"
+            className="w-full bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black py-3 px-4 rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-emerald-500/20 active:scale-95 transition font-display"
           >
             VOLVER AL CASILLERO Y MARCAR
           </button>
@@ -109,8 +109,8 @@ export default function ExportModal({ spirits, userState, activeGen, totalVisits
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fadeIn">
-      <div className="bg-slate-900 border border-cyan-500/40 rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0a0b12]/90 backdrop-blur-md animate-fadeIn">
+      <div className="bg-[#101322] border border-emerald-500/40 rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl relative font-sans">
         
         {/* Close Button */}
         <button
@@ -123,37 +123,37 @@ export default function ExportModal({ spirits, userState, activeGen, totalVisits
 
         {/* Modal Header */}
         <div className="space-y-1">
-          <div className="flex items-center gap-1.5 text-cyan-400 font-mono text-[11px] font-bold">
+          <div className="flex items-center gap-1.5 text-emerald-400 font-mono text-[11px] font-bold">
             <CheckCircle2 className="w-3.5 h-3.5 text-lime-400" />
             <span>EXPORT / GEN_{activeGen.toString().padStart(2, '0')}</span>
           </div>
-          <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-tight">
+          <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-tight font-display">
             COLECCIÓN EXPORTADA A IMAGEN
           </h2>
           <p className="text-xs text-slate-400">
-            Tu casillero de espíritus ha sido generado en una captura PNG HD con marca de agua oficial.
+            Tu casillero de espíritus ha sido generado en un póster PNG HD con marca de agua oficial.
           </p>
         </div>
 
         {/* Loading State */}
         {loading && (
           <div className="py-12 text-center space-y-3">
-            <Loader2 className="w-8 h-8 text-cyan-400 animate-spin mx-auto" />
-            <p className="text-xs font-mono font-bold text-cyan-400">GENERANDO CAPTURA EN ALTA DEFINICIÓN...</p>
+            <Loader2 className="w-8 h-8 text-emerald-400 animate-spin mx-auto" />
+            <p className="text-xs font-mono font-bold text-emerald-400">GENERANDO CAPTURA EN ALTA DEFINICIÓN...</p>
           </div>
         )}
 
         {/* Direct Ready Result Preview & Actions */}
         {!loading && exportResult && (
           <div className="space-y-4">
-            <div className="border border-white/10 rounded-2xl overflow-hidden bg-slate-950 p-2 max-h-64 flex items-center justify-center shadow-inner">
+            <div className="border border-white/10 rounded-2xl overflow-hidden bg-[#0a0b12] p-2 max-h-64 flex items-center justify-center shadow-inner">
               <img src={exportResult.dataUrl} alt="Vista previa de captura" className="max-h-60 object-contain rounded-lg" />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={handleDownload}
-                className="bg-gradient-to-r from-cyan-400 via-lime-400 to-emerald-400 text-slate-950 font-black py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 active:scale-95 transition"
+                className="bg-gradient-to-r from-emerald-400 via-teal-400 to-violet-500 hover:from-emerald-300 hover:to-violet-400 text-slate-950 font-black py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 transition font-display uppercase tracking-wider"
               >
                 <Download className="w-4 h-4 stroke-[2.5]" />
                 <span>DESCARGAR ARCHIVO</span>
@@ -161,7 +161,7 @@ export default function ExportModal({ spirits, userState, activeGen, totalVisits
 
               <button
                 onClick={handleShare}
-                className="bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition"
+                className="bg-[#161a2e] hover:bg-[#1f243f] text-white font-bold py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition font-display"
               >
                 <Share2 className="w-4 h-4" />
                 <span>COMPARTIR</span>
