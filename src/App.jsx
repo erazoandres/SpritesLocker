@@ -4,6 +4,7 @@ import MinimalSpriteGrid from './components/MinimalSpriteGrid';
 import MinimalCodes from './components/MinimalCodes';
 import ExportModal from './components/ExportModal';
 import WelcomeModal from './components/WelcomeModal';
+import DemoPromptModal from './components/DemoPromptModal';
 import AudioPlayer from './components/AudioPlayer';
 import Toast from './components/Toast';
 
@@ -18,6 +19,7 @@ import {
   saveRedeemedCodes 
 } from './utils/storage';
 import { trackVisit, fetchExportCount, trackExport } from './utils/analytics';
+import { startGuidedTour } from './utils/tour';
 
 const GithubIcon = ({ className }) => (
   <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -34,6 +36,7 @@ export default function App() {
   const [toastMessage, setToastMessage] = useState('');
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [welcomeOpen, setWelcomeOpen] = useState(false);
+  const [demoPromptOpen, setDemoPromptOpen] = useState(false);
   const [totalVisits, setTotalVisits] = useState(null);
   const [totalExports, setTotalExports] = useState(null);
 
@@ -123,7 +126,70 @@ export default function App() {
   // Toast feedback helper
   const showToast = (msg) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(''), 3000);
+    setTimeout(() => setToastMessage(''), 3500);
+  };
+
+  // Launch guided tour with post-tour demo confirmation modal
+  const handleStartTour = () => {
+    startGuidedTour(() => {
+      setDemoPromptOpen(true);
+    });
+  };
+
+  // Execute interactive real usage simulation sequence
+  const handleAcceptDemo = () => {
+    setDemoPromptOpen(false);
+    showToast('🎬 INICIANDO DEMOSTRACIÓN EN VIVO DE USO REAL...');
+    
+    // Ensure view is on collection grid tab
+    setActiveTab('coleccion');
+
+    // Smooth scroll to spirit grid
+    setTimeout(() => {
+      const gridEl = document.getElementById('tour-sprite-grid');
+      if (gridEl) gridEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 400);
+
+    // Step 1: Auto-mark Spirit 0 as Tengo (1)
+    setTimeout(() => {
+      if (activeSpirits[0]) {
+        handleToggleSpirit(activeSpirits[0].id);
+        showToast(`✓ Marcado ${activeSpirits[0].family} (Obtenido)`);
+      }
+    }, 1200);
+
+    // Step 2: Auto-mark Spirit 0 as Dominado (2)
+    setTimeout(() => {
+      if (activeSpirits[0]) {
+        handleToggleSpirit(activeSpirits[0].id);
+        showToast(`★ Dominado ${activeSpirits[0].family}`);
+      }
+    }, 2400);
+
+    // Step 3: Auto-mark Spirit 1 as Tengo (1)
+    setTimeout(() => {
+      if (activeSpirits[1]) {
+        handleToggleSpirit(activeSpirits[1].id);
+        showToast(`✓ Marcado ${activeSpirits[1].family} (Obtenido)`);
+      }
+    }, 3500);
+
+    // Step 4: Batch mark Corona family as Dominado
+    setTimeout(() => {
+      const coronaSpirits = activeSpirits.filter(s => s.family === 'Corona' || s.family === 'Bandido');
+      if (coronaSpirits.length > 0) {
+        const batchUpdates = {};
+        coronaSpirits.forEach(s => { batchUpdates[s.id] = 2; });
+        handleBatchUpdate(batchUpdates);
+        showToast(`★ Familia ${coronaSpirits[0].family} dominada por completo`);
+      }
+    }, 4800);
+
+    // Step 5: Open HD Canvas Export Poster Modal
+    setTimeout(() => {
+      showToast('📸 ¡GENERANDO Y EXPORTANDO PÓSTER EN ALTA DEFINICIÓN!');
+      setExportModalOpen(true);
+    }, 6200);
   };
 
   // Copy plain text helper (codes, handles)
@@ -193,6 +259,7 @@ export default function App() {
         onSelectTab={setActiveTab}
         onSelectGen={handleSelectGen}
         onOpenWelcome={() => setWelcomeOpen(true)}
+        onStartTour={handleStartTour}
       />
 
       <main className="pb-12 max-w-7xl mx-auto px-2.5 sm:px-6 w-full overflow-x-hidden">
@@ -240,7 +307,18 @@ export default function App() {
 
       {/* First-Time Welcome Portal Modal */}
       {welcomeOpen && (
-        <WelcomeModal onClose={() => setWelcomeOpen(false)} />
+        <WelcomeModal 
+          onClose={() => setWelcomeOpen(false)} 
+          onStartTour={handleStartTour}
+        />
+      )}
+
+      {/* Post-Tutorial Interactive Demo Prompt Modal */}
+      {demoPromptOpen && (
+        <DemoPromptModal 
+          onAccept={handleAcceptDemo}
+          onClose={() => setDemoPromptOpen(false)}
+        />
       )}
 
       {/* Export Canvas Capture Modal */}

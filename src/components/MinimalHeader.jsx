@@ -19,7 +19,8 @@ export default function MinimalHeader({
   activeTab,
   onSelectTab,
   onSelectGen,
-  onOpenWelcome
+  onOpenWelcome,
+  onStartTour
 }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -31,6 +32,14 @@ export default function MinimalHeader({
   }, []);
 
   const pct = Math.round((totalObtained / totalSpirits) * 100) || 0;
+
+  const handleLaunchTour = () => {
+    if (onStartTour) {
+      onStartTour();
+    } else {
+      startGuidedTour();
+    }
+  };
 
   return (
     <header className={`sticky top-0 z-40 transition-all duration-300 w-full overflow-x-hidden ${
@@ -67,7 +76,7 @@ export default function MinimalHeader({
             
             {/* Guided Tour Launcher Button */}
             <button
-              onClick={startGuidedTour}
+              onClick={handleLaunchTour}
               className="flex items-center gap-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 px-2 py-1 rounded-lg text-[10px] font-mono font-bold transition active:scale-95"
               title="Iniciar tutorial guiado interactivo de la página"
             >
@@ -254,7 +263,7 @@ export default function MinimalHeader({
             </button>
 
             <button
-              onClick={() => { startGuidedTour(); setMobileMenuOpen(false); }}
+              onClick={() => { handleLaunchTour(); setMobileMenuOpen(false); }}
               className="px-3.5 py-2 rounded-xl text-left flex items-center gap-2.5 text-emerald-400 hover:bg-white/5 font-mono"
             >
               <HelpCircle className="w-4 h-4" />

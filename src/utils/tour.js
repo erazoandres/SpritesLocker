@@ -1,7 +1,20 @@
 import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
 
-export function startGuidedTour() {
+export function startGuidedTour(onTourComplete) {
+  let completed = false;
+
+  const triggerCompletion = () => {
+    if (!completed) {
+      completed = true;
+      if (onTourComplete) {
+        setTimeout(() => {
+          onTourComplete();
+        }, 300);
+      }
+    }
+  };
+
   const driverObj = driver({
     showProgress: true,
     animate: true,
@@ -12,6 +25,9 @@ export function startGuidedTour() {
     nextBtnText: 'Siguiente →',
     prevBtnText: '← Atrás',
     doneBtnText: '¡Entendido! ✓',
+    onDestroyed: () => {
+      triggerCompletion();
+    },
     steps: [
       {
         element: '#tour-brand',

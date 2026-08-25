@@ -9,7 +9,7 @@ const GithubIcon = ({ className }) => (
   </svg>
 );
 
-export default function WelcomeModal({ onClose }) {
+export default function WelcomeModal({ onClose, onStartTour }) {
   const [isWarping, setIsWarping] = useState(false);
   const [typedAuthor, setTypedAuthor] = useState("");
   const fullAuthorText = "BY ANDRÉS ERAZO";
@@ -46,7 +46,11 @@ export default function WelcomeModal({ onClose }) {
     } catch {}
     onClose();
     setTimeout(() => {
-      startGuidedTour();
+      if (onStartTour) {
+        onStartTour();
+      } else {
+        startGuidedTour();
+      }
     }, 400);
   };
 
