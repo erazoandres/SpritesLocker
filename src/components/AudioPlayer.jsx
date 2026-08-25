@@ -5,11 +5,11 @@ const BASE_PATH = import.meta.env.BASE_URL || '/';
 
 const CHILL_PLAYLIST = [
   {
-    title: 'Lofi Study Beats',
+    title: 'Luffy Lofi Ambient',
     url: `${BASE_PATH}audio/chill1.mp3`.replace(/\/+/g, '/')
   },
   {
-    title: 'Midnight Chill',
+    title: 'Monkey D. Chill',
     url: `${BASE_PATH}audio/chill2.mp3`.replace(/\/+/g, '/')
   }
 ];
@@ -190,7 +190,7 @@ export default function AudioPlayer({ triggerHint = true }) {
             <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-1 mb-1">
               <span className="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
                 <Sparkles className="w-3 h-3 text-lime-400" />
-                MÚSICA CHILL
+                MÚSICA LUFFY LOFI
               </span>
               <button 
                 onClick={dismissHint}
@@ -239,7 +239,7 @@ export default function AudioPlayer({ triggerHint = true }) {
             {currentTrack.title}
           </span>
           <span className="text-[9px] font-mono text-emerald-400/80 leading-none mt-0.5">
-            VOL 5% · CANCIÓN {trackIndex + 1}/{CHILL_PLAYLIST.length}
+            VOL 5% · LUFFY {trackIndex + 1}/{CHILL_PLAYLIST.length}
           </span>
         </div>
 
