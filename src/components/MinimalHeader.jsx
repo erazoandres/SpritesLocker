@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Menu, X, Gift, Trophy, Eye, Info, Camera } from 'lucide-react';
+import { Download, Menu, X, Gift, Trophy, Eye, Info, Camera, HelpCircle } from 'lucide-react';
+import { startGuidedTour } from '../utils/tour';
 
 const GithubIcon = ({ className }) => (
   <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -43,7 +44,7 @@ export default function MinimalHeader({
         <div className="flex items-center justify-between gap-2 w-full">
           
           {/* Logo & Title Stack: EL CASILLERO with BY ANDRÉS ERAZO */}
-          <div className="flex items-center gap-2 group shrink-0">
+          <div id="tour-brand" className="flex items-center gap-2 group shrink-0">
             <button 
               onClick={onOpenWelcome} 
               className="flex items-center gap-2.5 text-left group-hover:opacity-90 transition"
@@ -63,17 +64,20 @@ export default function MinimalHeader({
                 </span>
               </div>
             </button>
+            
+            {/* Guided Tour Launcher Button */}
             <button
-              onClick={onOpenWelcome}
-              className="p-1 text-slate-400 hover:text-emerald-400 transition rounded-lg hover:bg-white/5"
-              title="Información del proyecto"
+              onClick={startGuidedTour}
+              className="flex items-center gap-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 px-2 py-1 rounded-lg text-[10px] font-mono font-bold transition active:scale-95"
+              title="Iniciar tutorial guiado interactivo de la página"
             >
-              <Info className="w-3.5 h-3.5" />
+              <HelpCircle className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="hidden sm:inline">TUTORIAL</span>
             </button>
           </div>
 
           {/* Desktop Only Gen Switcher Pills */}
-          <div className="hidden sm:flex items-center bg-[#111320] p-1 rounded-xl border border-white/10 text-xs font-mono shrink-0">
+          <div id="tour-gen-switcher" className="hidden sm:flex items-center bg-[#111320] p-1 rounded-xl border border-white/10 text-xs font-mono shrink-0">
             <button
               onClick={() => onSelectGen(2)}
               className={`px-3 py-1 rounded-lg font-bold transition ${
@@ -116,7 +120,7 @@ export default function MinimalHeader({
           </nav>
 
           {/* Desktop Right Group (Visits, Exports, Progress, GitHub) */}
-          <div className="hidden sm:flex items-center gap-2 shrink-0">
+          <div id="tour-counters" className="hidden sm:flex items-center gap-2 shrink-0">
             
             {/* Visit Counter */}
             {totalVisits !== null && totalVisits !== undefined && (
@@ -156,6 +160,7 @@ export default function MinimalHeader({
           {/* Download Button + Mobile Menu (Always 100% visible on Mobile & Desktop) */}
           <div className="flex items-center gap-1.5 shrink-0">
             <button 
+              id="tour-download-btn"
               onClick={onDownloadCapture}
               className="flex items-center gap-1.5 bg-gradient-to-r from-emerald-400 via-teal-400 to-violet-500 hover:from-emerald-300 hover:to-violet-400 text-slate-950 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs font-black shadow-lg shadow-emerald-500/20 active:scale-95 transition shrink-0 font-display uppercase tracking-wider"
               title="Descargar captura en imagen HD de la lista de espíritus"
@@ -249,8 +254,16 @@ export default function MinimalHeader({
             </button>
 
             <button
-              onClick={() => { onOpenWelcome(); setMobileMenuOpen(false); }}
+              onClick={() => { startGuidedTour(); setMobileMenuOpen(false); }}
               className="px-3.5 py-2 rounded-xl text-left flex items-center gap-2.5 text-emerald-400 hover:bg-white/5 font-mono"
+            >
+              <HelpCircle className="w-4 h-4" />
+              Iniciar Tutorial Guiado
+            </button>
+
+            <button
+              onClick={() => { onOpenWelcome(); setMobileMenuOpen(false); }}
+              className="px-3.5 py-2 rounded-xl text-left flex items-center gap-2.5 text-slate-300 hover:bg-white/5 font-mono"
             >
               <Info className="w-4 h-4" />
               Información del Proyecto
@@ -260,7 +273,7 @@ export default function MinimalHeader({
               href="https://github.com/erazoandres"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3.5 py-2 rounded-xl text-left flex items-center gap-2.5 text-emerald-400 hover:bg-white/5 font-mono"
+              className="px-3.5 py-2 rounded-xl text-left flex items-center gap-2.5 text-slate-300 hover:bg-white/5 font-mono"
             >
               <GithubIcon className="w-4 h-4" />
               GitHub de Andrés Erazo (erazoandres)

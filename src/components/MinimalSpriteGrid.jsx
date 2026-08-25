@@ -232,7 +232,7 @@ export default function MinimalSpriteGrid({
       </div>
 
       {/* OBSIDIAN NEON SPIRIT CARDS GRID (6 Columns Desktop, 2 Columns Mobile) */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-3.5">
+      <div id="tour-sprite-grid" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-3.5">
         {filteredSpirits.map(spirit => {
           const status = userState[spirit.id] ?? 0;
           const isObtained = status === 1;

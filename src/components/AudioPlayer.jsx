@@ -210,7 +210,7 @@ export default function AudioPlayer({ triggerHint = true }) {
       )}
 
       {/* Floating Audio Player Widget */}
-      <div className={`flex items-center gap-2.5 p-2 sm:px-3.5 sm:py-2 rounded-2xl border transition-all duration-300 shadow-2xl backdrop-blur-md ${
+      <div id="tour-audio-player" className={`flex items-center gap-2.5 p-2 sm:px-3.5 sm:py-2 rounded-2xl border transition-all duration-300 shadow-2xl backdrop-blur-md ${
         isPlaying 
           ? 'bg-[#101322]/95 border-emerald-400/60 text-emerald-400 shadow-emerald-500/20 ring-2 ring-emerald-400/20' 
           : 'bg-[#101322]/85 border-white/10 hover:border-emerald-400/40 text-slate-300'

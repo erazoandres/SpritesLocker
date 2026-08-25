@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Sparkles, Code2, Heart, ExternalLink } from 'lucide-react';
+import { ArrowRight, Sparkles, Code2, Heart, ExternalLink, HelpCircle } from 'lucide-react';
+import { startGuidedTour } from '../utils/tour';
 
 const GithubIcon = ({ className }) => (
   <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -37,6 +38,16 @@ export default function WelcomeModal({ onClose }) {
       } catch {}
       onClose();
     }, 550);
+  };
+
+  const handleStartTourFromModal = () => {
+    try {
+      localStorage.setItem('el-casillero-welcome-seen', 'true');
+    } catch {}
+    onClose();
+    setTimeout(() => {
+      startGuidedTour();
+    }, 400);
   };
 
   return (
@@ -97,28 +108,26 @@ export default function WelcomeModal({ onClose }) {
           </a>
         </div>
 
-        {/* Official GitHub Repository Pill Badge */}
-        <div className="space-y-1">
-          <a
-            href="https://github.com/erazoandres/SpritesLocker"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-[#161a2e] hover:bg-[#1f243f] text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition active:scale-95"
-            title="Ver repositorio oficial en GitHub por Andrés Erazo"
+        {/* Action Group: Entrance & Tour Launcher */}
+        <div className="space-y-2.5">
+          {/* CTA Entrance Button with Cyber Warp Transition */}
+          <button
+            onClick={handleEnterApp}
+            className="w-full bg-gradient-to-r from-emerald-400 via-teal-400 to-violet-500 hover:from-emerald-300 hover:to-violet-400 text-slate-950 font-black py-3 px-6 rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2.5 shadow-xl shadow-emerald-500/20 active:scale-95 transition font-display uppercase tracking-widest group"
           >
-            <GithubIcon className="w-3.5 h-3.5" />
-            <span>github.com/erazoandres/SpritesLocker</span>
-          </a>
-        </div>
+            <span>INGRESAR AL CASILLERO</span>
+            <ArrowRight className="w-4 h-4 stroke-[3] group-hover:translate-x-1 transition" />
+          </button>
 
-        {/* CTA Entrance Button with Cyber Warp Transition */}
-        <button
-          onClick={handleEnterApp}
-          className="w-full bg-gradient-to-r from-emerald-400 via-teal-400 to-violet-500 hover:from-emerald-300 hover:to-violet-400 text-slate-950 font-black py-3 px-6 rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2.5 shadow-xl shadow-emerald-500/20 active:scale-95 transition font-display uppercase tracking-widest group"
-        >
-          <span>INGRESAR AL CASILLERO</span>
-          <ArrowRight className="w-4 h-4 stroke-[3] group-hover:translate-x-1 transition" />
-        </button>
+          {/* Interactive Tour Button */}
+          <button
+            onClick={handleStartTourFromModal}
+            className="w-full bg-[#161a2e] hover:bg-[#1f243f] text-emerald-400 border border-emerald-500/30 font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition font-mono active:scale-95"
+          >
+            <HelpCircle className="w-4 h-4 text-emerald-400" />
+            <span>VER TUTORIAL GUIADO INTERACTIVO</span>
+          </button>
+        </div>
 
       </div>
     </div>
