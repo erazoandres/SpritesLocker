@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, Download, Share2, Loader2, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { generateCollectionImage } from '../utils/canvasExport';
 
@@ -6,11 +6,12 @@ export default function ExportModal({ spirits, userState, activeGen, totalVisits
   const [loading, setLoading] = useState(true);
   const [exportResult, setExportResult] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const hasRecordedRef = useRef(false);
 
   // Check marked count
   const markedCount = spirits.filter(s => (userState[s.id] || 0) >= 1 || (userState[s.id] || 0) === 3).length;
 
-  // Automatically generate PNG image for full collection on mount and record export
+  // Automatically generate PNG image for full collection on mount and record 1 overall export increment
   useEffect(() => {
     let active = true;
     async function runExport() {
@@ -26,8 +27,10 @@ export default function ExportModal({ spirits, userState, activeGen, totalVisits
         const result = await generateCollectionImage(spirits, userState, activeGen, 'todos', totalVisits, totalExports);
         if (active) {
           setExportResult(result);
-          if (onRecordExport) {
-            onRecordExport(); // Increment live export counter in Firestore document BAmrUK0Bk8D9FTjWkCYZ!
+          // Increment exportaciones in document BAmrUK0Bk8D9FTjWkCYZ STRICTLY ONCE per overall export session
+          if (onRecordExport && !hasRecordedRef.current) {
+            hasRecordedRef.current = true;
+            onRecordExport();
           }
         }
       } catch (err) {
