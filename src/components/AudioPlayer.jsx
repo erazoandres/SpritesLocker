@@ -173,28 +173,28 @@ export default function AudioPlayer() {
         preload="auto"
       />
 
-      {/* Onboarding Micro-Hint Card pointing to Audio Controls */}
+      {/* Onboarding Micro-Hint Card pointing to Audio Controls (Delicate Smooth Entrance) */}
       {showHint && (
-        <div className="relative mb-2.5 max-w-xs animate-bounce">
-          <div className="bg-[#101322]/95 border-2 border-emerald-400 rounded-2xl p-3 shadow-2xl shadow-emerald-500/30 text-xs font-sans text-slate-200 relative">
+        <div className="relative mb-2.5 max-w-xs transition-all duration-700 ease-out animate-fadeIn">
+          <div className="bg-[#101322]/90 border border-emerald-400/50 rounded-2xl p-3 shadow-xl shadow-emerald-500/15 backdrop-blur-md text-xs font-sans text-slate-200 relative">
             <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-1 mb-1">
-              <span className="text-[10px] font-mono font-black text-emerald-400 uppercase tracking-wider flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5 text-lime-400" />
-                CONTROLES DE MÚSICA CHILL
+              <span className="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-lime-400" />
+                MÚSICA CHILL
               </span>
               <button 
                 onClick={dismissHint}
-                className="text-[10px] text-slate-400 hover:text-white font-bold px-1.5 py-0.5 rounded hover:bg-white/10"
+                className="text-[10px] text-slate-400 hover:text-white font-bold px-1.5 py-0.5 rounded hover:bg-white/10 transition"
                 title="Cerrar aviso"
               >
                 ✕
               </button>
             </div>
-            <p className="text-[11px] text-slate-200 leading-snug font-medium">
-              ¡Puedes <strong>pausar</strong> (⏸), <strong>cambiar de canción</strong> (⏮ / ⏭) y <strong>silenciar</strong> (🔇) la música ambiental cuando quieras!
+            <p className="text-[11px] text-slate-300 leading-snug font-normal">
+              Puedes <strong>pausar</strong> (⏸), <strong>cambiar canción</strong> (⏮ / ⏭) y <strong>silenciar</strong> (🔇) en cualquier momento.
             </p>
-            {/* Arrow Pointer Pointing Down */}
-            <div className="absolute -bottom-2 right-8 w-3.5 h-3.5 bg-[#101322] border-r-2 border-b-2 border-emerald-400 rotate-45"></div>
+            {/* Soft Arrow Pointer Pointing Down */}
+            <div className="absolute -bottom-1.5 right-7 w-3 h-3 bg-[#101322] border-r border-b border-emerald-400/50 rotate-45"></div>
           </div>
         </div>
       )}
