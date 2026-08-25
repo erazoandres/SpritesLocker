@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, Sparkles, Code2 } from 'lucide-react';
+import { ArrowRight, Sparkles, Code2, Heart, ExternalLink } from 'lucide-react';
 
 const GithubIcon = ({ className }) => (
   <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -31,7 +31,7 @@ export default function WelcomeModal({ onClose }) {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-violet-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
       {/* Ultra-Minimalist Welcome Portal Container */}
-      <div className="relative bg-[#101322] border border-emerald-500/40 rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl shadow-emerald-500/10 font-sans text-center">
+      <div className="relative bg-[#101322] border border-emerald-500/40 rounded-3xl max-w-md w-full p-6 sm:p-7 space-y-5 shadow-2xl shadow-emerald-500/10 font-sans text-center">
         
         {/* Header Micro Badge */}
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-400 text-[11px] font-mono font-bold tracking-wider uppercase">
@@ -50,37 +50,55 @@ export default function WelcomeModal({ onClose }) {
         </div>
 
         {/* Concrete Purpose Description */}
-        <div className="bg-[#0a0b12] p-4 rounded-2xl border border-white/5 space-y-2 text-left">
+        <div className="bg-[#0a0b12] p-3.5 rounded-2xl border border-white/5 space-y-1.5 text-left">
           <div className="flex items-center gap-2 text-xs font-mono text-slate-300 font-bold">
             <Code2 className="w-4 h-4 text-emerald-400" />
             <span>¿PARA QUÉ ES ESTE WEBSITE?</span>
           </div>
           <p className="text-xs text-slate-300 leading-relaxed font-sans">
-            Plataforma minimalista y de alta precisión para organizar, filtrar y exportar en captura HD tu colección de <strong className="text-white">Espíritus de Fortnite Override y Runners</strong> (Generación 1 y 2).
+            Plataforma minimalista y de alta precisión para organizar, filtrar y exportar en captura HD tu colección de <strong className="text-white">Espíritus de Fortnite Override y Runners</strong> (Generaciones 1 y 2).
           </p>
         </div>
 
+        {/* iCharly-Afton Inspiration Credits Box */}
+        <div className="bg-violet-950/20 border border-violet-500/30 p-3 rounded-2xl text-left space-y-1">
+          <div className="flex items-center gap-1.5 text-[11px] font-mono font-extrabold text-violet-300 uppercase tracking-wider">
+            <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" />
+            <span>CRÉDITOS E INSPIRACIÓN</span>
+          </div>
+          <p className="text-[11px] text-slate-300 leading-tight">
+            Basado en la idea e inspiración del proyecto original de <strong className="text-white font-bold">iCharly-Afton</strong>.
+          </p>
+          <a
+            href="https://icharly-afton-sprite-locker.icharly-afton.chatgpt.site/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-violet-400 hover:text-violet-300 underline decoration-violet-400/40 underline-offset-2 transition pt-0.5"
+            title="Ver sitio original de iCharly-Afton"
+          >
+            <span>Ver proyecto de iCharly-Afton</span>
+            <ExternalLink className="w-3 h-3" />
+          </a>
+        </div>
+
         {/* Official GitHub Repository Pill Badge */}
-        <div className="space-y-1.5">
-          <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest block">
-            REPOSITORIO CÓDIGO FUENTE
-          </span>
+        <div className="space-y-1">
           <a
             href="https://github.com/erazoandres/SpritesLocker"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-[#161a2e] hover:bg-[#1f243f] text-emerald-400 border border-emerald-500/30 px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition active:scale-95"
+            className="inline-flex items-center gap-2 bg-[#161a2e] hover:bg-[#1f243f] text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition active:scale-95"
             title="Ver repositorio oficial en GitHub por Andrés Erazo"
           >
             <GithubIcon className="w-3.5 h-3.5" />
-            <span>erazoandres/SpritesLocker</span>
+            <span>github.com/erazoandres/SpritesLocker</span>
           </a>
         </div>
 
         {/* CTA Entrance Button with Cyber Warp Transition */}
         <button
           onClick={handleEnterApp}
-          className="w-full bg-gradient-to-r from-emerald-400 via-teal-400 to-violet-500 hover:from-emerald-300 hover:to-violet-400 text-slate-950 font-black py-3.5 px-6 rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2.5 shadow-xl shadow-emerald-500/20 active:scale-95 transition font-display uppercase tracking-widest group"
+          className="w-full bg-gradient-to-r from-emerald-400 via-teal-400 to-violet-500 hover:from-emerald-300 hover:to-violet-400 text-slate-950 font-black py-3 px-6 rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2.5 shadow-xl shadow-emerald-500/20 active:scale-95 transition font-display uppercase tracking-widest group"
         >
           <span>INGRESAR AL CASILLERO</span>
           <ArrowRight className="w-4 h-4 stroke-[3] group-hover:translate-x-1 transition" />
