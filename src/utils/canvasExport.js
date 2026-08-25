@@ -75,7 +75,7 @@ async function loadImageAsDataUrl(url) {
 /**
  * Generates an HD PNG poster image containing EXCLUSIVELY the marked/selected spirits.
  * Styled in Obsidian Neon Emerald & Hyper Violet aesthetic.
- * Stamps official URL watermark and total visits badge. Attributed to EL CASILLERO · Andrés Erazo.
+ * Stamps official Vercel call-to-action watermark: 'INGRESA A: https://spriteslocker.vercel.app/'
  */
 export async function generateCollectionImage(spirits, state, generationNumber, filterType = 'todos', totalVisits = null) {
   // Filter dataset to include STRICTLY marked/selected spirits (status >= 1 || status === 3)
@@ -295,12 +295,12 @@ export async function generateCollectionImage(spirits, state, generationNumber, 
   ctx.font = '600 15px "Outfit", sans-serif';
   ctx.fillText('EL CASILLERO · Andrés Erazo', 60, canvasHeight - 20);
 
-  // OFFICIAL WATERMARK URL (Bottom Right Corner)
-  const watermarkUrl = 'https://erazoandres.github.io/SpritesLocker/';
+  // OFFICIAL VERCEL WATERMARK CALL-TO-ACTION (Bottom Right Corner)
+  const watermarkText = 'INGRESA A: https://spriteslocker.vercel.app/';
   ctx.textAlign = 'right';
   ctx.fillStyle = '#10b981';
-  ctx.font = '700 15px "JetBrains Mono", monospace';
-  ctx.fillText(watermarkUrl, canvasWidth - 60, canvasHeight - 20);
+  ctx.font = '800 15px "JetBrains Mono", monospace';
+  ctx.fillText(watermarkText, canvasWidth - 60, canvasHeight - 20);
   ctx.textAlign = 'left';
 
   let dataUrl;
