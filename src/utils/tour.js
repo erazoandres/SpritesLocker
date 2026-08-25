@@ -88,3 +88,81 @@ export function startGuidedTour(onTourComplete) {
 
   driverObj.drive();
 }
+
+/**
+ * Interactive Step-by-Step Guided Demo with Driver.js Popovers & Active Highlights
+ */
+export function runGuidedDemoSequence({ mode, activeSpirits, onUpdateState, onOpenExport }) {
+  if (!activeSpirits || activeSpirits.length === 0) return;
+
+  const spirit1 = activeSpirits[0];
+  const spirit2 = activeSpirits[1] || activeSpirits[0];
+
+  const steps = [
+    {
+      element: `#spirit-tile-${spirit1.id}`,
+      popover: {
+        title: mode === 'tengo' ? `🟢 PASO 1: MARCAR ESPÍRITU TENIDO` : `🔴 PASO 1: MARCAR ESPÍRITU FALTANTE`,
+        description: mode === 'tengo'
+          ? `Tocamos **${spirit1.family}** para marcarlo como **✓ TENGO (Verde Esmeralda)**.`
+          : `Tocamos **${spirit1.family}** para marcarlo como **✗ FALTANTE (Carmesí)**.`,
+        side: 'top',
+        align: 'center'
+      },
+      onHighlight: () => {
+        onUpdateState({ [spirit1.id]: mode === 'tengo' ? 1 : 3 });
+      }
+    },
+    {
+      element: `#spirit-tile-${spirit2.id}`,
+      popover: {
+        title: mode === 'tengo' ? `★ PASO 2: MARCAR COMO DOMINADO` : `🔴 PASO 2: MARCAR SEGUNDO FALTANTE`,
+        description: mode === 'tengo'
+          ? `Tocamos **${spirit2.family}** dos veces para marcarlo como **★ DOMINADO (Dorado Solar)**.`
+          : `Tocamos **${spirit2.family}** para incluirlo como **✗ FALTANTE**.`,
+        side: 'top',
+        align: 'center'
+      },
+      onHighlight: () => {
+        onUpdateState({ [spirit1.id]: mode === 'tengo' ? 1 : 3, [spirit2.id]: mode === 'tengo' ? 2 : 3 });
+      }
+    },
+    {
+      element: '#tour-download-btn',
+      popover: {
+        title: `📸 PASO 3: EXPORTAR PÓSTER HD`,
+        description: `¡Tu lista ya fue creada! Ahora hacemos clic en **DESCARGAR** para generar el póster PNG HD.`,
+        side: 'bottom',
+        align: 'end'
+      },
+      onHighlight: () => {
+        setTimeout(() => {
+          if (onOpenExport) onOpenExport();
+        }, 1200);
+      }
+    }
+  ];
+
+  let currentStep = 0;
+
+  const demoDriver = driver({
+    showProgress: true,
+    animate: true,
+    allowClose: true,
+    overlayColor: 'rgba(3, 4, 10, 0.90)',
+    stagePadding: 10,
+    stageRadius: 18,
+    nextBtnText: 'Siguiente →',
+    prevBtnText: '← Atrás',
+    doneBtnText: '¡Ver póster HD! 📸',
+    onHighlightStarted: (element, step) => {
+      const activeStepIndex = demoDriver.getActiveIndex();
+      if (steps[activeStepIndex] && steps[activeStepIndex].onHighlight) {
+        steps[activeStepIndex].onHighlight();
+      }
+    },
+    steps: steps.map(s => ({ element: s.element, popover: s.popover }))
+  });
+
+  demoDriver.drive();
+}

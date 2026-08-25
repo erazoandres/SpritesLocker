@@ -19,7 +19,7 @@ import {
   saveRedeemedCodes 
 } from './utils/storage';
 import { trackVisit, fetchExportCount, trackExport } from './utils/analytics';
-import { startGuidedTour } from './utils/tour';
+import { startGuidedTour, runGuidedDemoSequence } from './utils/tour';
 
 const GithubIcon = ({ className }) => (
   <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -136,59 +136,28 @@ export default function App() {
     });
   };
 
-  // Execute ultra-clean streamlined demo sequence (no initial bloat, 1-2 taps then export!)
+  // Execute interactive step-by-step guided demo using Driver.js popover highlights
   const handleAcceptDemo = (mode = 'tengo') => {
     setDemoPromptOpen(false);
     
     // 1. Reset current state so NOTHING is selected initially
     setUserState({});
-
-    showToast(`🎬 SIMULANDO MODO: ${mode === 'tengo' ? 'ESPÍRITUS QUE TENGO' : 'ESPÍRITUS QUE ME FALTAN'}`);
     
     // Ensure view is on collection grid tab
     setActiveTab('coleccion');
 
-    const focusElement = (elemId) => {
-      document.querySelectorAll('.demo-focus-active').forEach(el => el.classList.remove('demo-focus-active'));
-      const target = document.getElementById(elemId);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        target.classList.add('demo-focus-active');
-        setTimeout(() => {
-          target.classList.remove('demo-focus-active');
-        }, 1800);
-      }
-    };
-
-    // Step 1 (1000ms): Scroll to Spirit #1 & mark according to chosen mode
     setTimeout(() => {
-      if (activeSpirits[0]) {
-        const id1 = activeSpirits[0].id;
-        focusElement(`spirit-tile-${id1}`);
-        const statusVal = mode === 'tengo' ? 1 : 3;
-        setUserState({ [id1]: statusVal });
-        showToast(mode === 'tengo' ? `✓ Marcado ${activeSpirits[0].family} (Obtenido)` : `✗ Marcado ${activeSpirits[0].family} (Faltante)`);
-      }
-    }, 1000);
-
-    // Step 2 (2500ms): Scroll to Spirit #2 & mark according to chosen mode
-    setTimeout(() => {
-      if (activeSpirits[1]) {
-        const id1 = activeSpirits[0]?.id;
-        const id2 = activeSpirits[1].id;
-        focusElement(`spirit-tile-${id2}`);
-        const statusVal = mode === 'tengo' ? 2 : 3; // 2=Dominado for tengo mode, 3=Faltante for faltan mode
-        setUserState(prev => ({ ...prev, [id2]: statusVal }));
-        showToast(mode === 'tengo' ? `★ Dominado ${activeSpirits[1].family} (Dorado)` : `✗ Marcado ${activeSpirits[1].family} (Faltante)`);
-      }
-    }, 2500);
-
-    // Step 3 (4000ms): Immediately open HD Canvas Export Poster Modal
-    setTimeout(() => {
-      document.querySelectorAll('.demo-focus-active').forEach(el => el.classList.remove('demo-focus-active'));
-      showToast('📸 ¡LISTA GENERADA Y EXPORTADA A IMAGEN HD!');
-      setExportModalOpen(true);
-    }, 4000);
+      runGuidedDemoSequence({
+        mode,
+        activeSpirits,
+        onUpdateState: (updates) => {
+          setUserState(prev => ({ ...prev, ...updates }));
+        },
+        onOpenExport: () => {
+          setExportModalOpen(true);
+        }
+      });
+    }, 400);
   };
 
   // Copy plain text helper (codes, handles)
