@@ -15,6 +15,11 @@ export default function MinimalSpriteGrid({
   const [tooltipSpirit, setTooltipSpirit] = useState(null);
   const [activeMode, setActiveMode] = useState('tengo'); // 'tengo' or 'faltan'
   const [isPaused, setIsPaused] = useState(false);
+  
+  // Drag to scroll states
+  const [isMouseDown, setIsMouseDown] = useState(false);
+  const [dragStartX, setDragStartX] = useState(0);
+  const [scrollStartX, setScrollStartX] = useState(0);
 
   const familyBarRef = useRef(null);
 
@@ -43,7 +48,7 @@ export default function MinimalSpriteGrid({
     const speed = 0.6; // Silky smooth sliding speed
 
     const step = () => {
-      if (!isPaused && container) {
+      if (!isPaused && !isMouseDown && container) {
         if (container.scrollLeft >= container.scrollWidth - container.clientWidth - 1) {
           container.scrollLeft = 0; // Seamless loop reset
         } else {
@@ -55,7 +60,37 @@ export default function MinimalSpriteGrid({
 
     animId = requestAnimationFrame(step);
     return () => cancelAnimationFrame(animId);
-  }, [isPaused]);
+  }, [isPaused, isMouseDown]);
+
+  // Mouse Drag-to-Scroll handlers (Pull left & right)
+  const handleMouseDown = (e) => {
+    const container = familyBarRef.current;
+    if (!container) return;
+    setIsMouseDown(true);
+    setIsPaused(true);
+    setDragStartX(e.pageX - container.offsetLeft);
+    setScrollStartX(container.scrollLeft);
+  };
+
+  const handleMouseLeave = () => {
+    setIsMouseDown(false);
+    setIsPaused(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsMouseDown(false);
+    setIsPaused(false);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isMouseDown) return;
+    e.preventDefault();
+    const container = familyBarRef.current;
+    if (!container) return;
+    const x = e.pageX - container.offsetLeft;
+    const walk = (x - dragStartX) * 1.5; // Drag sensitivity
+    container.scrollLeft = scrollStartX - walk;
+  };
 
   // Handle tile tap based on active mode
   const handleTileTap = (id) => {
@@ -140,14 +175,19 @@ export default function MinimalSpriteGrid({
 
       </div>
 
-      {/* AUTO-SLIDING FAMILY PILLS ROW (Slides left, pauses on hover/touch) */}
+      {/* AUTO-SLIDING & DRAG-TO-SCROLL FAMILY PILLS ROW */}
       <div 
         ref={familyBarRef}
+        onMouseDown={handleMouseDown}
+        onMouseLeave={handleMouseLeave}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
         onTouchStart={() => setIsPaused(true)}
         onTouchEnd={() => setIsPaused(false)}
-        className="flex items-center gap-1.5 overflow-x-auto pb-1 pt-0.5 scrollbar-none font-mono text-xs select-none"
+        className={`flex items-center gap-1.5 overflow-x-auto pb-1 pt-0.5 scrollbar-none font-mono text-xs select-none ${
+          isMouseDown ? 'cursor-grabbing' : 'cursor-grab'
+        }`}
       >
         {familyList.map(fam => {
           if (fam === 'Todas') {
