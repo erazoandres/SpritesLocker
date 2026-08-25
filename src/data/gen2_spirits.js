@@ -148,7 +148,7 @@ export const GEN2_SPIRITS = GEN2_FAMILIES.flatMap(fam =>
     variant,
     rarity: variant === 'Base' ? fam.rarity : 'Especial',
     summonCost: 0,
-    image: `https://icharly-afton-sprite-locker.icharly-afton.chatgpt.site/sprites/gen2/${getImageFile(fam, variant)}`,
+    image: `/sprites/gen2/${getImageFile(fam, variant)}`,
     generation: 2,
     ability: fam.ability
   }))
