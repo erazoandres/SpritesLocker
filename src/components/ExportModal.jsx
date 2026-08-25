@@ -1,15 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { X, Download, Share2, Loader2, CheckCircle2 } from 'lucide-react';
+import { X, Download, Share2, Loader2, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { generateCollectionImage } from '../utils/canvasExport';
 
 export default function ExportModal({ spirits, userState, activeGen, totalVisits, onClose, onShowToast }) {
   const [loading, setLoading] = useState(true);
   const [exportResult, setExportResult] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  // Check marked count
+  const markedCount = spirits.filter(s => (userState[s.id] || 0) >= 1 || (userState[s.id] || 0) === 3).length;
 
   // Automatically generate PNG image for full collection on mount (Zero options)
   useEffect(() => {
     let active = true;
     async function runExport() {
+      if (markedCount === 0) {
+        if (active) {
+          setErrorMsg('Debes seleccionar o marcar al menos un espíritu en tu casillero (Tengo, Dominado o Faltante) antes de exportar la captura.');
+          setLoading(false);
+        }
+        return;
+      }
+
       try {
         const result = await generateCollectionImage(spirits, userState, activeGen, 'todos', totalVisits);
         if (active) {
@@ -17,14 +29,14 @@ export default function ExportModal({ spirits, userState, activeGen, totalVisits
         }
       } catch (err) {
         console.error(err);
-        if (active) alert(err.message || 'Error al generar la imagen.');
+        if (active) setErrorMsg(err.message || 'Error al generar la imagen.');
       } finally {
         if (active) setLoading(false);
       }
     }
     runExport();
     return () => { active = false; };
-  }, [spirits, userState, activeGen, totalVisits]);
+  }, [spirits, userState, activeGen, totalVisits, markedCount]);
 
   const handleDownload = () => {
     if (!exportResult) return;
@@ -57,6 +69,44 @@ export default function ExportModal({ spirits, userState, activeGen, totalVisits
       handleDownload();
     }
   };
+
+  // Render Warning Card if 0 marked spirits or error occurred
+  if (!loading && (markedCount === 0 || errorMsg)) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fadeIn">
+        <div className="bg-slate-900 border border-rose-500/40 rounded-3xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl relative font-sans">
+          
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/5 transition"
+            aria-label="Cerrar modal"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          <div className="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center mx-auto text-rose-400">
+            <AlertTriangle className="w-7 h-7" />
+          </div>
+
+          <div className="space-y-1.5">
+            <h3 className="text-lg font-black text-white uppercase tracking-tight font-mono">
+              NINGÚN ESPÍRITU MARCADO
+            </h3>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              {errorMsg || 'Para descargar la captura PNG HD, debes seleccionar o marcar al menos un espíritu en tu casillero.'}
+            </p>
+          </div>
+
+          <button
+            onClick={onClose}
+            className="w-full bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-black py-3 px-4 rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-cyan-500/20 active:scale-95 transition font-mono"
+          >
+            VOLVER AL CASILLERO Y MARCAR
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fadeIn">

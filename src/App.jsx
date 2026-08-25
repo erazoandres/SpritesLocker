@@ -122,6 +122,17 @@ export default function App() {
   // Current active spirits dataset
   const activeSpirits = activeGen === 2 ? GEN2_SPIRITS : GEN1_SPIRITS;
 
+  // Validate marked count before opening export modal
+  const handleOpenExportModal = () => {
+    const markedCount = activeSpirits.filter(s => (userState[s.id] || 0) >= 1 || (userState[s.id] || 0) === 3).length;
+    if (markedCount === 0) {
+      showToast('⚠️ Marca al menos 1 espíritu para exportar');
+      alert('Debes seleccionar o marcar al menos un espíritu en tu casillero (Tengo, Dominado o Faltante) antes de exportar la captura.');
+      return;
+    }
+    setExportModalOpen(true);
+  };
+
   // Statistics calculation for active generation
   const activeStats = useMemo(() => {
     let obtained = 0;
@@ -139,11 +150,11 @@ export default function App() {
   }, [activeSpirits, userState]);
 
   return (
-    <div className="min-h-screen bg-[#08090d] text-slate-100 selection:bg-cyan-400 selection:text-slate-950">
+    <div className="min-h-screen bg-[#08090d] text-slate-100 selection:bg-cyan-400 selection:text-slate-950 max-w-full overflow-x-hidden">
       
       {/* Streamlined HUD Header */}
       <MinimalHeader 
-        onDownloadCapture={() => setExportModalOpen(true)}
+        onDownloadCapture={handleOpenExportModal}
         activeGen={activeGen}
         totalObtained={activeStats.obtained}
         totalSpirits={activeSpirits.length}
@@ -153,7 +164,7 @@ export default function App() {
         onSelectGen={setActiveGen}
       />
 
-      <main className="pb-12">
+      <main className="pb-12 max-w-7xl mx-auto px-2.5 sm:px-6 w-full overflow-x-hidden">
         
         {/* Main Content Tabs */}
         {activeTab === 'coleccion' && (
@@ -164,7 +175,7 @@ export default function App() {
             onBatchUpdate={handleBatchUpdate}
             activeGen={activeGen}
             onResetGen={handleResetGen}
-            onOpenExportModal={() => setExportModalOpen(true)}
+            onOpenExportModal={handleOpenExportModal}
           />
         )}
 
@@ -179,7 +190,7 @@ export default function App() {
       </main>
 
       {/* Minimal Footer with direct link to GitHub profile (https://github.com/erazoandres) */}
-      <footer className="border-t border-white/5 bg-slate-950/80 py-6 text-center text-xs text-slate-500 font-mono flex items-center justify-center gap-1.5 flex-wrap">
+      <footer className="border-t border-white/5 bg-slate-950/80 py-6 text-center text-xs text-slate-500 font-mono flex items-center justify-center gap-1.5 flex-wrap px-4 w-full">
         <span>EL CASILLERO · Creado por</span>
         <a
           href="https://github.com/erazoandres"
