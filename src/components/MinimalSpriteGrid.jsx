@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { Search, Check, Star, RotateCcw, CheckCircle2, XCircle } from 'lucide-react';
 
 export default function MinimalSpriteGrid({ 
@@ -14,7 +14,6 @@ export default function MinimalSpriteGrid({
   const [hoveredFamily, setHoveredFamily] = useState(null);
   const [tooltipSpirit, setTooltipSpirit] = useState(null);
   const [activeMode, setActiveMode] = useState('tengo'); // 'tengo' or 'faltan'
-  const [isPaused, setIsPaused] = useState(false);
   
   // Drag to scroll states
   const [isMouseDown, setIsMouseDown] = useState(false);
@@ -39,47 +38,21 @@ export default function MinimalSpriteGrid({
     });
   }, [spirits, searchQuery, selectedFamily]);
 
-  // Smooth continuous 60fps auto-scroll for family category pills (sliding left)
-  useEffect(() => {
-    const container = familyBarRef.current;
-    if (!container) return;
-
-    let animId;
-    const speed = 0.6; // Silky smooth sliding speed
-
-    const step = () => {
-      if (!isPaused && !isMouseDown && container) {
-        if (container.scrollLeft >= container.scrollWidth - container.clientWidth - 1) {
-          container.scrollLeft = 0; // Seamless loop reset
-        } else {
-          container.scrollLeft += speed;
-        }
-      }
-      animId = requestAnimationFrame(step);
-    };
-
-    animId = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(animId);
-  }, [isPaused, isMouseDown]);
-
-  // Mouse Drag-to-Scroll handlers (Pull left & right)
+  // Mouse Drag-to-Scroll handlers (Pull left & right manually)
   const handleMouseDown = (e) => {
     const container = familyBarRef.current;
     if (!container) return;
     setIsMouseDown(true);
-    setIsPaused(true);
     setDragStartX(e.pageX - container.offsetLeft);
     setScrollStartX(container.scrollLeft);
   };
 
   const handleMouseLeave = () => {
     setIsMouseDown(false);
-    setIsPaused(false);
   };
 
   const handleMouseUp = () => {
     setIsMouseDown(false);
-    setIsPaused(false);
   };
 
   const handleMouseMove = (e) => {
@@ -175,17 +148,24 @@ export default function MinimalSpriteGrid({
 
       </div>
 
-      {/* AUTO-SLIDING & DRAG-TO-SCROLL FAMILY PILLS ROW */}
+      {/* FAMILY PILLS HEADER & DRAG SUGGESTION HINT */}
+      <div className="flex items-center justify-between px-1 text-[11px] font-mono text-slate-400">
+        <span className="font-bold uppercase tracking-wider text-slate-300">
+          FAMILIAS ({familyList.length - 1})
+        </span>
+        <span className="text-cyan-400 font-extrabold flex items-center gap-1 animate-pulse">
+          ‹ ↔ ARRASTRA PARA VER MÁS ›
+        </span>
+      </div>
+
+      {/* MANUAL DRAG-TO-SCROLL FAMILY PILLS ROW (Pull left & right manually) */}
       <div 
         ref={familyBarRef}
         onMouseDown={handleMouseDown}
         onMouseLeave={handleMouseLeave}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
-        onMouseEnter={() => setIsPaused(true)}
-        onTouchStart={() => setIsPaused(true)}
-        onTouchEnd={() => setIsPaused(false)}
-        className={`flex items-center gap-1.5 overflow-x-auto pb-1 pt-0.5 scrollbar-none font-mono text-xs select-none ${
+        className={`flex items-center gap-1.5 overflow-x-auto pb-1.5 pt-0.5 scrollbar-none font-mono text-xs select-none ${
           isMouseDown ? 'cursor-grabbing' : 'cursor-grab'
         }`}
       >
