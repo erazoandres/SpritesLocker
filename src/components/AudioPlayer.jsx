@@ -23,9 +23,40 @@ export default function AudioPlayer() {
   const [isMuted, setIsMuted] = useState(false);
   const [trackIndex, setTrackIndex] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
-  const [showHint, setShowHint] = useState(true); // Always display hint on load by default
+  const [showHint, setShowHint] = useState(true);
 
   const audioRef = useRef(null);
+  const tabIdRef = useRef(Math.random().toString(36).substring(2, 9));
+
+  // Helper to broadcast audio lock signal to all other open tabs
+  const broadcastAudioPlayback = () => {
+    if (!('BroadcastChannel' in window)) return;
+    try {
+      const channel = new BroadcastChannel('el-casillero-audio-lock');
+      channel.postMessage({ type: 'AUDIO_PLAYING', tabId: tabIdRef.current });
+      channel.close();
+    } catch {}
+  };
+
+  // Multi-Tab Single-Audio Lock: Listen for playback signals from other tabs
+  useEffect(() => {
+    if (!('BroadcastChannel' in window)) return;
+    const channel = new BroadcastChannel('el-casillero-audio-lock');
+
+    channel.onmessage = (event) => {
+      if (event.data?.type === 'AUDIO_PLAYING' && event.data.tabId !== tabIdRef.current) {
+        // Another tab started playing audio! Pause audio in THIS tab so music never overlaps!
+        if (audioRef.current && !audioRef.current.paused) {
+          audioRef.current.pause();
+          setIsPlaying(false);
+        }
+      }
+    };
+
+    return () => {
+      channel.close();
+    };
+  }, []);
 
   const dismissHint = () => {
     setShowHint(false);
@@ -43,6 +74,7 @@ export default function AudioPlayer() {
       audioRef.current.volume = 0.05;
       audioRef.current.play().then(() => {
         setIsPlaying(true);
+        broadcastAudioPlayback();
       }).catch(() => {
         // Autoplay policy blocked initial playback until user gesture
       });
@@ -86,6 +118,7 @@ export default function AudioPlayer() {
 
     audio.play().then(() => {
       setIsPlaying(true);
+      broadcastAudioPlayback();
     }).catch(err => {
       console.warn('Local track playback error:', err);
     });
@@ -104,6 +137,7 @@ export default function AudioPlayer() {
       audioRef.current.volume = 0.05;
       audioRef.current.play().then(() => {
         setIsPlaying(true);
+        broadcastAudioPlayback();
       }).catch(err => {
         console.warn('Playback error:', err);
       });
