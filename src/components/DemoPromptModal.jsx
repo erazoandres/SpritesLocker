@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlayCircle, Sparkles, X, ArrowRight } from 'lucide-react';
+import { CheckCircle2, XCircle, Sparkles, X } from 'lucide-react';
 
 export default function DemoPromptModal({ onAccept, onClose }) {
   return (
@@ -24,27 +24,34 @@ export default function DemoPromptModal({ onAccept, onClose }) {
         {/* Title */}
         <div className="space-y-1">
           <h2 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight font-display bg-gradient-to-r from-emerald-400 via-teal-300 to-violet-400 bg-clip-text text-transparent">
-            ¿VER EJEMPLO EN VIVO?
+            ¿QUÉ MODO DESEAS SIMULAR?
           </h2>
           <p className="text-xs text-slate-300 leading-relaxed font-sans">
-            ¿Te gustaría ver una <strong className="text-white">demostración automática simulando uso real</strong>? El sistema marcará espíritus, dominará familias y abrirá la exportación en tiempo real.
+            Selecciona qué estado deseas probar en la demostración rápida. Se marcarán 1 o 2 espíritus y se exportará la captura automáticamente.
           </p>
         </div>
 
-        {/* Action Buttons */}
+        {/* Mode Choice Action Buttons */}
         <div className="space-y-2.5 pt-1">
           <button
-            onClick={onAccept}
-            className="w-full bg-gradient-to-r from-emerald-400 via-teal-400 to-violet-500 hover:from-emerald-300 hover:to-violet-400 text-slate-950 font-black py-3 px-5 rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2.5 shadow-xl shadow-emerald-500/20 active:scale-95 transition font-display uppercase tracking-wider group"
+            onClick={() => onAccept('tengo')}
+            className="w-full bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-slate-950 font-black py-3 px-5 rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 transition font-display uppercase tracking-wider"
           >
-            <PlayCircle className="w-4 h-4 stroke-[2.5]" />
-            <span>SÍ, MOSTRAR DEMOSTRACIÓN</span>
-            <ArrowRight className="w-4 h-4 stroke-[3] group-hover:translate-x-1 transition" />
+            <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
+            <span>🟢 MODO: ESPÍRITUS QUE TENGO</span>
+          </button>
+
+          <button
+            onClick={() => onAccept('faltan')}
+            className="w-full bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-400 hover:to-amber-400 text-white font-black py-3 px-5 rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 active:scale-95 transition font-display uppercase tracking-wider"
+          >
+            <XCircle className="w-4 h-4 stroke-[2.5]" />
+            <span>🔴 MODO: ESPÍRITUS QUE ME FALTAN</span>
           </button>
 
           <button
             onClick={onClose}
-            className="w-full bg-[#161a2e] hover:bg-[#1f243f] text-slate-400 hover:text-white font-bold py-2.5 px-4 rounded-xl text-xs transition font-mono"
+            className="w-full bg-[#161a2e] hover:bg-[#1f243f] text-slate-400 hover:text-white font-bold py-2.5 px-4 rounded-xl text-xs transition font-mono mt-1"
           >
             No gracias, usar el casillero
           </button>

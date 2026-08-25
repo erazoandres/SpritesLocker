@@ -136,16 +136,19 @@ export default function App() {
     });
   };
 
-  // Execute interactive real usage simulation sequence with exact element scrolling & focus glow
-  const handleAcceptDemo = () => {
+  // Execute ultra-clean streamlined demo sequence (no initial bloat, 1-2 taps then export!)
+  const handleAcceptDemo = (mode = 'tengo') => {
     setDemoPromptOpen(false);
-    showToast('🎬 INICIANDO DEMOSTRACIÓN GUIADA DE USO REAL...');
+    
+    // 1. Reset current state so NOTHING is selected initially
+    setUserState({});
+
+    showToast(`🎬 SIMULANDO MODO: ${mode === 'tengo' ? 'ESPÍRITUS QUE TENGO' : 'ESPÍRITUS QUE ME FALTAN'}`);
     
     // Ensure view is on collection grid tab
     setActiveTab('coleccion');
 
     const focusElement = (elemId) => {
-      // Remove any existing focus active classes
       document.querySelectorAll('.demo-focus-active').forEach(el => el.classList.remove('demo-focus-active'));
       const target = document.getElementById(elemId);
       if (target) {
@@ -153,73 +156,39 @@ export default function App() {
         target.classList.add('demo-focus-active');
         setTimeout(() => {
           target.classList.remove('demo-focus-active');
-        }, 2200);
+        }, 1800);
       }
     };
 
-    // Step 1 (1200ms): Scroll & focus Spirit 0, then mark as Tengo (1)
+    // Step 1 (1000ms): Scroll to Spirit #1 & mark according to chosen mode
     setTimeout(() => {
       if (activeSpirits[0]) {
-        const spiritId = activeSpirits[0].id;
-        focusElement(`spirit-tile-${spiritId}`);
-        handleToggleSpirit(spiritId);
-        showToast(`✓ Paso 1: Marcado ${activeSpirits[0].family} (Obtenido)`);
+        const id1 = activeSpirits[0].id;
+        focusElement(`spirit-tile-${id1}`);
+        const statusVal = mode === 'tengo' ? 1 : 3;
+        setUserState({ [id1]: statusVal });
+        showToast(mode === 'tengo' ? `✓ Marcado ${activeSpirits[0].family} (Obtenido)` : `✗ Marcado ${activeSpirits[0].family} (Faltante)`);
       }
-    }, 1200);
+    }, 1000);
 
-    // Step 2 (3600ms): Focus Spirit 0 again, then mark as Dominado (2)
-    setTimeout(() => {
-      if (activeSpirits[0]) {
-        const spiritId = activeSpirits[0].id;
-        focusElement(`spirit-tile-${spiritId}`);
-        handleToggleSpirit(spiritId);
-        showToast(`★ Paso 2: Dominado ${activeSpirits[0].family} (Dorado)`);
-      }
-    }, 3600);
-
-    // Step 3 (6000ms): Scroll & focus Spirit 1, then mark as Tengo (1)
+    // Step 2 (2500ms): Scroll to Spirit #2 & mark according to chosen mode
     setTimeout(() => {
       if (activeSpirits[1]) {
-        const spiritId = activeSpirits[1].id;
-        focusElement(`spirit-tile-${spiritId}`);
-        handleToggleSpirit(spiritId);
-        showToast(`✓ Paso 3: Marcado ${activeSpirits[1].family} (Obtenido)`);
+        const id1 = activeSpirits[0]?.id;
+        const id2 = activeSpirits[1].id;
+        focusElement(`spirit-tile-${id2}`);
+        const statusVal = mode === 'tengo' ? 2 : 3; // 2=Dominado for tengo mode, 3=Faltante for faltan mode
+        setUserState(prev => ({ ...prev, [id2]: statusVal }));
+        showToast(mode === 'tengo' ? `★ Dominado ${activeSpirits[1].family} (Dorado)` : `✗ Marcado ${activeSpirits[1].family} (Faltante)`);
       }
-    }, 6000);
+    }, 2500);
 
-    // Step 4 (8400ms): Scroll & focus Spirit 2, then mark as Tengo (1)
-    setTimeout(() => {
-      if (activeSpirits[2]) {
-        const spiritId = activeSpirits[2].id;
-        focusElement(`spirit-tile-${spiritId}`);
-        handleToggleSpirit(spiritId);
-        showToast(`✓ Paso 4: Marcado ${activeSpirits[2].family} (Obtenido)`);
-      }
-    }, 8400);
-
-    // Step 5 (10800ms): Batch mark Corona family as Dominado
-    setTimeout(() => {
-      const coronaSpirits = activeSpirits.filter(s => s.family === 'Corona' || s.family === 'Bandido');
-      if (coronaSpirits.length > 0) {
-        focusElement(`spirit-tile-${coronaSpirits[0].id}`);
-        const batchUpdates = {};
-        coronaSpirits.forEach(s => { batchUpdates[s.id] = 2; });
-        handleBatchUpdate(batchUpdates);
-        showToast(`★ Paso 5: Familia ${coronaSpirits[0].family} dominada por completo`);
-      }
-    }, 10800);
-
-    // Step 6 (13400ms): Scroll smoothly to top header Download button
-    setTimeout(() => {
-      focusElement('tour-download-btn');
-    }, 13400);
-
-    // Step 7 (15000ms): Open HD Canvas Export Poster Modal
+    // Step 3 (4000ms): Immediately open HD Canvas Export Poster Modal
     setTimeout(() => {
       document.querySelectorAll('.demo-focus-active').forEach(el => el.classList.remove('demo-focus-active'));
-      showToast('📸 Paso 6: Generando y Exportando Póster HD...');
+      showToast('📸 ¡LISTA GENERADA Y EXPORTADA A IMAGEN HD!');
       setExportModalOpen(true);
-    }, 15000);
+    }, 4000);
   };
 
   // Copy plain text helper (codes, handles)
