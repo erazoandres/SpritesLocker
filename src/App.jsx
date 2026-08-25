@@ -136,60 +136,73 @@ export default function App() {
     });
   };
 
-  // Execute interactive real usage simulation sequence
+  // Execute interactive real usage simulation sequence with calm timing & smooth transitions
   const handleAcceptDemo = () => {
     setDemoPromptOpen(false);
-    showToast('🎬 INICIANDO DEMOSTRACIÓN EN VIVO DE USO REAL...');
+    showToast('🎬 INICIANDO DEMOSTRACIÓN GUIADA DE USO REAL...');
     
     // Ensure view is on collection grid tab
     setActiveTab('coleccion');
 
-    // Smooth scroll to spirit grid
+    // Step 1 (600ms): Smooth scroll to spirit grid
     setTimeout(() => {
       const gridEl = document.getElementById('tour-sprite-grid');
       if (gridEl) gridEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 400);
+    }, 600);
 
-    // Step 1: Auto-mark Spirit 0 as Tengo (1)
+    // Step 2 (1800ms): Auto-mark Spirit 0 as Tengo (1)
     setTimeout(() => {
       if (activeSpirits[0]) {
         handleToggleSpirit(activeSpirits[0].id);
-        showToast(`✓ Marcado ${activeSpirits[0].family} (Obtenido)`);
+        showToast(`✓ Paso 1: Marcado ${activeSpirits[0].family} (Obtenido)`);
       }
-    }, 1200);
+    }, 1800);
 
-    // Step 2: Auto-mark Spirit 0 as Dominado (2)
+    // Step 3 (3800ms): Auto-mark Spirit 0 as Dominado (2)
     setTimeout(() => {
       if (activeSpirits[0]) {
         handleToggleSpirit(activeSpirits[0].id);
-        showToast(`★ Dominado ${activeSpirits[0].family}`);
+        showToast(`★ Paso 2: Dominado ${activeSpirits[0].family} (Dorado)`);
       }
-    }, 2400);
+    }, 3800);
 
-    // Step 3: Auto-mark Spirit 1 as Tengo (1)
+    // Step 4 (5800ms): Auto-mark Spirit 1 as Tengo (1)
     setTimeout(() => {
       if (activeSpirits[1]) {
         handleToggleSpirit(activeSpirits[1].id);
-        showToast(`✓ Marcado ${activeSpirits[1].family} (Obtenido)`);
+        showToast(`✓ Paso 3: Marcado ${activeSpirits[1].family} (Obtenido)`);
       }
-    }, 3500);
+    }, 5800);
 
-    // Step 4: Batch mark Corona family as Dominado
+    // Step 5 (7800ms): Auto-mark Spirit 2 as Tengo (1)
+    setTimeout(() => {
+      if (activeSpirits[2]) {
+        handleToggleSpirit(activeSpirits[2].id);
+        showToast(`✓ Paso 4: Marcado ${activeSpirits[2].family} (Obtenido)`);
+      }
+    }, 7800);
+
+    // Step 6 (10000ms): Batch mark Corona family as Dominado
     setTimeout(() => {
       const coronaSpirits = activeSpirits.filter(s => s.family === 'Corona' || s.family === 'Bandido');
       if (coronaSpirits.length > 0) {
         const batchUpdates = {};
         coronaSpirits.forEach(s => { batchUpdates[s.id] = 2; });
         handleBatchUpdate(batchUpdates);
-        showToast(`★ Familia ${coronaSpirits[0].family} dominada por completo`);
+        showToast(`★ Paso 5: Familia ${coronaSpirits[0].family} dominada por completo`);
       }
-    }, 4800);
+    }, 10000);
 
-    // Step 5: Open HD Canvas Export Poster Modal
+    // Step 7 (12800ms): Scroll smoothly to top header
     setTimeout(() => {
-      showToast('📸 ¡GENERANDO Y EXPORTANDO PÓSTER EN ALTA DEFINICIÓN!');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 12800);
+
+    // Step 8 (14200ms): Open HD Canvas Export Poster Modal
+    setTimeout(() => {
+      showToast('📸 Paso 6: Generando y Exportando Póster HD...');
       setExportModalOpen(true);
-    }, 6200);
+    }, 14200);
   };
 
   // Copy plain text helper (codes, handles)
