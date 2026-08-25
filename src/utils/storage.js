@@ -1,4 +1,5 @@
-const STORAGE_KEY = 'icharly-sprite-locker-v2';
+const STORAGE_KEY_GEN2 = 'el-casillero-user-state-gen2';
+const STORAGE_KEY_GEN1 = 'el-casillero-user-state-gen1';
 
 /**
  * Encodes the user state object into a URL-safe Base64 string.
@@ -41,38 +42,48 @@ export function decodeHashToState(hash) {
 }
 
 /**
- * Loads saved state ONLY if an explicit share hash (#locker=...) is present in URL.
- * Otherwise ALWAYS returns a 100% clean, empty state.
+ * Loads saved state from LocalStorage or URL hash for specified generation.
  */
-export function loadSavedState() {
-  // Purge any local storage memory to guarantee zero persistence on page refresh
-  try {
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem('icharly-sprite-locker-v1');
-  } catch {
-    // Ignore storage restrictions
-  }
-
+export function loadSavedState(gen = 2) {
   // Check URL hash for explicit shareable link
   const hashParams = new URLSearchParams(window.location.hash.slice(1));
   const lockerHash = hashParams.get('locker');
   if (lockerHash) {
     const sharedState = decodeHashToState(lockerHash);
-    if (sharedState) {
-      return sharedState;
-    }
+    if (sharedState) return sharedState;
   }
 
-  // Always return 100% empty state by default
-  return {};
+  // Load from LocalStorage browser data
+  try {
+    const key = gen === 1 ? STORAGE_KEY_GEN1 : STORAGE_KEY_GEN2;
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : {};
+  } catch (err) {
+    console.warn('Failed loading saved state from LocalStorage:', err);
+    return {};
+  }
 }
 
 /**
- * Saves current state only transiently if needed.
+ * Saves current user selections into LocalStorage.
  */
-export function saveLocalState(state) {
-  // No-op for persistent LocalStorage to enforce 100% clean refresh
-  return true;
+export function saveLocalState(state, gen = 2) {
+  try {
+    const key = gen === 1 ? STORAGE_KEY_GEN1 : STORAGE_KEY_GEN2;
+    localStorage.setItem(key, JSON.stringify(state || {}));
+  } catch (err) {
+    console.warn('Failed saving state to LocalStorage:', err);
+  }
+}
+
+/**
+ * Clears saved selections for a specific generation.
+ */
+export function clearLocalState(gen = 2) {
+  try {
+    const key = gen === 1 ? STORAGE_KEY_GEN1 : STORAGE_KEY_GEN2;
+    localStorage.removeItem(key);
+  } catch {}
 }
 
 /**

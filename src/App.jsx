@@ -25,27 +25,16 @@ const GithubIcon = ({ className }) => (
 export default function App() {
   const [activeGen, setActiveGen] = useState(2); // Default to Gen 2 Override
   const [activeTab, setActiveTab] = useState('coleccion'); // 'coleccion', 'codigos'
-  const [userState, setUserState] = useState({}); // Always 100% unmarked by default
+  const [userState, setUserState] = useState({});
   const [redeemedCodes, setRedeemedCodes] = useState([]);
   const [toastMessage, setToastMessage] = useState('');
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [totalVisits, setTotalVisits] = useState(null);
 
-  // Initialize startup: purge local storage, start clean, and track global visits
+  // Initialize startup: load saved user selections from LocalStorage
   useEffect(() => {
-    try {
-      localStorage.removeItem('icharly-sprite-locker-v2');
-      localStorage.removeItem('icharly-sprite-locker-v1');
-    } catch {}
-
-    const hashParams = new URLSearchParams(window.location.hash.slice(1));
-    const lockerHash = hashParams.get('locker');
-    if (lockerHash) {
-      const saved = loadSavedState();
-      setUserState(saved);
-    } else {
-      setUserState({}); // Guarantee 100% unmarked, clean state on initial load & reload
-    }
+    const saved = loadSavedState(2);
+    setUserState(saved);
 
     const savedCodes = loadRedeemedCodes();
     setRedeemedCodes(savedCodes);
@@ -56,21 +45,36 @@ export default function App() {
     });
   }, []);
 
-  // Update a single spirit status
+  // Switch generation and restore its corresponding saved selections from LocalStorage
+  const handleSelectGen = (newGen) => {
+    if (newGen === activeGen) return;
+    saveLocalState(userState, activeGen);
+    setActiveGen(newGen);
+    const savedForNewGen = loadSavedState(newGen);
+    setUserState(savedForNewGen);
+  };
+
+  // Update a single spirit status and save to LocalStorage
   const handleToggleSpirit = (id) => {
     setUserState(prev => {
       const current = prev[id] || 0;
       const next = (current + 1) % 3; // 0 -> 1 -> 2 -> 0
-      return { ...prev, [id]: next };
+      const updated = { ...prev, [id]: next };
+      saveLocalState(updated, activeGen);
+      return updated;
     });
   };
 
-  // Batch update multiple spirits at once
+  // Batch update multiple spirits at once and save to LocalStorage
   const handleBatchUpdate = (updates) => {
-    setUserState(prev => ({ ...prev, ...updates }));
+    setUserState(prev => {
+      const updated = { ...prev, ...updates };
+      saveLocalState(updated, activeGen);
+      return updated;
+    });
   };
 
-  // Reset current generation state to 100% unmarked
+  // Reset current generation state and update LocalStorage
   const handleResetGen = () => {
     const spiritsToReset = activeGen === 2 ? GEN2_SPIRITS : GEN1_SPIRITS;
     if (!window.confirm(`¿Desmarcar todo en la Generación ${activeGen}?`)) {
@@ -82,6 +86,7 @@ export default function App() {
       const updated = Object.fromEntries(
         Object.entries(prev).filter(([key]) => !resetIds.has(key))
       );
+      saveLocalState(updated, activeGen);
       showToast(`Generación ${activeGen} desmarcada por completo`);
       return updated;
     });
@@ -161,7 +166,7 @@ export default function App() {
         totalVisits={totalVisits}
         activeTab={activeTab}
         onSelectTab={setActiveTab}
-        onSelectGen={setActiveGen}
+        onSelectGen={handleSelectGen}
       />
 
       <main className="pb-12 max-w-7xl mx-auto px-2.5 sm:px-6 w-full overflow-x-hidden">
