@@ -77,7 +77,7 @@ async function loadImageAsDataUrl(url) {
  * Styled in Obsidian Neon Emerald & Hyper Violet aesthetic.
  * Stamps official Vercel call-to-action watermark: 'INGRESA A: https://spriteslocker.vercel.app/'
  */
-export async function generateCollectionImage(spirits, state, generationNumber, filterType = 'todos', totalVisits = null) {
+export async function generateCollectionImage(spirits, state, generationNumber, filterType = 'todos', totalVisits = null, totalExports = null) {
   // Filter dataset to include STRICTLY marked/selected spirits (status >= 1 || status === 3)
   const markedSpirits = spirits.filter(item => {
     const status = state[item.id] || 0;
@@ -182,20 +182,24 @@ export async function generateCollectionImage(spirits, state, generationNumber, 
   ctx.fillStyle = '#94a3b8';
   ctx.fillText(`TOTAL: ${markedSpirits.length}`, 580, 183);
 
-  // Real Live Visit Counter Stamp on Top Right (Only if real number)
-  if (totalVisits !== null && totalVisits !== undefined && totalVisits > 0) {
+  // Live Visits and Live Exports Counter Badges on Top Right
+  if (totalVisits !== null && totalVisits !== undefined) {
     ctx.textAlign = 'right';
     ctx.fillStyle = 'rgba(18, 21, 36, 0.8)';
     ctx.strokeStyle = 'rgba(163, 230, 53, 0.4)';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.roundRect(canvasWidth - 320, 45, 260, 44, 12);
+    ctx.roundRect(canvasWidth - 520, 45, 460, 44, 12);
     ctx.fill();
     ctx.stroke();
 
+    ctx.font = '800 18px "JetBrains Mono", monospace';
     ctx.fillStyle = '#a3e635';
-    ctx.font = '800 20px "JetBrains Mono", monospace';
-    ctx.fillText(`👁 ${Number(totalVisits).toLocaleString()} VISITAS`, canvasWidth - 80, 74);
+    ctx.fillText(`👁 ${Number(totalVisits).toLocaleString()} VISITAS`, canvasWidth - 270, 73);
+
+    const exportsVal = totalExports !== null && totalExports !== undefined ? Number(totalExports) : 0;
+    ctx.fillStyle = '#a78bfa';
+    ctx.fillText(`📸 ${exportsVal.toLocaleString()} EXPORTACIONES`, canvasWidth - 80, 73);
     ctx.textAlign = 'left';
   }
 

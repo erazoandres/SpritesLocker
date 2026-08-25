@@ -17,7 +17,7 @@ import {
   loadRedeemedCodes, 
   saveRedeemedCodes 
 } from './utils/storage';
-import { trackVisit } from './utils/analytics';
+import { trackVisit, fetchExportCount, trackExport } from './utils/analytics';
 
 const GithubIcon = ({ className }) => (
   <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -35,6 +35,7 @@ export default function App() {
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [welcomeOpen, setWelcomeOpen] = useState(false);
   const [totalVisits, setTotalVisits] = useState(null);
+  const [totalExports, setTotalExports] = useState(null);
 
   // Initialize startup: check first-time visitor & load saved user selections
   useEffect(() => {
@@ -49,9 +50,14 @@ export default function App() {
     const savedCodes = loadRedeemedCodes();
     setRedeemedCodes(savedCodes);
 
-    // Track global visit and fetch total visits count
+    // Track global visit count
     trackVisit().then(count => {
       if (count !== null) setTotalVisits(count);
+    });
+
+    // Fetch live exports count from document BAmrUK0Bk8D9FTjWkCYZ
+    fetchExportCount().then(count => {
+      if (count !== null) setTotalExports(count);
     });
   }, []);
 
@@ -149,6 +155,13 @@ export default function App() {
     setExportModalOpen(true);
   };
 
+  // Trigger export counter increment (document BAmrUK0Bk8D9FTjWkCYZ, field exportaciones)
+  const handleRecordExport = () => {
+    trackExport().then(newCount => {
+      if (newCount !== null) setTotalExports(newCount);
+    });
+  };
+
   // Statistics calculation for active generation
   const activeStats = useMemo(() => {
     let obtained = 0;
@@ -175,6 +188,7 @@ export default function App() {
         totalObtained={activeStats.obtained}
         totalSpirits={activeSpirits.length}
         totalVisits={totalVisits}
+        totalExports={totalExports}
         activeTab={activeTab}
         onSelectTab={setActiveTab}
         onSelectGen={handleSelectGen}
@@ -236,6 +250,8 @@ export default function App() {
           userState={userState}
           activeGen={activeGen}
           totalVisits={totalVisits}
+          totalExports={totalExports}
+          onRecordExport={handleRecordExport}
           onClose={() => setExportModalOpen(false)}
           onShowToast={showToast}
         />

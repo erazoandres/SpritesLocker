@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Menu, X, Gift, Trophy, Eye, Info } from 'lucide-react';
+import { Download, Menu, X, Gift, Trophy, Eye, Info, Camera } from 'lucide-react';
 
 const GithubIcon = ({ className }) => (
   <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -14,6 +14,7 @@ export default function MinimalHeader({
   totalObtained, 
   totalSpirits,
   totalVisits,
+  totalExports,
   activeTab,
   onSelectTab,
   onSelectGen,
@@ -114,13 +115,22 @@ export default function MinimalHeader({
             </button>
           </nav>
 
-          {/* Desktop Right Group (Visits, Progress, GitHub) */}
+          {/* Desktop Right Group (Visits, Exports, Progress, GitHub) */}
           <div className="hidden sm:flex items-center gap-2 shrink-0">
+            
             {/* Visit Counter */}
-            {totalVisits !== null && totalVisits !== undefined && totalVisits > 0 && (
+            {totalVisits !== null && totalVisits !== undefined && (
               <div className="flex items-center gap-1.5 bg-[#111320] px-3 py-1.5 rounded-xl border border-white/10 text-xs font-mono text-slate-400" title="Visitas reales acumuladas">
                 <Eye className="w-3.5 h-3.5 text-lime-400" />
                 <span className="font-bold text-slate-200">{Number(totalVisits).toLocaleString()}</span>
+              </div>
+            )}
+
+            {/* Live Exports Counter (Document: BAmrUK0Bk8D9FTjWkCYZ, Field: exportaciones) */}
+            {totalExports !== null && totalExports !== undefined && (
+              <div className="flex items-center gap-1.5 bg-[#111320] px-3 py-1.5 rounded-xl border border-violet-500/30 text-xs font-mono text-slate-400" title="Exportaciones acumuladas a captura HD (Documento BAmrUK0Bk8D9FTjWkCYZ)">
+                <Camera className="w-3.5 h-3.5 text-violet-400" />
+                <span className="font-bold text-slate-200">{Number(totalExports).toLocaleString()}</span>
               </div>
             )}
 
@@ -165,7 +175,7 @@ export default function MinimalHeader({
 
         </div>
 
-        {/* Second Row on Mobile: Gen Switcher & Progress Pill & Visits */}
+        {/* Second Row on Mobile: Gen Switcher & Progress Pill & Visits & Exports */}
         <div className="flex sm:hidden items-center justify-between gap-1.5 pt-1.5 border-t border-white/5 font-mono text-[11px] w-full">
           {/* Mobile Gen Switcher */}
           <div className="flex items-center bg-[#111320] p-0.5 rounded-xl border border-white/10">
@@ -189,10 +199,18 @@ export default function MinimalHeader({
 
           <div className="flex items-center gap-1.5">
             {/* Mobile Visit Counter */}
-            {totalVisits !== null && totalVisits !== undefined && totalVisits > 0 && (
+            {totalVisits !== null && totalVisits !== undefined && (
               <div className="flex items-center gap-1 bg-[#111320] px-2 py-0.5 rounded-xl border border-white/10 text-slate-400">
                 <Eye className="w-3 h-3 text-lime-400" />
                 <span className="font-bold text-slate-200">{Number(totalVisits).toLocaleString()}</span>
+              </div>
+            )}
+
+            {/* Mobile Exports Counter */}
+            {totalExports !== null && totalExports !== undefined && (
+              <div className="flex items-center gap-1 bg-[#111320] px-2 py-0.5 rounded-xl border border-violet-500/30 text-slate-400">
+                <Camera className="w-3 h-3 text-violet-400" />
+                <span className="font-bold text-slate-200">{Number(totalExports).toLocaleString()}</span>
               </div>
             )}
 

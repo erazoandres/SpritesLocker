@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Download, Share2, Loader2, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { generateCollectionImage } from '../utils/canvasExport';
 
-export default function ExportModal({ spirits, userState, activeGen, totalVisits, onClose, onShowToast }) {
+export default function ExportModal({ spirits, userState, activeGen, totalVisits, totalExports, onRecordExport, onClose, onShowToast }) {
   const [loading, setLoading] = useState(true);
   const [exportResult, setExportResult] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -10,7 +10,7 @@ export default function ExportModal({ spirits, userState, activeGen, totalVisits
   // Check marked count
   const markedCount = spirits.filter(s => (userState[s.id] || 0) >= 1 || (userState[s.id] || 0) === 3).length;
 
-  // Automatically generate PNG image for full collection on mount
+  // Automatically generate PNG image for full collection on mount and record export
   useEffect(() => {
     let active = true;
     async function runExport() {
@@ -23,9 +23,12 @@ export default function ExportModal({ spirits, userState, activeGen, totalVisits
       }
 
       try {
-        const result = await generateCollectionImage(spirits, userState, activeGen, 'todos', totalVisits);
+        const result = await generateCollectionImage(spirits, userState, activeGen, 'todos', totalVisits, totalExports);
         if (active) {
           setExportResult(result);
+          if (onRecordExport) {
+            onRecordExport(); // Increment live export counter in Firestore document BAmrUK0Bk8D9FTjWkCYZ!
+          }
         }
       } catch (err) {
         console.error(err);
@@ -36,7 +39,7 @@ export default function ExportModal({ spirits, userState, activeGen, totalVisits
     }
     runExport();
     return () => { active = false; };
-  }, [spirits, userState, activeGen, totalVisits, markedCount]);
+  }, [spirits, userState, activeGen, totalVisits, totalExports, markedCount]);
 
   const handleDownload = () => {
     if (!exportResult) return;
