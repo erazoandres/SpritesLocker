@@ -1,35 +1,54 @@
 /**
- * Global Visit Tracking Utility for EL CASILLERO · Andrés Erazo.
- * Uses a lightweight REST counter API with session de-duplication to track visits.
+ * Real Production Visit Counter powered by Firebase Realtime Database / Firestore.
+ * Project: EL CASILLERO · Andrés Erazo
  */
-const NAMESPACE = 'erazoandres-sprites-locker';
-const KEY = 'total-visits';
-const SESSION_STORAGE_KEY = 'el-casillero-visited-session';
+
+// Firebase Realtime Database REST endpoint (configurable via .env or direct URL)
+const FIREBASE_DB_URL = import.meta.env.VITE_FIREBASE_DB_URL || 'https://el-casillero-visitas-default-rtdb.firebaseio.com';
+const SESSION_KEY = 'el-casillero-session-visit';
 
 export async function trackVisit() {
-  const isVisited = sessionStorage.getItem(SESSION_STORAGE_KEY);
+  const isVisited = sessionStorage.getItem(SESSION_KEY);
   
   try {
-    // Determine whether to increment hit or read count based on session
-    const action = isVisited ? 'get' : 'up';
-    const response = await fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/${KEY}/${action}`);
+    // 1. Fetch current visit count from Firebase Realtime Database
+    const res = await fetch(`${FIREBASE_DB_URL}/visitas.json`);
+    let currentCount = 0;
     
-    if (response.ok) {
-      const data = await response.json();
-      sessionStorage.setItem(SESSION_STORAGE_KEY, 'true');
+    if (res.ok) {
+      const data = await res.json();
+      if (data && typeof data === 'object' && data.count !== undefined) {
+        currentCount = Number(data.count) || 0;
+      } else if (typeof data === 'number') {
+        currentCount = data;
+      }
+    }
+
+    // 2. If new user session, increment count in Firebase
+    if (!isVisited) {
+      currentCount = Math.max(1, currentCount + 1);
+      await fetch(`${FIREBASE_DB_URL}/visitas.json`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ count: currentCount, lastUpdated: new Date().toISOString() })
+      });
+      sessionStorage.setItem(SESSION_KEY, 'true');
+    }
+
+    return currentCount;
+  } catch (err) {
+    console.warn('Firebase counter error:', err);
+  }
+
+  // Backup fallback REST counter if Firebase DB URL is unconfigured
+  try {
+    const backupRes = await fetch(`https://api.counterapi.dev/v1/erazoandres-sprites-locker/total-visits/${isVisited ? 'get' : 'up'}`);
+    if (backupRes.ok) {
+      const data = await backupRes.json();
+      sessionStorage.setItem(SESSION_KEY, 'true');
       return data.count || data.value || 0;
     }
-  } catch (err) {
-    // Backup counter endpoint
-    try {
-      const backupRes = await fetch(`https://api.countapi.xyz/${isVisited ? 'get' : 'hit'}/${NAMESPACE}/${KEY}`);
-      if (backupRes.ok) {
-        const backupData = await backupRes.json();
-        sessionStorage.setItem(SESSION_STORAGE_KEY, 'true');
-        return backupData.value || 0;
-      }
-    } catch {}
-  }
+  } catch {}
 
   return null;
 }
