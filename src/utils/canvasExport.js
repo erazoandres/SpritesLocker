@@ -131,8 +131,8 @@ export async function generateCollectionImage(spirits, state, generationNumber, 
   ctx.font = '900 56px Arial, sans-serif';
   ctx.fillText('EL CASILLERO', 60, 75);
 
-  // Live Visit Counter Stamp on Top Right
-  if (totalVisits !== null && totalVisits !== undefined) {
+  // Real Live Visit Counter Stamp on Top Right (Only if real number)
+  if (totalVisits !== null && totalVisits !== undefined && totalVisits > 0) {
     ctx.textAlign = 'right';
     ctx.fillStyle = '#b7ff24';
     ctx.font = '800 22px Arial, sans-serif';
