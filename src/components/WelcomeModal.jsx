@@ -24,7 +24,7 @@ export default function WelcomeModal({ onClose }) {
       } else {
         clearInterval(timer);
       }
-    }, 85); // 85ms per character typing speed
+    }, 85);
 
     return () => clearInterval(timer);
   }, []);
@@ -79,24 +79,21 @@ export default function WelcomeModal({ onClose }) {
           </p>
         </div>
 
-        {/* iCharly-Afton Inspiration Credits Box */}
-        <div className="bg-violet-950/20 border border-violet-500/30 p-3 rounded-2xl text-left space-y-1">
-          <div className="flex items-center gap-1.5 text-[11px] font-mono font-extrabold text-violet-300 uppercase tracking-wider">
-            <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" />
-            <span>CRÉDITOS E INSPIRACIÓN</span>
+        {/* Compact iCharly-Afton Inspiration Credits Pill */}
+        <div className="bg-violet-950/30 border border-violet-500/30 px-3 py-2 rounded-xl text-left flex items-center justify-between gap-2 text-[10px] font-mono">
+          <div className="flex items-center gap-1.5 text-slate-300 truncate">
+            <Heart className="w-3 h-3 text-rose-400 fill-rose-400 shrink-0" />
+            <span className="truncate">Inspirado en el proyecto de <strong className="text-white font-bold">iCharly-Afton</strong></span>
           </div>
-          <p className="text-[11px] text-slate-300 leading-tight">
-            Basado en la idea e inspiración del proyecto original de <strong className="text-white font-bold">iCharly-Afton</strong>.
-          </p>
           <a
             href="https://icharly-afton-sprite-locker.icharly-afton.chatgpt.site/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-violet-400 hover:text-violet-300 underline decoration-violet-400/40 underline-offset-2 transition pt-0.5"
+            className="inline-flex items-center gap-1 font-bold text-violet-400 hover:text-violet-300 underline decoration-violet-400/40 shrink-0 transition"
             title="Ver sitio original de iCharly-Afton"
           >
-            <span>Ver proyecto de iCharly-Afton</span>
-            <ExternalLink className="w-3 h-3" />
+            <span>Ver original</span>
+            <ExternalLink className="w-2.5 h-2.5" />
           </a>
         </div>
 
