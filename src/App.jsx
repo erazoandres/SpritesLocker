@@ -21,10 +21,11 @@ import {
 import { trackVisit, fetchExportCount, trackExport } from './utils/analytics';
 import { startGuidedTour, runGuidedDemoSequence } from './utils/tour';
 
-const GithubIcon = ({ className }) => (
+const PortfolioIcon = ({ className }) => (
   <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-    <path d="M9 18c-4.51 2-5-2-7-2" />
+    <circle cx="12" cy="12" r="10" />
+    <line x1="2" y1="12" x2="22" y2="12" />
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
   </svg>
 );
 
@@ -255,17 +256,17 @@ export default function App() {
 
       </main>
 
-      {/* Minimal Footer with direct link to GitHub profile (https://github.com/erazoandres) */}
+      {/* Minimal Footer with direct link to Portfolio (https://erazoportafolio.vercel.app/) */}
       <footer className="border-t border-white/5 bg-[#08090f]/90 py-6 text-center text-xs text-slate-500 font-mono flex items-center justify-center gap-1.5 flex-wrap px-4 w-full">
         <span>EL CASILLERO · Creado por</span>
         <a
-          href="https://github.com/erazoandres"
+          href="https://erazoportafolio.vercel.app/"
           target="_blank"
           rel="noopener noreferrer"
           className="text-emerald-400 hover:text-emerald-300 font-bold underline decoration-emerald-400/40 underline-offset-4 flex items-center gap-1 transition"
-          title="Ver perfil de GitHub de Andrés Erazo"
+          title="Ver Portafolio de Andrés Erazo"
         >
-          <GithubIcon className="w-3.5 h-3.5" />
+          <PortfolioIcon className="w-3.5 h-3.5" />
           <span>Andrés Erazo (@erazoandres)</span>
         </a>
       </footer>
