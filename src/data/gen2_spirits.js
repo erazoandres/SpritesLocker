@@ -142,11 +142,11 @@ export const GEN2_FAMILIES = [
     order: ['Base']
   },
   {
-    slug: 'ciber',
-    name: 'Ciber',
-    en: 'Cyber',
+    slug: 'sonic-ciber',
+    name: 'Sonic',
+    en: 'Sonic',
     rarity: 'Épico',
-    ability: 'Mejora la velocidad de recarga y aumenta la capacidad del cargador de armas energéticas.',
+    ability: 'Mejora la velocidad de movimiento y aumenta la capacidad del cargador de armas energéticas.',
     customImage: '/sprites/variations/ciber.png',
     order: ['Base']
   },
