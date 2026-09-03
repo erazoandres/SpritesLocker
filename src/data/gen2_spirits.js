@@ -1,4 +1,4 @@
-// Generation 2 Override Spirits (17 families x 3 variants = 51 items)
+// Generation 2 Override Spirits (12 standard 3-variant families + 5 single-type spirits = 41 items)
 export const GEN2_FAMILIES = [
   {
     slug: 'arbustin',
@@ -139,7 +139,7 @@ export const GEN2_FAMILIES = [
     rarity: 'Legendario',
     ability: 'Otorga un escudo protector cibernético y aumenta la resistencia contra detonaciones.',
     customImage: '/sprites/variations/caballero.png',
-    order: ['Base', 'Oro', 'Maestro de Trucos']
+    order: ['Base']
   },
   {
     slug: 'ciber',
@@ -148,7 +148,7 @@ export const GEN2_FAMILIES = [
     rarity: 'Épico',
     ability: 'Mejora la velocidad de recarga y aumenta la capacidad del cargador de armas energéticas.',
     customImage: '/sprites/variations/ciber.png',
-    order: ['Base', 'Oro', 'Maestro de Trucos']
+    order: ['Base']
   },
   {
     slug: 'onigiri',
@@ -157,7 +157,7 @@ export const GEN2_FAMILIES = [
     rarity: 'Raro',
     ability: 'Regenera salud continuamente mientras estés fuera del alcance del combate activo.',
     customImage: '/sprites/variations/onigiri.png',
-    order: ['Base', 'Oro', 'Maestro de Trucos']
+    order: ['Base']
   },
   {
     slug: 'cientifico',
@@ -166,7 +166,7 @@ export const GEN2_FAMILIES = [
     rarity: 'Legendario',
     ability: 'Rastrea cofres y contenedores cercanos a través de obstáculos y acelera la reanimación.',
     customImage: '/sprites/variations/cientifico.png',
-    order: ['Base', 'Oro', 'Maestro de Trucos']
+    order: ['Base']
   },
   {
     slug: 'rey-pixel',
@@ -175,7 +175,7 @@ export const GEN2_FAMILIES = [
     rarity: 'Mítico',
     ability: 'Otorga un multiplicador de experiencia por eliminación y proyecta una corona resplandeciente.',
     customImage: '/sprites/variations/rey_pixel.png',
-    order: ['Base', 'Oro', 'Maestro de Trucos']
+    order: ['Base']
   }
 ];
 
@@ -191,8 +191,8 @@ export const GEN2_SPIRITS = GEN2_FAMILIES.flatMap(fam =>
     id: `g2-${fam.slug}-${variant === 'Base' ? 'base' : variant === 'Oro' ? 'oro' : 'maestro-trucos'}`,
     family: fam.name,
     familyEn: fam.en,
-    variant,
-    rarity: variant === 'Base' ? fam.rarity : 'Especial',
+    variant: fam.order.length === 1 ? 'Único' : variant,
+    rarity: variant === 'Base' || fam.order.length === 1 ? fam.rarity : 'Especial',
     summonCost: 0,
     image: getImageFile(fam, variant),
     generation: 2,
