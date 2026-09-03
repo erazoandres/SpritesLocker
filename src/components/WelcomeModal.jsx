@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Sparkles, Code2, Heart, ExternalLink, HelpCircle } from 'lucide-react';
+import { ArrowRight, Sparkles, Code2, HelpCircle } from 'lucide-react';
 import { startGuidedTour } from '../utils/tour';
-
-const GithubIcon = ({ className }) => (
-  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-    <path d="M9 18c-4.51 2-5-2-7-2" />
-  </svg>
-);
 
 export default function WelcomeModal({ onClose, onStartTour }) {
   const [isWarping, setIsWarping] = useState(false);
@@ -92,24 +85,6 @@ export default function WelcomeModal({ onClose, onStartTour }) {
           <p className="text-xs text-slate-300 leading-relaxed font-sans">
             Plataforma minimalista y de alta precisión para organizar, filtrar y exportar en captura HD tu colección de <strong className="text-white">Espíritus de Fortnite Override y Runners</strong> (Generaciones 1 y 2).
           </p>
-        </div>
-
-        {/* Compact iCharly-Afton Inspiration Credits Pill */}
-        <div className="bg-violet-950/30 border border-violet-500/30 px-3 py-2 rounded-xl text-left flex items-center justify-between gap-2 text-[10px] font-mono">
-          <div className="flex items-center gap-1.5 text-slate-300 truncate">
-            <Heart className="w-3 h-3 text-rose-400 fill-rose-400 shrink-0" />
-            <span className="truncate">Inspirado en el proyecto de <strong className="text-white font-bold">iCharly-Afton</strong></span>
-          </div>
-          <a
-            href="https://icharly-afton-sprite-locker.icharly-afton.chatgpt.site/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 font-bold text-violet-400 hover:text-violet-300 underline decoration-violet-400/40 shrink-0 transition"
-            title="Ver sitio original de iCharly-Afton"
-          >
-            <span>Ver original</span>
-            <ExternalLink className="w-2.5 h-2.5" />
-          </a>
         </div>
 
         {/* Action Group: Entrance & Tour Launcher */}
