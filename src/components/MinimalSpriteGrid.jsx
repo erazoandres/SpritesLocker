@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef } from 'react';
-import { Search, Check, Star, RotateCcw, CheckCircle2, XCircle } from 'lucide-react';
+import { Search, Check, Star, RotateCcw, CheckCircle2, XCircle, Sparkles, Shield } from 'lucide-react';
 
 export default function MinimalSpriteGrid({ 
   spirits, 
@@ -81,136 +81,179 @@ export default function MinimalSpriteGrid({
     }
   };
 
-  // Batch family actions
+  // Batch update family by active mode or target status
   const handleBatchFamily = (famName, targetStatus) => {
-    const famItems = spirits.filter(s => s.family === famName);
+    const famSpirits = spirits.filter(s => s.family === famName);
     const updates = {};
-    famItems.forEach(s => { updates[s.id] = targetStatus; });
+    famSpirits.forEach(s => {
+      updates[s.id] = targetStatus;
+    });
     if (onBatchUpdate) onBatchUpdate(updates);
   };
 
+  // Helper for rarity badge styling
+  const getRarityBadgeStyle = (rarity) => {
+    switch (rarity) {
+      case 'Mítico':
+        return 'bg-amber-500/15 border-amber-400/40 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.2)]';
+      case 'Legendario':
+        return 'bg-violet-500/15 border-violet-400/40 text-violet-300 shadow-[0_0_10px_rgba(168,85,247,0.2)]';
+      case 'Épico':
+        return 'bg-cyan-500/15 border-cyan-400/40 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.2)]';
+      case 'Raro':
+        return 'bg-emerald-500/15 border-emerald-400/40 text-emerald-300 shadow-[0_0_10px_rgba(16,185,129,0.2)]';
+      default:
+        return 'bg-slate-800/80 border-slate-700 text-slate-300';
+    }
+  };
+
+  // Helper for card rarity core background gradient
+  const getCardCoreBg = (rarity, status) => {
+    if (status === 2) return 'bg-gradient-to-b from-amber-500/20 via-[#121528] to-[#0a0b12] border-amber-400 shadow-xl shadow-amber-500/15 card-mastered';
+    if (status === 1) return 'bg-gradient-to-b from-emerald-500/20 via-[#101426] to-[#0a0b12] border-emerald-400 shadow-xl shadow-emerald-500/15';
+    if (status === 3) return 'bg-gradient-to-b from-rose-500/20 via-[#181120] to-[#0a0b12] border-rose-500 shadow-xl shadow-rose-500/15';
+
+    switch (rarity) {
+      case 'Mítico':
+        return 'bg-gradient-to-b from-amber-500/10 via-[#101322] to-[#0a0b12] border-white/10 hover:border-amber-400/50 hover:shadow-amber-500/10';
+      case 'Legendario':
+        return 'bg-gradient-to-b from-violet-500/10 via-[#101322] to-[#0a0b12] border-white/10 hover:border-violet-400/50 hover:shadow-violet-500/10';
+      case 'Épico':
+        return 'bg-gradient-to-b from-cyan-500/10 via-[#101322] to-[#0a0b12] border-white/10 hover:border-cyan-400/50 hover:shadow-cyan-500/10';
+      case 'Raro':
+        return 'bg-gradient-to-b from-emerald-500/10 via-[#101322] to-[#0a0b12] border-white/10 hover:border-emerald-400/50 hover:shadow-emerald-500/10';
+      default:
+        return 'bg-[#101322] border-white/10 hover:border-white/20';
+    }
+  };
+
   return (
-    <section id="coleccion" className="max-w-7xl mx-auto px-4 sm:px-6 my-4 space-y-3 font-sans">
+    <div className="space-y-4 font-sans w-full overflow-x-hidden">
       
-      {/* OBSIDIAN EMERALD TOOLBAR */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-2.5 bg-[#101322] p-2.5 rounded-2xl border border-white/10 shadow-lg">
+      {/* HUD Quick Filter & Mode Control Bar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#0d0f1a]/90 p-3 sm:p-4 rounded-3xl border border-white/10 shadow-xl backdrop-blur-md">
         
-        {/* Mode Selector */}
-        <div className="flex items-center gap-1 bg-[#0a0b12] p-1 rounded-xl border border-white/10 w-full md:w-auto font-mono">
+        {/* Left: Mode Switcher (Tengo vs Faltan) */}
+        <div className="flex items-center gap-1.5 bg-[#141728] p-1 rounded-2xl border border-white/10 w-full sm:w-auto">
           <button
             onClick={() => setActiveMode('tengo')}
-            className={`flex-1 md:flex-initial px-3.5 py-1 rounded-lg text-xs font-extrabold flex items-center justify-center gap-1.5 transition active:scale-95 ${
-              activeMode === 'tengo'
-                ? 'bg-emerald-400 text-slate-950 font-black shadow-md shadow-emerald-500/20'
-                : 'text-emerald-400 hover:bg-emerald-500/10'
+            className={`flex-1 sm:flex-none px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+              activeMode === 'tengo' 
+                ? 'bg-emerald-400 text-slate-950 font-black shadow-lg shadow-emerald-500/20' 
+                : 'text-slate-400 hover:text-white'
             }`}
+            title="Modo normal: haz clic para marcar lo que TENGO (1-Tap)"
           >
             <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>MARCAR TENGO</span>
+            <span>MODO: TENGO (✓)</span>
           </button>
 
           <button
             onClick={() => setActiveMode('faltan')}
-            className={`flex-1 md:flex-initial px-3.5 py-1 rounded-lg text-xs font-extrabold flex items-center justify-center gap-1.5 transition active:scale-95 ${
-              activeMode === 'faltan'
-                ? 'bg-rose-500 text-white font-black shadow-md shadow-rose-500/20'
-                : 'text-rose-400 hover:bg-rose-500/10'
+            className={`flex-1 sm:flex-none px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+              activeMode === 'faltan' 
+                ? 'bg-rose-500 text-white font-black shadow-lg shadow-rose-500/20' 
+                : 'text-slate-400 hover:text-white'
             }`}
+            title="Modo rápido: haz clic para marcar lo que ME FALTA (Carmesí)"
           >
             <XCircle className="w-3.5 h-3.5" />
-            <span>MARCAR FALTAN</span>
+            <span>MODO: ME FALTA (✗)</span>
           </button>
         </div>
 
-        {/* Search Input */}
-        <div className="relative w-full md:w-72">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            placeholder="BUSCAR ESPÍRITU..."
-            className="w-full bg-[#0a0b12] border border-white/10 rounded-xl pl-8 pr-3 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 transition font-mono"
-          />
-        </div>
+        {/* Right Group: Search Bar & Reset */}
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          
+          {/* Fast Search Input */}
+          <div className="relative flex-1 sm:w-64">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Buscar por nombre, habilidad..."
+              className="w-full bg-[#141728] border border-white/10 rounded-2xl pl-9 pr-4 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400/60 font-mono transition"
+            />
+            {searchQuery && (
+              <button 
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white"
+              >
+                ✕
+              </button>
+            )}
+          </div>
 
-        {/* Action Buttons: Reset Progress */}
-        <div className="flex items-center gap-2 w-full md:w-auto justify-end font-mono">
+          {/* Reset Current Gen Button */}
           <button
             onClick={onResetGen}
-            className="p-2 rounded-xl bg-[#0a0b12] border border-white/10 hover:border-rose-500/40 text-slate-400 hover:text-rose-400 transition flex items-center gap-1 text-xs"
-            title={`Reiniciar progreso de Gen ${activeGen}`}
+            className="flex items-center gap-1.5 bg-[#141728] hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-white/10 hover:border-rose-500/30 px-3 py-1.5 rounded-2xl text-xs font-mono font-bold transition active:scale-95 shrink-0"
+            title={`Desmarcar toda la Generación ${activeGen}`}
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">REINICIAR</span>
+            <span className="hidden sm:inline">Limpiar Gen {activeGen}</span>
           </button>
+
         </div>
 
       </div>
 
-      {/* FAMILY PILLS HEADER & DRAG SUGGESTION HINT */}
-      <div className="flex items-center justify-between px-1 text-[11px] font-mono text-slate-400">
-        <span className="font-bold uppercase tracking-wider text-slate-300">
-          FAMILIAS ({familyList.length - 1})
-        </span>
-        <span className="text-emerald-400 font-extrabold flex items-center gap-1 animate-pulse">
-          ‹ ↔ ARRASTRA PARA VER MÁS ›
-        </span>
-      </div>
-
-      {/* MANUAL DRAG-TO-SCROLL FAMILY PILLS ROW */}
+      {/* Horizontal Scrollable Family Quick Pills Bar */}
       <div 
         ref={familyBarRef}
         onMouseDown={handleMouseDown}
         onMouseLeave={handleMouseLeave}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
-        className={`flex items-center gap-1.5 overflow-x-auto pb-1.5 pt-0.5 scrollbar-none font-mono text-xs select-none ${
-          isMouseDown ? 'cursor-grabbing' : 'cursor-grab'
-        }`}
+        className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none cursor-grab active:cursor-grabbing select-none w-full"
       >
         {familyList.map(fam => {
+          const isSelected = selectedFamily === fam;
           if (fam === 'Todas') {
             return (
               <button
                 key={fam}
                 onClick={() => setSelectedFamily('Todas')}
-                className={`px-3.5 py-1 rounded-xl text-xs font-extrabold shrink-0 transition ${
-                  selectedFamily === 'Todas'
-                    ? 'bg-emerald-400 text-slate-950 font-black shadow-md shadow-emerald-500/20'
-                    : 'bg-[#101322] border border-white/10 text-slate-400 hover:text-white'
+                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition shrink-0 border ${
+                  isSelected 
+                    ? 'bg-emerald-400 text-slate-950 border-emerald-400 font-extrabold shadow-md shadow-emerald-500/20' 
+                    : 'bg-[#101322] text-slate-400 border-white/10 hover:text-white hover:border-white/20'
                 }`}
               >
-                Todas
+                TODAS LAS FAMILIAS
               </button>
             );
           }
 
-          const famItems = spirits.filter(s => s.family === fam);
-          const obtainedCount = famItems.filter(s => (userState[s.id] || 0) >= 1).length;
-          const isHighlighted = hoveredFamily === fam;
-          const isSelected = selectedFamily === fam;
+          // Count obtained for this family
+          const famSpirits = spirits.filter(s => s.family === fam);
+          const famObtained = famSpirits.filter(s => (userState[s.id] || 0) >= 1).length;
+          const famMastered = famSpirits.filter(s => userState[s.id] === 2).length;
+          const isComplete = famSpirits.length > 0 && famObtained === famSpirits.length;
 
           return (
             <div
               key={fam}
               onMouseEnter={() => setHoveredFamily(fam)}
               onMouseLeave={() => setHoveredFamily(null)}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-mono shrink-0 transition border ${
-                isSelected
-                  ? 'bg-emerald-500/20 text-emerald-400 border-emerald-400 font-bold shadow-md shadow-emerald-500/10'
-                  : isHighlighted
-                  ? 'bg-[#161a2e] border-emerald-400/50 text-white'
-                  : 'bg-[#101322] border-white/10 text-slate-300 hover:border-white/20'
+              className={`flex items-center gap-1 bg-[#101322] px-2.5 py-1.5 rounded-xl border text-xs font-mono whitespace-nowrap transition shrink-0 ${
+                isSelected 
+                  ? 'border-emerald-400 text-emerald-400 bg-emerald-500/10' 
+                  : isComplete
+                  ? 'border-amber-400/50 text-amber-400 bg-amber-500/10'
+                  : 'border-white/10 text-slate-300 hover:border-white/20'
               }`}
             >
-              <button onClick={() => setSelectedFamily(isSelected ? 'Todas' : fam)} className="flex items-center gap-1">
-                <span className="font-semibold">{fam}</span>
-                <small className="text-[10px] text-slate-500">({obtainedCount}/{famItems.length})</small>
+              <button
+                onClick={() => setSelectedFamily(fam)}
+                className="font-bold hover:underline decoration-emerald-400/40"
+              >
+                {fam} ({famObtained}/{famSpirits.length})
               </button>
 
-              {/* Micro Family Action Triggers */}
-              <div className="flex items-center gap-1 border-l border-white/10 pl-1.5">
+              {/* 1-Tap Batch Actions for Family */}
+              <div className="flex items-center gap-0.5 ml-1 border-l border-white/10 pl-1.5">
                 <button
                   onClick={() => handleBatchFamily(fam, 1)}
                   className="hover:text-emerald-400 text-[10px] text-slate-500 px-0.5 font-black"
@@ -231,8 +274,8 @@ export default function MinimalSpriteGrid({
         })}
       </div>
 
-      {/* OBSIDIAN NEON SPIRIT CARDS GRID (6 Columns Desktop, 2 Columns Mobile) */}
-      <div id="tour-sprite-grid" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-3.5">
+      {/* OBSIDIAN NEON AAA GAMING SPIRIT CARDS MATRIX GRID (6 Columns Desktop, 2 Columns Mobile) */}
+      <div id="tour-sprite-grid" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
         {filteredSpirits.map(spirit => {
           const status = userState[spirit.id] ?? 0;
           const isObtained = status === 1;
@@ -247,54 +290,75 @@ export default function MinimalSpriteGrid({
               onClick={() => handleTileTap(spirit.id)}
               onMouseEnter={() => setTooltipSpirit(spirit)}
               onMouseLeave={() => setTooltipSpirit(null)}
-              className={`relative w-full aspect-[3/3.7] p-3 rounded-2xl border cursor-pointer flex flex-col justify-between items-center transition-all duration-200 hover:scale-[1.02] select-none ${
+              className={`group relative w-full aspect-[3/4.1] p-3 rounded-2xl cursor-pointer flex flex-col justify-between items-center transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] select-none overflow-hidden ${
                 isFamilyHovered ? 'ring-2 ring-emerald-400 scale-[1.03] z-20' : ''
-              } ${
-                isMissingFlagged
-                  ? 'border-rose-500 bg-rose-500/10 shadow-lg shadow-rose-500/10'
-                  : isMastered 
-                  ? 'border-amber-400 bg-amber-500/10 shadow-lg shadow-amber-500/10' 
-                  : isObtained 
-                  ? 'border-emerald-400 bg-emerald-500/10 shadow-lg shadow-emerald-500/10' 
-                  : 'border-white/10 bg-[#101322] hover:border-white/20 hover:bg-[#16192c]'
-              }`}
+              } ${getCardCoreBg(spirit.rarity, status)}`}
             >
-              {/* Header Badge */}
-              <div className="w-full flex items-center justify-between text-xs font-mono">
-                <span className="text-slate-200 font-bold uppercase truncate w-3/4 font-display">
-                  {spirit.family}
-                </span>
-                <div className={`w-4 h-4 rounded-md flex items-center justify-center text-xs font-bold shrink-0 ${
+              
+              {/* Metallic Ambient Ray Glow Background Effect */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none z-0" />
+
+              {/* Card Header: Rarity Micro Badge (Left) & Tactile Status Pill (Right) */}
+              <div className="w-full flex items-center justify-between text-xs font-mono z-10">
+                
+                {/* Rarity Tag */}
+                <div className={`px-2 py-0.5 rounded-full border text-[9px] font-black uppercase tracking-wider ${getRarityBadgeStyle(spirit.rarity)}`}>
+                  {spirit.rarity || 'Especial'}
+                </div>
+
+                {/* Status Indicator Pill */}
+                <div className={`px-2 py-0.5 rounded-full flex items-center gap-1 text-[10px] font-black font-mono transition-all duration-200 ${
                   isMissingFlagged
-                    ? 'bg-rose-500 text-white font-black'
+                    ? 'bg-rose-500 text-white shadow-[0_0_12px_rgba(244,63,94,0.6)]'
                     : isMastered 
-                    ? 'bg-amber-400 text-slate-950 font-black' 
+                    ? 'bg-amber-400 text-slate-950 shadow-[0_0_12px_rgba(251,191,36,0.6)]' 
                     : isObtained 
-                    ? 'bg-emerald-400 text-slate-950 font-black' 
-                    : 'bg-slate-800 text-slate-500'
+                    ? 'bg-emerald-400 text-slate-950 shadow-[0_0_12px_rgba(52,211,153,0.6)]' 
+                    : 'bg-slate-800/80 border border-white/10 text-slate-400 group-hover:border-white/30 group-hover:text-white'
                 }`}>
-                  {isMissingFlagged ? '✗' : isMastered ? <Star className="w-2.5 h-2.5 fill-slate-950" /> : isObtained ? <Check className="w-2.5 h-2.5" /> : '+'}
+                  {isMissingFlagged ? (
+                    <>
+                      <span>FALTA</span>
+                    </>
+                  ) : isMastered ? (
+                    <>
+                      <Star className="w-2.5 h-2.5 fill-slate-950" />
+                      <span>DOMINADO</span>
+                    </>
+                  ) : isObtained ? (
+                    <>
+                      <Check className="w-2.5 h-2.5 stroke-[3]" />
+                      <span>TENGO</span>
+                    </>
+                  ) : (
+                    <span>+ AGREGAR</span>
+                  )}
                 </div>
               </div>
 
-              {/* Sprite Image Render (112px height) */}
-              <div className="my-auto h-[112px] w-full flex items-center justify-center">
+              {/* 3D Floating Spirit Render with Heavy Drop Shadow & Hover Scale */}
+              <div className="my-auto h-[120px] w-full flex items-center justify-center z-10 relative">
                 <img
                   src={spirit.image}
                   alt={spirit.family}
-                  className="max-h-full max-w-[98%] object-contain"
+                  className="max-h-full max-w-[95%] object-contain drop-shadow-[0_12px_16px_rgba(0,0,0,0.85)] group-hover:scale-110 transition-transform duration-300 ease-out"
                   loading="lazy"
                 />
               </div>
 
-              {/* Variant Label */}
-              <div className="w-full text-center pt-1 border-t border-white/5">
-                <span className={`text-xs font-black truncate w-full block font-mono ${
+              {/* Card Footer: Family Title & Variant Sub-badge */}
+              <div className="w-full text-center z-10 space-y-0.5 pt-1.5 border-t border-white/10 bg-black/30 -mx-3 -mb-3 p-2.5 rounded-b-2xl backdrop-blur-xs">
+                <strong className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-white block leading-tight font-display truncate">
+                  {spirit.family}
+                </strong>
+                
+                <span className={`text-[10px] font-mono font-bold uppercase tracking-wider block truncate ${
                   isMissingFlagged ? 'text-rose-400' : isMastered ? 'text-amber-400' : isObtained ? 'text-emerald-400' : 'text-slate-400'
                 }`}>
                   {spirit.variant}
                 </span>
               </div>
+
             </div>
           );
         })}
@@ -302,23 +366,17 @@ export default function MinimalSpriteGrid({
 
       {/* Floating Glass Tooltip when hovering over any spirit tile */}
       {tooltipSpirit && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-[#101322] border border-emerald-400/50 p-3.5 rounded-xl shadow-2xl backdrop-blur-md max-w-sm w-full space-y-1 animate-fadeIn pointer-events-none font-sans">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-[#101322]/95 border border-emerald-400/50 p-3.5 rounded-2xl shadow-2xl backdrop-blur-md max-w-sm w-full space-y-1.5 animate-fadeIn pointer-events-none font-sans">
           <div className="flex items-center justify-between text-xs font-mono">
-            <strong className="text-white font-bold font-display">{tooltipSpirit.family} · {tooltipSpirit.variant}</strong>
-            <span className="text-emerald-400 font-bold">{tooltipSpirit.rarity}</span>
+            <strong className="text-white font-black text-sm uppercase tracking-wide font-display">{tooltipSpirit.family} · {tooltipSpirit.variant}</strong>
+            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${getRarityBadgeStyle(tooltipSpirit.rarity)}`}>
+              {tooltipSpirit.rarity}
+            </span>
           </div>
-          <p className="text-xs text-slate-300 leading-snug">{tooltipSpirit.ability || 'Espíritu de colección'}</p>
+          <p className="text-xs text-slate-300 leading-snug font-sans">{tooltipSpirit.ability || 'Espíritu de colección'}</p>
         </div>
       )}
 
-      {/* Empty Search Result */}
-      {filteredSpirits.length === 0 && (
-        <div className="text-center py-10 bg-[#101322] rounded-2xl border border-dashed border-white/10 space-y-1">
-          <h4 className="text-xs font-bold text-white uppercase font-display">NO SE ENCONTRARON ESPÍRITUS</h4>
-          <p className="text-[11px] text-slate-400">Intenta con otro término de búsqueda.</p>
-        </div>
-      )}
-
-    </section>
+    </div>
   );
 }
