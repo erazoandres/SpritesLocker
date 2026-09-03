@@ -1,4 +1,4 @@
-// Generation 2 Override Spirits (36 items: 12 families x 3 variants)
+// Generation 2 Override Spirits (17 families x 3 variants = 51 items)
 export const GEN2_FAMILIES = [
   {
     slug: 'arbustin',
@@ -131,13 +131,59 @@ export const GEN2_FAMILIES = [
     cheatFile: 'T_Icon_BR_Creature_Sprite_Killswitch_Cheatmaster_L.webp',
     goldFile: 'T_Icon_BR_Creature_Sprite_Killswitch_Gold_L.webp',
     order: ['Base', 'Oro', 'Maestro de Trucos']
+  },
+  {
+    slug: 'caballero',
+    name: 'Caballero',
+    en: 'Knight',
+    rarity: 'Legendario',
+    ability: 'Otorga un escudo protector cibernético y aumenta la resistencia contra detonaciones.',
+    customImage: '/sprites/variations/caballero.png',
+    order: ['Base', 'Oro', 'Maestro de Trucos']
+  },
+  {
+    slug: 'ciber',
+    name: 'Ciber',
+    en: 'Cyber',
+    rarity: 'Épico',
+    ability: 'Mejora la velocidad de recarga y aumenta la capacidad del cargador de armas energéticas.',
+    customImage: '/sprites/variations/ciber.png',
+    order: ['Base', 'Oro', 'Maestro de Trucos']
+  },
+  {
+    slug: 'onigiri',
+    name: 'Onigiri',
+    en: 'Onigiri',
+    rarity: 'Raro',
+    ability: 'Regenera salud continuamente mientras estés fuera del alcance del combate activo.',
+    customImage: '/sprites/variations/onigiri.png',
+    order: ['Base', 'Oro', 'Maestro de Trucos']
+  },
+  {
+    slug: 'cientifico',
+    name: 'Científico',
+    en: 'Scientist',
+    rarity: 'Legendario',
+    ability: 'Rastrea cofres y contenedores cercanos a través de obstáculos y acelera la reanimación.',
+    customImage: '/sprites/variations/cientifico.png',
+    order: ['Base', 'Oro', 'Maestro de Trucos']
+  },
+  {
+    slug: 'rey-pixel',
+    name: 'Rey Píxel',
+    en: 'Pixel King',
+    rarity: 'Mítico',
+    ability: 'Otorga un multiplicador de experiencia por eliminación y proyecta una corona resplandeciente.',
+    customImage: '/sprites/variations/rey_pixel.png',
+    order: ['Base', 'Oro', 'Maestro de Trucos']
   }
 ];
 
 const getImageFile = (fam, variant) => {
-  if (variant === 'Base') return fam.baseFile;
-  if (variant === 'Oro') return fam.goldFile;
-  return fam.cheatFile;
+  if (fam.customImage) return fam.customImage;
+  if (variant === 'Base') return `/sprites/gen2/${fam.baseFile}`;
+  if (variant === 'Oro') return `/sprites/gen2/${fam.goldFile}`;
+  return `/sprites/gen2/${fam.cheatFile}`;
 };
 
 export const GEN2_SPIRITS = GEN2_FAMILIES.flatMap(fam =>
@@ -148,7 +194,7 @@ export const GEN2_SPIRITS = GEN2_FAMILIES.flatMap(fam =>
     variant,
     rarity: variant === 'Base' ? fam.rarity : 'Especial',
     summonCost: 0,
-    image: `/sprites/gen2/${getImageFile(fam, variant)}`,
+    image: getImageFile(fam, variant),
     generation: 2,
     ability: fam.ability
   }))
