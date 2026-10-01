@@ -55,6 +55,40 @@ export default function MinimalSpriteGrid({
     if (onBatchUpdate) onBatchUpdate(updates);
   };
 
+  // Batch mark all spirits as obtained (status 1)
+  const handleMarkAllObtained = () => {
+    const updates = {};
+    spirits.forEach(s => {
+      updates[s.id] = 1;
+    });
+    if (onBatchUpdate) onBatchUpdate(updates);
+  };
+
+  // Batch mark unobtained spirits as missing (status 3)
+  const handleMarkOnlyMissing = () => {
+    const updates = {};
+    spirits.forEach(s => {
+      const st = userState[s.id] ?? 0;
+      if (st !== 1 && st !== 2) {
+        updates[s.id] = 3;
+      }
+    });
+    if (onBatchUpdate) onBatchUpdate(updates);
+  };
+
+  // Batch reset all spirits back to unobtained (status 0)
+  const handleResetAll = () => {
+    if (window.confirm('¿Desmarcar todo el casillero de espíritus?')) {
+      if (onResetGen) {
+        onResetGen();
+      } else {
+        const updates = {};
+        spirits.forEach(s => { updates[s.id] = 0; });
+        if (onBatchUpdate) onBatchUpdate(updates);
+      }
+    }
+  };
+
   // Helper for rarity badge styling
   const getRarityBadgeStyle = (rarity) => {
     switch (rarity) {
@@ -74,6 +108,40 @@ export default function MinimalSpriteGrid({
   return (
     <div className="space-y-2 font-sans w-full overflow-x-hidden">
       
+      {/* Seamless Inline Quick Actions (No bulky container bar) */}
+      <div className="flex flex-wrap items-center justify-between gap-2 px-1 pb-1 font-mono text-xs select-none">
+        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">MARCADO RÁPIDO:</span>
+        
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <button
+            onClick={handleMarkAllObtained}
+            className="px-2.5 py-1 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 font-bold transition flex items-center gap-1 text-[11px] active:scale-95"
+            title="Marcar todos los espíritus como Obtenidos (✓)"
+          >
+            <Check className="w-3 h-3 stroke-[3]" />
+            <span>SOLO LOS QUE TIENES</span>
+          </button>
+
+          <button
+            onClick={handleMarkOnlyMissing}
+            className="px-2.5 py-1 rounded-xl bg-rose-500/10 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 font-bold transition flex items-center gap-1 text-[11px] active:scale-95"
+            title="Marcar todos los espíritus no obtenidos como Faltantes (✗)"
+          >
+            <span className="font-black text-xs">✗</span>
+            <span>SOLO LOS QUE FALTAN</span>
+          </button>
+
+          <button
+            onClick={handleResetAll}
+            className="px-2.5 py-1 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-400 hover:text-slate-200 border border-white/10 font-bold transition flex items-center gap-1 text-[11px] active:scale-95"
+            title="Desmarcar todo el casillero"
+          >
+            <RotateCcw className="w-3 h-3" />
+            <span>LIMPIAR</span>
+          </button>
+        </div>
+      </div>
+
       {/* --- GLOBAL TOP VARIANT COLUMN HEADERS (EXACTLY MATCHING KIWEGAME REFERENCE SCREENSHOT) --- */}
       <div className="hidden md:flex items-center gap-2 sm:gap-3 px-1 py-1.5 border-b border-white/10 font-mono text-[11px] font-black uppercase tracking-wider text-slate-400 select-none">
         
