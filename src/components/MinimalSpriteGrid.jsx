@@ -299,7 +299,7 @@ export default function MinimalSpriteGrid({
                     return (
                       <div 
                         key={colVariantName} 
-                        className="w-full h-20 sm:h-24 opacity-20 border border-dashed border-white/5 rounded-2xl flex items-center justify-center text-[8px] font-mono text-slate-600"
+                        className="w-full h-32 sm:h-36 md:h-40 opacity-20 border border-dashed border-white/5 rounded-2xl flex items-center justify-center text-[8px] font-mono text-slate-600"
                       />
                     );
                   }
@@ -313,7 +313,7 @@ export default function MinimalSpriteGrid({
                       onClick={() => handleTileTap(spirit.id)}
                       onMouseEnter={() => setTooltipSpirit(spirit)}
                       onMouseLeave={() => setTooltipSpirit(null)}
-                      className={`group relative h-20 sm:h-24 rounded-2xl p-1 cursor-pointer flex flex-col items-center justify-center transition-all duration-200 select-none ${
+                      className={`group relative h-32 sm:h-36 md:h-40 rounded-2xl p-1 cursor-pointer flex flex-col items-center justify-center transition-all duration-200 select-none ${
                         status === 2
                           ? 'border-2 border-amber-400 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.25)] ring-1 ring-amber-400/40'
                           : status === 1
@@ -325,14 +325,14 @@ export default function MinimalSpriteGrid({
                     >
                       {/* Top-Right Circular Status Badge (Directly matching KiweGame screenshot) */}
                       {status > 0 && (
-                        <div className={`absolute top-1 right-1 w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center text-[9px] font-black z-20 shadow-md ${
+                        <div className={`absolute top-1.5 right-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[10px] font-black z-20 shadow-md ${
                           status === 2
                             ? 'bg-amber-400 text-slate-950'
                             : status === 1
                             ? 'bg-emerald-400 text-slate-950'
                             : 'bg-rose-500 text-white'
                         }`}>
-                          {status === 2 ? <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-slate-950" /> : status === 1 ? <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 stroke-[3]" /> : '✗'}
+                          {status === 2 ? <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-slate-950" /> : status === 1 ? <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[3]" /> : '✗'}
                         </div>
                       )}
 
