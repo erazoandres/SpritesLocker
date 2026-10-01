@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useRef } from 'react';
-import { Check, Star, RotateCcw, CheckCircle2, XCircle } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Check, Star, RotateCcw } from 'lucide-react';
 
 const VARIANT_COLUMNS = ['Base', 'Oro', 'Maestro de Trucos', 'Hacker de botín', 'Cazarrecompensas'];
 
@@ -13,7 +13,6 @@ export default function MinimalSpriteGrid({
 }) {
   const [activeFamilyRow, setActiveFamilyRow] = useState(null);
   const [tooltipSpirit, setTooltipSpirit] = useState(null);
-  const [activeMode, setActiveMode] = useState('tengo'); // 'tengo' or 'faltan'
 
   // Smooth scroll row to center of viewport
   const scrollToFamilyRow = (famName) => {
@@ -38,23 +37,12 @@ export default function MinimalSpriteGrid({
     return groups;
   }, [spirits]);
 
-  // Handle tile tap based on active click mode
+  // Handle tile tap (toggles spirit status & centers row)
   const handleTileTap = (id, famName) => {
     if (famName && activeFamilyRow !== famName) {
       scrollToFamilyRow(famName);
     }
-    if (activeMode === 'faltan') {
-      const current = userState[id] ?? 0;
-      if (current === 3) {
-        const updates = { [id]: 0 };
-        if (onBatchUpdate) onBatchUpdate(updates);
-      } else {
-        const updates = { [id]: current === 3 ? 0 : 3 };
-        if (onBatchUpdate) onBatchUpdate(updates);
-      }
-    } else {
-      onToggleSpirit(id);
-    }
+    onToggleSpirit(id);
   };
 
   // Batch update family by active mode or target status
@@ -63,30 +51,6 @@ export default function MinimalSpriteGrid({
     const updates = {};
     famSpirits.forEach(s => {
       updates[s.id] = targetStatus;
-    });
-    if (onBatchUpdate) onBatchUpdate(updates);
-  };
-
-  // Batch mark all unobtained spirits as missing (status 3: Faltante / Me falta)
-  const handleMarkOnlyMissing = () => {
-    const updates = {};
-    spirits.forEach(s => {
-      const st = userState[s.id] ?? 0;
-      if (st !== 1 && st !== 2) {
-        updates[s.id] = 3;
-      }
-    });
-    if (onBatchUpdate) onBatchUpdate(updates);
-  };
-
-  // Batch clear/unmark all missing spirits back to 0
-  const handleClearMissing = () => {
-    const updates = {};
-    spirits.forEach(s => {
-      const st = userState[s.id] ?? 0;
-      if (st === 3) {
-        updates[s.id] = 0;
-      }
     });
     if (onBatchUpdate) onBatchUpdate(updates);
   };
@@ -110,64 +74,6 @@ export default function MinimalSpriteGrid({
   return (
     <div className="space-y-2 font-sans w-full overflow-x-hidden">
       
-      {/* --- TOP ACTION CONTROL BAR: QUICK FALTANTES BATCH & TAP MODE TOGGLE --- */}
-      <div id="tour-faltantes-bar" className="bg-[#101322]/90 border border-white/10 p-2.5 sm:p-3 rounded-2xl mb-2 flex items-center justify-end backdrop-blur-md shadow-xl">
-        
-        {/* Action Controls & Mode Toggle */}
-        <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2 font-mono text-xs w-full">
-          
-          {/* Mode Toggle Button: TENGO (✓) vs ME FALTA (✗) */}
-          <div className="flex items-center bg-[#0a0b12] p-1 rounded-xl border border-white/10 shrink-0">
-            <span className="text-[10px] text-slate-400 font-bold px-2 uppercase hidden lg:inline">MODO:</span>
-            <button
-              onClick={() => setActiveMode('tengo')}
-              className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition flex items-center gap-1.5 ${
-                activeMode === 'tengo'
-                  ? 'bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/20'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-              title="Al hacer clic en una casilla: Alternar estado Tengo (✓) / Dominado (★)"
-            >
-              <Check className="w-3.5 h-3.5 stroke-[3]" />
-              <span>TENGO (✓)</span>
-            </button>
-            <button
-              onClick={() => setActiveMode('faltan')}
-              className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition flex items-center gap-1.5 ${
-                activeMode === 'faltan'
-                  ? 'bg-rose-500 text-white shadow-md shadow-rose-500/20'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-              title="Al hacer clic en una casilla: Marcar directo como Me Falta (✗)"
-            >
-              <XCircle className="w-3.5 h-3.5" />
-              <span>ME FALTA (✗)</span>
-            </button>
-          </div>
-
-          {/* Prominent Batch Action Button: MARCAR LO QUE ME FALTA */}
-          <button
-            onClick={handleMarkOnlyMissing}
-            className="px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/40 text-rose-300 hover:text-rose-200 font-black text-[11px] uppercase tracking-wider transition flex items-center gap-1.5 active:scale-95 shadow-md shadow-rose-500/10 shrink-0"
-            title="Marcar automáticamente como Faltante (✗) todos los espíritus que aún no has obtenido"
-          >
-            <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
-            <span>[ ✗ MARCAR SOLO FALTANTES ]</span>
-          </button>
-
-          {/* Quick Clear Missing Button: LIMPIAR FALTANTES */}
-          <button
-            onClick={handleClearMissing}
-            className="px-2.5 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-white/10 text-slate-300 font-bold text-[11px] uppercase transition flex items-center gap-1.5 active:scale-95 shrink-0"
-            title="Quitar el estado Me falta (✗) de todos los espíritus"
-          >
-            <RotateCcw className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-            <span>[ ↺ LIMPIAR FALTANTES ]</span>
-          </button>
-
-        </div>
-      </div>
-
       {/* --- GLOBAL TOP VARIANT COLUMN HEADERS (EXACTLY MATCHING KIWEGAME REFERENCE SCREENSHOT) --- */}
       <div className="hidden md:flex items-center gap-2 sm:gap-3 px-1 py-1.5 border-b border-white/10 font-mono text-[11px] font-black uppercase tracking-wider text-slate-400 select-none">
         
