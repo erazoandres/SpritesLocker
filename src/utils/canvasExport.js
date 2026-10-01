@@ -73,11 +73,270 @@ async function loadImageAsDataUrl(url) {
 }
 
 /**
+ * Generates Fortnite.GG Poster style matrix export image (10 columns, dual family block layout, checkbox indicators & crowns)
+ */
+async function generatePosterCollectionImage(spirits, state, generationNumber, totalVisits = null, totalExports = null) {
+  const VARIANT_COLUMNS = ['Base', 'Oro', 'Maestro de Trucos', 'Hacker de botín', 'Cazarrecompensas'];
+  
+  // Group spirits by family
+  const familyNames = Array.from(new Set(spirits.map(s => s.family)));
+  const halfCount = Math.ceil(familyNames.length / 2);
+  const leftFamilies = familyNames.slice(0, halfCount);
+  const rightFamilies = familyNames.slice(halfCount);
+
+  // Preload Base64 Data URIs for ALL spirits
+  const loadedImagesMap = {};
+  await Promise.all(
+    spirits.map(async item => {
+      const img = await loadImageAsDataUrl(item.image);
+      if (img) loadedImagesMap[item.id] = img;
+    })
+  );
+
+  // Statistics
+  let countObtained = 0;
+  let countMastered = 0;
+  spirits.forEach(s => {
+    const st = state[s.id] || 0;
+    if (st >= 1) countObtained++;
+    if (st === 2) countMastered++;
+  });
+
+  const canvasWidth = 1400;
+  const leftMargin = 50;
+  const rightMargin = 50;
+  const centerGap = 40;
+  const blockWidth = Math.floor((canvasWidth - leftMargin - rightMargin - centerGap) / 2);
+  const colWidth = Math.floor(blockWidth / 5);
+  const rowHeight = 135;
+  const maxRows = Math.max(leftFamilies.length, rightFamilies.length);
+  const headerHeight = 150;
+  const footerHeight = 60;
+  const canvasHeight = headerHeight + maxRows * rowHeight + footerHeight;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Canvas context no disponible');
+
+  // Background: Dark Armory Room texture & gradient
+  const bgGradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
+  bgGradient.addColorStop(0, '#0a0c14');
+  bgGradient.addColorStop(0.5, '#0f1220');
+  bgGradient.addColorStop(1, '#141627');
+  ctx.fillStyle = bgGradient;
+  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+  // Ambient Lighting Spotlights
+  const lightLeft = ctx.createRadialGradient(canvasWidth * 0.25, 200, 50, canvasWidth * 0.25, 200, 600);
+  lightLeft.addColorStop(0, 'rgba(16, 185, 129, 0.12)');
+  lightLeft.addColorStop(1, 'rgba(0, 0, 0, 0)');
+  ctx.fillStyle = lightLeft;
+  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+  const lightRight = ctx.createRadialGradient(canvasWidth * 0.75, 200, 50, canvasWidth * 0.75, 200, 600);
+  lightRight.addColorStop(0, 'rgba(245, 158, 11, 0.12)');
+  lightRight.addColorStop(1, 'rgba(0, 0, 0, 0)');
+  ctx.fillStyle = lightRight;
+  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+  // --- HEADER SECTION (FORTNITE.GG / SPRITES STYLED) ---
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '900 34px "Space Grotesk", Arial, sans-serif';
+  ctx.fillText(`SPRITESLOCKER.VERCEL.APP / ESPÍRITUS GEN ${generationNumber}`, canvasWidth / 2, 52);
+
+  // Top Stat Badges (OWNED & MASTERED)
+  const badgeY = 74;
+  const badgeW = 120;
+  const badgeH = 50;
+  const badgeGap = 20;
+  const badgeStartX = canvasWidth / 2 - badgeW - badgeGap / 2;
+
+  // Box 1: OWNED
+  ctx.fillStyle = 'rgba(20, 24, 40, 0.95)';
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.roundRect(badgeStartX, badgeY, badgeW, badgeH, 10);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.font = '900 16px "JetBrains Mono", monospace';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(`${countObtained} / ${spirits.length}`, badgeStartX + badgeW / 2, badgeY + 24);
+  ctx.font = '800 10px "JetBrains Mono", monospace';
+  ctx.fillStyle = '#10b981';
+  ctx.fillText('OBTENIDOS', badgeStartX + badgeW / 2, badgeY + 41);
+
+  // Box 2: MASTERED
+  const badge2X = badgeStartX + badgeW + badgeGap;
+  ctx.fillStyle = 'rgba(20, 24, 40, 0.95)';
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+  ctx.beginPath();
+  ctx.roundRect(badge2X, badgeY, badgeW, badgeH, 10);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.font = '900 16px "JetBrains Mono", monospace';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(`${countMastered} / ${spirits.length}`, badge2X + badgeW / 2, badgeY + 24);
+  ctx.font = '800 10px "JetBrains Mono", monospace';
+  ctx.fillStyle = '#f59e0b';
+  ctx.fillText('DOMINADOS', badge2X + badgeW / 2, badgeY + 41);
+
+  ctx.textAlign = 'left';
+
+  // --- GRID RENDER FUNCTION ---
+  const renderFamilyBlock = (familiesList, blockStartX) => {
+    familiesList.forEach((famName, rowIndex) => {
+      const famSpirits = spirits.filter(s => s.family === famName);
+      
+      VARIANT_COLUMNS.forEach((variantName, colIndex) => {
+        const spirit = famSpirits.find(s => s.variant === variantName) || (variantName === 'Base' && famSpirits.length === 1 ? famSpirits[0] : null);
+        const cellX = blockStartX + colIndex * colWidth;
+        const cellY = headerHeight + rowIndex * rowHeight;
+
+        if (!spirit) return;
+
+        const status = state[spirit.id] ?? 0;
+        const img = loadedImagesMap[spirit.id];
+
+        // 1. Draw Spirit PNG Render
+        if (img && img.width > 0) {
+          const maxImgW = colWidth - 16;
+          const maxImgH = 80;
+          let drawW = img.width;
+          let drawH = img.height;
+          const ratio = Math.min(maxImgW / drawW, maxImgH / drawH);
+          drawW = Math.floor(drawW * ratio);
+          drawH = Math.floor(drawH * ratio);
+
+          const imgX = Math.floor(cellX + (colWidth - drawW) / 2);
+          const imgY = Math.floor(cellY + 12 + (maxImgH - drawH) / 2);
+
+          // If status === 0 (unobtained), render with slight opacity
+          if (status === 0) ctx.globalAlpha = 0.45;
+          ctx.drawImage(img, imgX, imgY, drawW, drawH);
+          ctx.globalAlpha = 1.0;
+
+          // 2. If status === 2 (Mastered), draw Golden Crown atop head
+          if (status === 2) {
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath();
+            const crownX = cellX + colWidth / 2;
+            const crownY = cellY + 4;
+            ctx.moveTo(crownX - 7, crownY + 8);
+            ctx.lineTo(crownX - 9, crownY);
+            ctx.lineTo(crownX - 3, crownY + 4);
+            ctx.lineTo(crownX, crownY - 1);
+            ctx.lineTo(crownX + 3, crownY + 4);
+            ctx.lineTo(crownX + 9, crownY);
+            ctx.lineTo(crownX + 7, crownY + 8);
+            ctx.closePath();
+            ctx.fill();
+          }
+        }
+
+        // 3. Draw Checkbox Badge at bottom center of cell
+        const boxSize = 20;
+        const boxX = Math.floor(cellX + (colWidth - boxSize) / 2);
+        const boxY = cellY + rowHeight - 32;
+
+        if (status === 1) {
+          // TENGO (Emerald Checkbox)
+          ctx.fillStyle = '#10b981';
+          ctx.beginPath();
+          ctx.roundRect(boxX, boxY, boxSize, boxSize, 5);
+          ctx.fill();
+
+          ctx.textAlign = 'center';
+          ctx.fillStyle = '#090a0f';
+          ctx.font = '900 13px Arial, sans-serif';
+          ctx.fillText('✓', boxX + boxSize / 2, boxY + 14);
+        } else if (status === 2) {
+          // DOMINADO (Gold Checkbox with Crown)
+          ctx.fillStyle = '#f59e0b';
+          ctx.beginPath();
+          ctx.roundRect(boxX, boxY, boxSize, boxSize, 5);
+          ctx.fill();
+
+          ctx.textAlign = 'center';
+          ctx.fillStyle = '#090a0f';
+          ctx.font = '900 13px Arial, sans-serif';
+          ctx.fillText('✓', boxX + boxSize / 2, boxY + 14);
+        } else if (status === 3) {
+          // FALTANTE (Rose Checkbox)
+          ctx.fillStyle = '#f43f5e';
+          ctx.beginPath();
+          ctx.roundRect(boxX, boxY, boxSize, boxSize, 5);
+          ctx.fill();
+
+          ctx.textAlign = 'center';
+          ctx.fillStyle = '#ffffff';
+          ctx.font = '900 13px Arial, sans-serif';
+          ctx.fillText('✗', boxX + boxSize / 2, boxY + 14);
+        } else {
+          // UNCHECKED / SIN MARCAR (Dashed / Dimmed Box)
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.18)';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.roundRect(boxX, boxY, boxSize, boxSize, 5);
+          ctx.fill();
+          ctx.stroke();
+        }
+        ctx.textAlign = 'left';
+      });
+    });
+  };
+
+  // Render Left Family Block (5 Columns)
+  renderFamilyBlock(leftFamilies, leftMargin);
+
+  // Render Right Family Block (5 Columns)
+  renderFamilyBlock(rightFamilies, leftMargin + blockWidth + centerGap);
+
+  // --- FOOTER SECTION ---
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(leftMargin, canvasHeight - 40);
+  ctx.lineTo(canvasWidth - rightMargin, canvasHeight - 40);
+  ctx.stroke();
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+  ctx.font = '600 13px "JetBrains Mono", monospace';
+  ctx.fillText('EL CASILLERO DE ESPÍRITUS · CREADO POR ANDRÉS ERAZO', leftMargin, canvasHeight - 18);
+
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#10b981';
+  ctx.font = '800 13px "JetBrains Mono", monospace';
+  ctx.fillText('https://spriteslocker.vercel.app/', canvasWidth - rightMargin, canvasHeight - 18);
+  ctx.textAlign = 'left';
+
+  let dataUrl;
+  try {
+    dataUrl = canvas.toDataURL('image/png');
+  } catch (err) {
+    dataUrl = canvas.toDataURL();
+  }
+
+  const filename = `el-casillero-matriz-fortnite-gen${generationNumber}.png`;
+  return { dataUrl, filename };
+}
+
+/**
  * Generates an HD PNG poster image containing EXCLUSIVELY the marked/selected spirits.
  * Styled in Obsidian Neon Emerald & Hyper Violet aesthetic.
  * Stamps official Vercel call-to-action watermark: 'INGRESA A: https://spriteslocker.vercel.app/'
  */
-export async function generateCollectionImage(spirits, state, generationNumber, filterType = 'todos', totalVisits = null, totalExports = null) {
+export async function generateCollectionImage(spirits, state, generationNumber, filterType = 'todos', totalVisits = null, totalExports = null, formatType = 'standard') {
+  if (formatType === 'poster') {
+    return generatePosterCollectionImage(spirits, state, generationNumber, totalVisits, totalExports);
+  }
+
   // Filter dataset to include STRICTLY marked/selected spirits (status >= 1 || status === 3)
   const markedSpirits = spirits.filter(item => {
     const status = state[item.id] || 0;
