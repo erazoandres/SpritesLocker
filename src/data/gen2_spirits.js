@@ -1,6 +1,7 @@
-// Generation 2 Override Spirits (20 standard 5-variant families + 1 Mega Man + 1 Sonic Ciber = 102 items)
+// Generation 2 Override Spirits (20 standard 5-variant families + 4 Fort Drop 6-variant families + Mega Man + Sonic Ciber = 126 items)
 
 const ALL_VARIANTS_ORDER = ['Base', 'Oro', 'Maestro de Trucos', 'Hacker de botín', 'Cazarrecompensas'];
+const FORT_DROP_VARIANTS_ORDER = ['Base', 'Oro', 'Matriz Verde', 'Red Azul', 'Galaxia Morada', 'Fuego Naranja'];
 
 export const GEN2_FAMILIES = [
   {
@@ -20,6 +21,42 @@ export const GEN2_FAMILIES = [
     rarity: 'Mítico',
     ability: 'Solo sube ganando partidas; las victorias con corona aceleran su progreso y desbloquean variantes.',
     order: ALL_VARIANTS_ORDER
+  },
+  {
+    slug: 'mapache',
+    webBase: 'mapache',
+    name: 'Mapache',
+    en: 'Raccoon',
+    rarity: 'Raro',
+    ability: 'Furtivo y ágil; recolecta botín adicional en contenedores y mejora la velocidad en sigilo.',
+    order: FORT_DROP_VARIANTS_ORDER
+  },
+  {
+    slug: 'ciervo',
+    webBase: 'ciervo',
+    name: 'Ciervo',
+    en: 'Deer',
+    rarity: 'Épico',
+    ability: 'Otorga un gran impulso de zancada en terreno abierto y reduce significativamente el daño de caída.',
+    order: FORT_DROP_VARIANTS_ORDER
+  },
+  {
+    slug: 'monstruo',
+    webBase: 'monstruo',
+    name: 'Monstruo',
+    en: 'Teeth Monster',
+    rarity: 'Legendario',
+    ability: 'Desata voracidad feroz aumentando el daño en combate a corta distancia y regenerando vida al eliminar.',
+    order: FORT_DROP_VARIANTS_ORDER
+  },
+  {
+    slug: 'calabaza',
+    webBase: 'calabaza',
+    name: 'Calabaza',
+    en: 'Pumpkin',
+    rarity: 'Raro',
+    ability: 'Despliega escudos espectrales de calabaza que absorben los primeros impactos de cada enfrentamiento.',
+    order: FORT_DROP_VARIANTS_ORDER
   },
   {
     slug: 'aventura',
@@ -210,6 +247,10 @@ const getVariantSlug = (variant) => {
     case 'Maestro de Trucos': return 'maestro-trucos';
     case 'Hacker de botín': return 'hacker-botin';
     case 'Cazarrecompensas': return 'cazarrecompensas';
+    case 'Matriz Verde': return 'matriz-verde';
+    case 'Red Azul': return 'red-azul';
+    case 'Galaxia Morada': return 'galaxia-morada';
+    case 'Fuego Naranja': return 'fuego-naranja';
     default: return 'base';
   }
 };
@@ -229,6 +270,14 @@ const getImageFile = (fam, variant) => {
       return `/sprites/espiritus/${fam.webBase}-loothacker.png`;
     case 'Cazarrecompensas':
       return `/sprites/espiritus/${fam.webBase}-bountyhunter.png`;
+    case 'Matriz Verde':
+      return `/sprites/espiritus/${fam.webBase}-greenmatrix.png`;
+    case 'Red Azul':
+      return `/sprites/espiritus/${fam.webBase}-bluegrid.png`;
+    case 'Galaxia Morada':
+      return `/sprites/espiritus/${fam.webBase}-purplegalaxy.png`;
+    case 'Fuego Naranja':
+      return `/sprites/espiritus/${fam.webBase}-orangefire.png`;
     default:
       return `/sprites/espiritus/${fam.webBase}.png`;
   }

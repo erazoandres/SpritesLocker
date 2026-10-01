@@ -250,21 +250,15 @@ export default function MinimalSpriteGrid({
                 </div>
               </div>
 
-              {/* 5 Variant Grid Columns */}
-              <div className="grid grid-cols-5 gap-1.5 sm:gap-2.5 flex-1 w-full">
-                {VARIANT_COLUMNS.map(colVariantName => {
-                  // Find matching spirit for this column
-                  const spirit = famSpirits.find(s => s.variant === colVariantName) || (colVariantName === 'Base' && famSpirits.length === 1 ? famSpirits[0] : null);
-
-                  if (!spirit) {
-                    return (
-                      <div 
-                        key={colVariantName} 
-                        className="w-full h-32 sm:h-36 md:h-40 opacity-20 border border-dashed border-white/5 rounded-2xl flex items-center justify-center text-[8px] font-mono text-slate-600"
-                      />
-                    );
-                  }
-
+              {/* Variant Grid Columns (Supports 5-variant, 6-variant Fort Drop, and single-variant spirits) */}
+              <div className={`grid gap-1.5 sm:gap-2.5 flex-1 w-full ${
+                famSpirits.length === 6 
+                  ? 'grid-cols-3 sm:grid-cols-6' 
+                  : famSpirits.length === 5 
+                  ? 'grid-cols-5' 
+                  : 'grid-cols-1 md:grid-cols-5'
+              }`}>
+                {famSpirits.map(spirit => {
                   const status = userState[spirit.id] ?? 0;
 
                   return (
@@ -287,7 +281,14 @@ export default function MinimalSpriteGrid({
                           : 'border border-transparent hover:border-white/20 hover:bg-white/[0.04]'
                       }`}
                     >
-                      {/* Top-Right Circular Status Badge (Directly matching KiweGame screenshot) */}
+                      {/* Top-Left Variant Tag */}
+                      {spirit.variant !== 'Único' && (
+                        <div className="absolute top-1.5 left-1.5 px-1 py-0.5 rounded bg-slate-950/80 border border-white/10 text-[8px] font-mono text-slate-300 font-bold z-10 pointer-events-none truncate max-w-[85%]">
+                          {spirit.variant}
+                        </div>
+                      )}
+
+                      {/* Top-Right Circular Status Badge */}
                       {status > 0 && (
                         <div className={`absolute top-1.5 right-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[10px] font-black z-20 shadow-md ${
                           status === 2
@@ -301,7 +302,7 @@ export default function MinimalSpriteGrid({
                       )}
 
                       {/* Floating 3D Spirit Render Image */}
-                      <div className="h-full w-full flex items-center justify-center p-0.5">
+                      <div className="h-full w-full flex items-center justify-center p-0.5 pt-3">
                         <img
                           src={spirit.image}
                           alt={`${spirit.family} ${spirit.variant}`}
