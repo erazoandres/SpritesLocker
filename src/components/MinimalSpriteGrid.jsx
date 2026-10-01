@@ -13,6 +13,7 @@ export default function MinimalSpriteGrid({
 }) {
   const [activeFamilyRow, setActiveFamilyRow] = useState(null);
   const [tooltipSpirit, setTooltipSpirit] = useState(null);
+  const [activeMode, setActiveMode] = useState('tengo'); // 'tengo' or 'faltan'
 
   // Smooth scroll row to center of viewport
   const scrollToFamilyRow = (famName) => {
@@ -37,12 +38,24 @@ export default function MinimalSpriteGrid({
     return groups;
   }, [spirits]);
 
-  // Handle tile tap (toggles spirit status & centers row)
+  // Handle tile tap based on active click mode ('tengo' vs 'faltan')
   const handleTileTap = (id, famName) => {
     if (famName && activeFamilyRow !== famName) {
       scrollToFamilyRow(famName);
     }
-    onToggleSpirit(id);
+
+    if (activeMode === 'faltan') {
+      const current = userState[id] ?? 0;
+      if (current === 3) {
+        const updates = { [id]: 0 };
+        if (onBatchUpdate) onBatchUpdate(updates);
+      } else {
+        const updates = { [id]: 3 };
+        if (onBatchUpdate) onBatchUpdate(updates);
+      }
+    } else {
+      onToggleSpirit(id);
+    }
   };
 
   // Batch update family by active mode or target status
@@ -51,27 +64,6 @@ export default function MinimalSpriteGrid({
     const updates = {};
     famSpirits.forEach(s => {
       updates[s.id] = targetStatus;
-    });
-    if (onBatchUpdate) onBatchUpdate(updates);
-  };
-
-  // Batch mark all spirits as obtained (status 1)
-  const handleMarkAllObtained = () => {
-    const updates = {};
-    spirits.forEach(s => {
-      updates[s.id] = 1;
-    });
-    if (onBatchUpdate) onBatchUpdate(updates);
-  };
-
-  // Batch mark unobtained spirits as missing (status 3)
-  const handleMarkOnlyMissing = () => {
-    const updates = {};
-    spirits.forEach(s => {
-      const st = userState[s.id] ?? 0;
-      if (st !== 1 && st !== 2) {
-        updates[s.id] = 3;
-      }
     });
     if (onBatchUpdate) onBatchUpdate(updates);
   };
@@ -108,38 +100,49 @@ export default function MinimalSpriteGrid({
   return (
     <div className="space-y-2 font-sans w-full overflow-x-hidden">
       
-      {/* Seamless Inline Quick Actions (No bulky container bar) */}
+      {/* Seamless Inline Quick Actions & Click Mode Selector */}
       <div className="flex flex-wrap items-center justify-between gap-2 px-1 pb-2 mb-2 sm:mb-3 border-b border-white/5 font-mono text-xs select-none">
-        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">MARCADO RÁPIDO:</span>
-        
         <div className="flex items-center gap-1.5 flex-wrap">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">MODO AL TOCAR:</span>
+          
+          {/* Mode 1: SOLO LOS QUE TIENES */}
           <button
-            onClick={handleMarkAllObtained}
-            className="px-2.5 py-1 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 font-bold transition flex items-center gap-1 text-[11px] active:scale-95"
-            title="Marcar todos los espíritus como Obtenidos (✓)"
+            onClick={() => setActiveMode('tengo')}
+            className={`px-2.5 py-1 rounded-xl font-bold transition flex items-center gap-1 text-[11px] active:scale-95 ${
+              activeMode === 'tengo'
+                ? 'bg-emerald-400 text-slate-950 font-black shadow-md shadow-emerald-500/20'
+                : 'bg-emerald-500/10 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30'
+            }`}
+            title="Modo activo: al hacer clic en un espíritu se marca como TENGO (✓)"
           >
             <Check className="w-3 h-3 stroke-[3]" />
             <span>SOLO LOS QUE TIENES</span>
           </button>
 
+          {/* Mode 2: SOLO LOS QUE FALTAN */}
           <button
-            onClick={handleMarkOnlyMissing}
-            className="px-2.5 py-1 rounded-xl bg-rose-500/10 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 font-bold transition flex items-center gap-1 text-[11px] active:scale-95"
-            title="Marcar todos los espíritus no obtenidos como Faltantes (✗)"
+            onClick={() => setActiveMode('faltan')}
+            className={`px-2.5 py-1 rounded-xl font-bold transition flex items-center gap-1 text-[11px] active:scale-95 ${
+              activeMode === 'faltan'
+                ? 'bg-rose-500 text-white font-black shadow-md shadow-rose-500/20'
+                : 'bg-rose-500/10 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30'
+            }`}
+            title="Modo activo: al hacer clic en un espíritu se marca como ME FALTA (✗)"
           >
             <span className="font-black text-xs">✗</span>
             <span>SOLO LOS QUE FALTAN</span>
           </button>
-
-          <button
-            onClick={handleResetAll}
-            className="px-2.5 py-1 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-400 hover:text-slate-200 border border-white/10 font-bold transition flex items-center gap-1 text-[11px] active:scale-95"
-            title="Desmarcar todo el casillero"
-          >
-            <RotateCcw className="w-3 h-3" />
-            <span>LIMPIAR</span>
-          </button>
         </div>
+
+        {/* Clear / Reset All Action Button */}
+        <button
+          onClick={handleResetAll}
+          className="px-2.5 py-1 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-400 hover:text-slate-200 border border-white/10 font-bold transition flex items-center gap-1 text-[11px] active:scale-95"
+          title="Desmarcar todo el casillero"
+        >
+          <RotateCcw className="w-3 h-3" />
+          <span>LIMPIAR CASILLERO</span>
+        </button>
       </div>
 
       {/* --- GLOBAL TOP VARIANT COLUMN HEADERS (EXACTLY MATCHING KIWEGAME REFERENCE SCREENSHOT) --- */}
