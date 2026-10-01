@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { Eye, Camera } from 'lucide-react';
 import MinimalHeader from './components/MinimalHeader';
 import MinimalSpriteGrid from './components/MinimalSpriteGrid';
 import ExportModal from './components/ExportModal';
@@ -170,8 +171,6 @@ export default function App() {
         onDownloadCapture={handleOpenExportModal}
         totalObtained={activeStats.obtained}
         totalSpirits={activeSpirits.length}
-        totalVisits={totalVisits}
-        totalExports={totalExports}
         onOpenWelcome={() => setWelcomeOpen(true)}
         onStartTour={handleStartTour}
       />
@@ -188,19 +187,47 @@ export default function App() {
         />
       </main>
 
-      {/* Minimal Footer with direct link to Portfolio (https://erazoportafolio.vercel.app/) */}
-      <footer className="border-t border-white/5 bg-[#08090f]/90 py-6 text-center text-xs text-slate-500 font-mono flex items-center justify-center gap-1.5 flex-wrap px-4 w-full">
-        <span>EL CASILLERO · Creado por</span>
-        <a
-          href="https://erazoportafolio.vercel.app/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-emerald-400 hover:text-emerald-300 font-bold underline decoration-emerald-400/40 underline-offset-4 flex items-center gap-1 transition"
-          title="Ver Portafolio de Andrés Erazo"
-        >
-          <PortfolioIcon className="w-3.5 h-3.5" />
-          <span>Andrés Erazo (@erazoandres)</span>
-        </a>
+      {/* Enhanced Footer with Visitas, Exportaciones, and direct link to Portfolio */}
+      <footer className="border-t border-white/5 bg-[#08090f]/90 py-8 text-center text-xs text-slate-400 font-mono space-y-4 px-4 w-full">
+        
+        {/* Stats & Portfolio Row */}
+        <div className="flex items-center justify-center gap-2.5 flex-wrap max-w-4xl mx-auto">
+          
+          {/* Visit Counter */}
+          {totalVisits !== null && totalVisits !== undefined && (
+            <div className="flex items-center gap-1.5 bg-[#111320] px-3.5 py-1.5 rounded-xl border border-white/10 text-xs font-mono" title="Visitas reales acumuladas">
+              <Eye className="w-3.5 h-3.5 text-lime-400" />
+              <span className="font-bold text-slate-200">{Number(totalVisits).toLocaleString()} VISITAS</span>
+            </div>
+          )}
+
+          {/* Live Exports Counter */}
+          {totalExports !== null && totalExports !== undefined && (
+            <div className="flex items-center gap-1.5 bg-[#111320] px-3.5 py-1.5 rounded-xl border border-violet-500/30 text-xs font-mono" title="Exportaciones acumuladas a captura HD">
+              <Camera className="w-3.5 h-3.5 text-violet-400" />
+              <span className="font-bold text-slate-200">{Number(totalExports).toLocaleString()} EXPORTACIONES</span>
+            </div>
+          )}
+
+          {/* Portfolio Link Button */}
+          <a
+            href="https://erazoportafolio.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 bg-[#111320] hover:bg-[#181a2c] text-emerald-400 hover:text-emerald-300 border border-emerald-500/30 px-3.5 py-1.5 rounded-xl text-xs font-bold transition font-mono active:scale-95"
+            title="Ver Portafolio de Andrés Erazo (erazoportafolio.vercel.app)"
+          >
+            <PortfolioIcon className="w-3.5 h-3.5" />
+            <span>PORTAFOLIO DE ANDRÉS ERAZO</span>
+          </a>
+
+        </div>
+
+        {/* Footer Attribution Line */}
+        <div className="text-[11px] text-slate-500 font-sans font-medium">
+          EL CASILLERO DE ESPÍRITUS · Creado por <span className="text-emerald-400 font-bold">Andrés Erazo (@erazoandres)</span>
+        </div>
+
       </footer>
 
       {/* Floating Chill Audio Music Player (Triggers hint after Welcome Modal closes) */}
