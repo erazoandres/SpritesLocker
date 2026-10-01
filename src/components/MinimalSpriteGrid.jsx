@@ -14,7 +14,7 @@ export default function MinimalSpriteGrid({
   const [hoveredFamily, setHoveredFamily] = useState(null);
   const [tooltipSpirit, setTooltipSpirit] = useState(null);
   const [activeMode, setActiveMode] = useState('tengo'); // 'tengo' or 'faltan'
-  const [viewLayout, setViewLayout] = useState('familyRows'); // 'familyRows' (Filas sin bloques) or 'grid' (Matriz)
+  const [viewLayout, setViewLayout] = useState('familyRows'); // 'familyRows' or 'grid'
   
   // Drag to scroll states for family pills bar
   const [isMouseDown, setIsMouseDown] = useState(false);
@@ -146,7 +146,7 @@ export default function MinimalSpriteGrid({
                 ? 'bg-emerald-400 text-slate-950 font-black shadow-lg shadow-emerald-500/20' 
                 : 'text-slate-400 hover:text-white'
             }`}
-            title="Modo normal: haz clic para marcar lo que TENGO (1-Tap)"
+            title="Modo normal: haz clic para estampar el sello TENGO (1-Tap)"
           >
             <CheckCircle2 className="w-3.5 h-3.5" />
             <span>MODO: TENGO (✓)</span>
@@ -159,7 +159,7 @@ export default function MinimalSpriteGrid({
                 ? 'bg-rose-500 text-white font-black shadow-lg shadow-rose-500/20' 
                 : 'text-slate-400 hover:text-white'
             }`}
-            title="Modo rápido: haz clic para marcar lo que ME FALTA (Carmesí)"
+            title="Modo rápido: haz clic para estampar el sello ME FALTA (Carmesí)"
           >
             <XCircle className="w-3.5 h-3.5" />
             <span>MODO: ME FALTA (✗)</span>
@@ -175,10 +175,10 @@ export default function MinimalSpriteGrid({
                 ? 'bg-cyan-500 text-slate-950 font-black shadow-md shadow-cyan-500/20'
                 : 'text-slate-400 hover:text-white'
             }`}
-            title="Vista de cuadrícula en filas por familia (sin bloques envolventes)"
+            title="Vista de cuadrícula limpia con sello de estado sobre cada espíritu"
           >
             <LayoutList className="w-4 h-4" />
-            <span>FILAS SEAMLESS</span>
+            <span>SELLOS POR FAMILIA</span>
           </button>
 
           <button
@@ -289,14 +289,14 @@ export default function MinimalSpriteGrid({
                 <button
                   onClick={() => handleBatchFamily(fam, 1)}
                   className="hover:text-emerald-400 text-[10px] text-slate-500 px-0.5 font-black"
-                  title={`Marcar todo ${fam} como Obtenido`}
+                  title={`Estampar sello Obtenido a todo ${fam}`}
                 >
                   ✓
                 </button>
                 <button
                   onClick={() => handleBatchFamily(fam, 2)}
                   className="hover:text-amber-400 text-[10px] text-slate-500 px-0.5 font-black"
-                  title={`Marcar todo ${fam} como Dominado`}
+                  title={`Estampar sello Dominado a todo ${fam}`}
                 >
                   ★
                 </button>
@@ -306,7 +306,7 @@ export default function MinimalSpriteGrid({
         })}
       </div>
 
-      {/* --- LAYOUT OPTION A: SEAMLESS FAMILY ROWS GRID (SIN BLOQUES ENVOLVENTES, ESTILO DE REFERENCIA DEL USUARIO) --- */}
+      {/* --- LAYOUT OPTION A: STAMP SEAL FAMILY ROWS (SIN RECUADROS, CON SELLO REAL SOBRE CADA ESPÍRITU) --- */}
       {viewLayout === 'familyRows' ? (
         <div id="tour-sprite-grid" className="space-y-6 pt-2">
           {Object.keys(spiritsGroupedByFamily).map(famName => {
@@ -337,7 +337,7 @@ export default function MinimalSpriteGrid({
 
                     {isComplete && (
                       <span className="text-amber-400 font-black text-[9px] bg-amber-400/10 px-1.5 py-0.5 rounded border border-amber-400/30 font-mono">
-                        COMPLETA
+                        SELLO DE COLECCIÓN COMPLETA
                       </span>
                     )}
                   </div>
@@ -347,7 +347,7 @@ export default function MinimalSpriteGrid({
                     <button
                       onClick={() => handleBatchFamily(famName, 1)}
                       className="px-2 py-0.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/25 text-emerald-400 text-[10px] font-mono font-bold transition flex items-center gap-1 active:scale-95"
-                      title={`Marcar todo ${famName} como Obtenido`}
+                      title={`Estampar todo ${famName} como Obtenido`}
                     >
                       <Check className="w-3 h-3 stroke-[3]" />
                       <span className="hidden sm:inline">TODOS</span>
@@ -356,7 +356,7 @@ export default function MinimalSpriteGrid({
                     <button
                       onClick={() => handleBatchFamily(famName, 2)}
                       className="px-2 py-0.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/25 text-amber-400 text-[10px] font-mono font-bold transition flex items-center gap-1 active:scale-95"
-                      title={`Marcar todo ${famName} como Dominado`}
+                      title={`Estampar todo ${famName} como Dominado`}
                     >
                       <Star className="w-3 h-3 fill-amber-400" />
                       <span className="hidden sm:inline">DOMINAR</span>
@@ -365,14 +365,14 @@ export default function MinimalSpriteGrid({
                     <button
                       onClick={() => handleBatchFamily(famName, 0)}
                       className="p-1 rounded-lg bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition active:scale-95"
-                      title={`Desmarcar ${famName}`}
+                      title={`Quitar sellos de ${famName}`}
                     >
                       <RotateCcw className="w-3 h-3" />
                     </button>
                   </div>
                 </div>
 
-                {/* Seamless Grid Row of Spirits (No outer box, clean high-impact tiles with glowing checkboxes) */}
+                {/* Seamless Grid Row of Spirits with REAL STAMP OVERLAY */}
                 <div className={`grid gap-3 sm:gap-4 ${
                   famSpirits.length === 1
                     ? 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-6'
@@ -390,41 +390,65 @@ export default function MinimalSpriteGrid({
                         onClick={() => handleTileTap(spirit.id)}
                         onMouseEnter={() => setTooltipSpirit(spirit)}
                         onMouseLeave={() => setTooltipSpirit(null)}
-                        className="group relative cursor-pointer flex flex-col items-center justify-between p-2.5 rounded-2xl hover:bg-white/5 transition-all duration-200 select-none"
+                        className="group relative cursor-pointer flex flex-col items-center justify-between p-3 rounded-2xl hover:bg-white/5 transition-all duration-200 select-none border border-transparent hover:border-white/10"
                       >
-                        {/* 1. Large 3D Floating Spirit Render */}
-                        <div className="h-24 sm:h-28 w-full flex items-center justify-center relative my-1">
+                        {/* REAL OFFICIAL WAX / INK STAMP STAMPED OVER THE SPIRIT */}
+                        {status > 0 && (
+                          <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20 transition-all duration-300 transform active:scale-110 ${
+                            status === 2
+                              ? 'rotate-[-9deg] scale-100'
+                              : status === 1
+                              ? 'rotate-[9deg] scale-100'
+                              : 'rotate-[-14deg] scale-100'
+                          }`}>
+                            <div className={`px-3 py-1 rounded-lg border-2 border-dashed font-mono text-[11px] font-black uppercase tracking-widest flex items-center gap-1.5 backdrop-blur-xs select-none shadow-2xl ${
+                              status === 2
+                                ? 'border-amber-400 text-amber-300 bg-amber-950/85 shadow-[0_0_20px_rgba(245,158,11,0.6)] ring-2 ring-amber-400/50'
+                                : status === 1
+                                ? 'border-emerald-400 text-emerald-300 bg-emerald-950/85 shadow-[0_0_18px_rgba(16,185,129,0.6)] ring-2 ring-emerald-400/40'
+                                : 'border-rose-500 text-rose-300 bg-rose-950/85 shadow-[0_0_18px_rgba(244,63,94,0.6)] ring-2 ring-rose-500/40'
+                            }`}>
+                              {status === 2 ? (
+                                <>
+                                  <Star className="w-3.5 h-3.5 fill-amber-300" />
+                                  <span>DOMINADO</span>
+                                </>
+                              ) : status === 1 ? (
+                                <>
+                                  <Check className="w-3.5 h-3.5 stroke-[3]" />
+                                  <span>OBTENIDO</span>
+                                </>
+                              ) : (
+                                <>
+                                  <span className="text-xs">✗</span>
+                                  <span>FALTANTE</span>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 1. High-Res 3D Floating Spirit Render */}
+                        <div className="h-28 sm:h-32 w-full flex items-center justify-center relative my-1">
                           <img
                             src={spirit.image}
                             alt={`${spirit.family} ${spirit.variant}`}
-                            className="max-h-full max-w-[95%] object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.85)] group-hover:scale-110 transition-transform duration-200 ease-out"
+                            className={`max-h-full max-w-[95%] object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.85)] group-hover:scale-110 transition-all duration-200 ease-out ${
+                              status === 0 ? 'opacity-85 hover:opacity-100' : 'opacity-100'
+                            }`}
                             loading="lazy"
                           />
                         </div>
 
-                        {/* 2. Interactive Glowing Checkbox Square (Identical to user's reference image!) */}
-                        <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl border-2 flex items-center justify-center transition-all duration-200 shadow-md ${
-                          status === 2
-                            ? 'bg-amber-400 border-amber-300 text-slate-950 shadow-amber-400/40 ring-2 ring-amber-400/30'
-                            : status === 1
-                            ? 'bg-emerald-400 border-emerald-300 text-slate-950 shadow-emerald-400/40 ring-2 ring-emerald-400/30'
-                            : status === 3
-                            ? 'bg-rose-500 border-rose-400 text-white shadow-rose-500/40 ring-2 ring-rose-500/30'
-                            : 'bg-[#101322]/80 border-white/25 text-transparent group-hover:border-white/50 group-hover:bg-white/10'
-                        }`}>
-                          {status === 2 ? (
-                            <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-slate-950" />
-                          ) : status === 1 ? (
-                            <Check className="w-4 h-4 sm:w-5 sm:h-5 stroke-[3]" />
-                          ) : status === 3 ? (
-                            <span className="font-mono font-black text-xs">✗</span>
-                          ) : null}
+                        {/* 2. Sleek Variant Title & Status Pill */}
+                        <div className="w-full text-center z-10 pt-1.5 border-t border-white/10 bg-black/40 -mx-3 -mb-3 p-2 rounded-b-2xl backdrop-blur-xs flex items-center justify-between">
+                          <span className={`text-[11px] font-mono uppercase tracking-wider block truncate ${getVariantTextColor(spirit.variant)}`}>
+                            {spirit.variant}
+                          </span>
+                          <span className="text-[9px] font-mono text-slate-500 font-bold uppercase">
+                            {status === 2 ? '★' : status === 1 ? '✓' : status === 3 ? '✗' : '+'}
+                          </span>
                         </div>
-
-                        {/* 3. Sleek Variant Name Title */}
-                        <span className={`text-[11px] font-mono uppercase tracking-wider mt-1.5 truncate max-w-full ${getVariantTextColor(spirit.variant)}`}>
-                          {spirit.variant}
-                        </span>
 
                       </div>
                     );
@@ -441,9 +465,6 @@ export default function MinimalSpriteGrid({
         <div id="tour-sprite-grid" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
           {filteredSpirits.map(spirit => {
             const status = userState[spirit.id] ?? 0;
-            const isObtained = status === 1;
-            const isMastered = status === 2;
-            const isMissingFlagged = status === 3;
             const isFamilyHovered = hoveredFamily && spirit.family === hoveredFamily;
 
             return (
@@ -457,6 +478,17 @@ export default function MinimalSpriteGrid({
                   isFamilyHovered ? 'ring-2 ring-emerald-400 scale-[1.03] z-20' : ''
                 } ${status === 2 ? 'bg-amber-500/20 border-amber-400' : status === 1 ? 'bg-emerald-500/20 border-emerald-400' : 'bg-[#101322] border-white/10'}`}
               >
+                {/* Stamp overlay */}
+                {status > 0 && (
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20 transform -rotate-12">
+                    <span className={`px-2.5 py-1 rounded border-2 border-dashed font-mono text-xs font-black uppercase tracking-wider shadow-xl ${
+                      status === 2 ? 'border-amber-400 text-amber-300 bg-amber-950/90' : status === 1 ? 'border-emerald-400 text-emerald-300 bg-emerald-950/90' : 'border-rose-500 text-rose-300 bg-rose-950/90'
+                    }`}>
+                      {status === 2 ? '★ DOMINADO' : status === 1 ? '✓ OBTENIDO' : '✗ FALTANTE'}
+                    </span>
+                  </div>
+                )}
+
                 {/* Sprite Render */}
                 <div className="my-auto h-[120px] w-full flex items-center justify-center z-10 relative">
                   <img
