@@ -137,34 +137,6 @@ export default function MinimalSpriteGrid({
       {/* HUD Quick Filter, Mode Control & Layout View Switcher */}
       <div className="flex flex-col lg:flex-row items-center justify-between gap-3 bg-[#0d0f1a]/90 p-3 sm:p-4 rounded-3xl border border-white/10 shadow-xl backdrop-blur-md">
         
-        {/* Left: Mode Switcher (TENGO vs FALTA) */}
-        <div className="flex items-center gap-1.5 bg-[#141728] p-1 rounded-2xl border border-white/10 w-full lg:w-auto">
-          <button
-            onClick={() => setActiveMode('tengo')}
-            className={`flex-1 lg:flex-none px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold transition flex items-center justify-center gap-1.5 ${
-              activeMode === 'tengo' 
-                ? 'bg-emerald-400 text-slate-950 font-black shadow-lg shadow-emerald-500/20' 
-                : 'text-slate-400 hover:text-white'
-            }`}
-            title="Modo normal: haz clic para estampar el sello TENGO (1-Tap)"
-          >
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>MODO: TENGO (✓)</span>
-          </button>
-
-          <button
-            onClick={() => setActiveMode('faltan')}
-            className={`flex-1 lg:flex-none px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold transition flex items-center justify-center gap-1.5 ${
-              activeMode === 'faltan' 
-                ? 'bg-rose-500 text-white font-black shadow-lg shadow-rose-500/20' 
-                : 'text-slate-400 hover:text-white'
-            }`}
-            title="Modo rápido: haz clic para estampar el sello ME FALTA (Carmesí)"
-          >
-            <XCircle className="w-3.5 h-3.5" />
-            <span>MODO: ME FALTA (✗)</span>
-          </button>
-        </div>
 
         {/* Center: Layout View Mode Toggle */}
         <div className="flex items-center gap-1 bg-[#141728] p-1 rounded-2xl border border-white/10 w-full sm:w-auto justify-center">
