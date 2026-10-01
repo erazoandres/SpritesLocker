@@ -1,4 +1,4 @@
-// Generation 2 Override Spirits (20 standard 5-variant families + 1 single Mega Man + 4 custom spirits = 105 items)
+// Generation 2 Override Spirits (20 standard 5-variant families + 1 Mega Man + 1 Sonic Ciber = 102 items)
 
 const ALL_VARIANTS_ORDER = ['Base', 'Oro', 'Maestro de Trucos', 'Hacker de botín', 'Cazarrecompensas'];
 
@@ -193,39 +193,12 @@ export const GEN2_FAMILIES = [
     order: ['Base']
   },
   {
-    slug: 'caballero',
-    name: 'Caballero',
-    en: 'Knight',
-    rarity: 'Legendario',
-    ability: 'Otorga un escudo protector cibernético y aumenta la resistencia contra detonaciones.',
-    customImage: '/sprites/variations/caballero.png',
-    order: ['Base']
-  },
-  {
     slug: 'sonic-ciber',
     name: 'Sonic',
     en: 'Sonic',
     rarity: 'Épico',
     ability: 'Mejora la velocidad de movimiento y aumenta la capacidad del cargador de armas energéticas.',
     customImage: '/sprites/variations/ciber.png',
-    order: ['Base']
-  },
-  {
-    slug: 'cientifico',
-    name: 'Científico',
-    en: 'Scientist',
-    rarity: 'Legendario',
-    ability: 'Rastrea cofres y contenedores cercanos a través de obstáculos y acelera la reanimación.',
-    customImage: '/sprites/variations/cientifico.png',
-    order: ['Base']
-  },
-  {
-    slug: 'rey-pixel',
-    name: 'Rey Píxel',
-    en: 'Pixel King',
-    rarity: 'Mítico',
-    ability: 'Otorga un multiplicador de experiencia por eliminación y proyecta una corona resplandeciente.',
-    customImage: '/sprites/variations/rey_pixel.png',
     order: ['Base']
   }
 ];
