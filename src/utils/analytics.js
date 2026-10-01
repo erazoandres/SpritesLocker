@@ -13,8 +13,11 @@ const EXPORT_DOC_URL = `https://firestore.googleapis.com/v1/projects/${PROJECT_I
 const DEVICE_LOCK_KEY = 'el-casillero-device-visit-registered';
 const SESSION_LOCK_KEY = 'el-casillero-session-visit-registered';
 
+// Display Multiplier factor x8 as requested
+const MULTIPLIER = 8;
+
 /**
- * Tracks and returns total visits count with Device-Lock protection against duplicate visits
+ * Tracks and returns total visits count with Device-Lock protection against duplicate visits (x8 multiplier applied)
  */
 export async function trackVisit() {
   let isDeviceRegistered = false;
@@ -52,9 +55,9 @@ export async function trackVisit() {
       targetDocUrls.push(fallbackUrl);
     }
 
-    // Device-Lock Anti-Inflation: If computer has already registered, return count without patching
+    // Device-Lock Anti-Inflation: If computer has already registered, return count * MULTIPLIER without patching
     if (isDeviceRegistered) {
-      return maxCount;
+      return maxCount * MULTIPLIER;
     }
 
     maxCount += 1;
@@ -77,17 +80,17 @@ export async function trackVisit() {
       sessionStorage.setItem(SESSION_LOCK_KEY, 'true');
     } catch {}
 
-    return maxCount;
+    return maxCount * MULTIPLIER;
   } catch (err) {
     console.warn('Firestore visit tracking error:', err);
-    return maxCount;
+    return maxCount * MULTIPLIER;
   }
 }
 
 /**
- * Fetches current export count from Firestore document BAmrUK0Bk8D9FTjWkCYZ (field: exportaciones)
+ * Fetches raw export count from Firestore
  */
-export async function fetchExportCount() {
+async function fetchRawExportCount() {
   try {
     const res = await fetch(EXPORT_DOC_URL);
     if (res.ok) {
@@ -103,22 +106,30 @@ export async function fetchExportCount() {
 }
 
 /**
- * Increments live export counter in Firestore document BAmrUK0Bk8D9FTjWkCYZ (field: exportaciones)
+ * Fetches current export count from Firestore document BAmrUK0Bk8D9FTjWkCYZ (field: exportaciones, x8 multiplier applied)
+ */
+export async function fetchExportCount() {
+  const raw = await fetchRawExportCount();
+  return raw * MULTIPLIER;
+}
+
+/**
+ * Increments live export counter in Firestore document BAmrUK0Bk8D9FTjWkCYZ (field: exportaciones, returns x8 multiplier)
  */
 export async function trackExport() {
   try {
-    let current = await fetchExportCount();
-    current += 1;
+    let currentRaw = await fetchRawExportCount();
+    currentRaw += 1;
     await fetch(`${EXPORT_DOC_URL}?updateMask.fieldPaths=exportaciones`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         fields: {
-          exportaciones: { integerValue: String(current) }
+          exportaciones: { integerValue: String(currentRaw) }
         }
       })
     });
-    return current;
+    return currentRaw * MULTIPLIER;
   } catch (err) {
     console.warn('Firestore track export error:', err);
     return null;
