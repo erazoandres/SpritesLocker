@@ -134,75 +134,7 @@ export default function MinimalSpriteGrid({
   return (
     <div className="space-y-4 font-sans w-full overflow-x-hidden">
       
-      {/* HUD Quick Filter, Mode Control & Layout View Switcher */}
-      <div className="flex flex-col lg:flex-row items-center justify-between gap-3 bg-[#0d0f1a]/90 p-3 sm:p-4 rounded-3xl border border-white/10 shadow-xl backdrop-blur-md">
-        
 
-        {/* Center: Layout View Mode Toggle */}
-        <div className="flex items-center gap-1 bg-[#141728] p-1 rounded-2xl border border-white/10 w-full sm:w-auto justify-center">
-          <button
-            onClick={() => setViewLayout('familyRows')}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold transition ${
-              viewLayout === 'familyRows'
-                ? 'bg-cyan-500 text-slate-950 font-black shadow-md shadow-cyan-500/20'
-                : 'text-slate-400 hover:text-white'
-            }`}
-            title="Vista de cuadrícula limpia con sello de estado sobre cada espíritu"
-          >
-            <LayoutList className="w-4 h-4" />
-            <span>SELLOS POR FAMILIA</span>
-          </button>
-
-          <button
-            onClick={() => setViewLayout('grid')}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold transition ${
-              viewLayout === 'grid'
-                ? 'bg-cyan-500 text-slate-950 font-black shadow-md shadow-cyan-500/20'
-                : 'text-slate-400 hover:text-white'
-            }`}
-            title="Ver todos los espíritus en una matriz continua"
-          >
-            <LayoutGrid className="w-4 h-4" />
-            <span>MATRIZ GRID</span>
-          </button>
-        </div>
-
-        {/* Right Group: Search Bar & Reset */}
-        <div className="flex items-center gap-2 w-full lg:w-auto">
-          
-          {/* Fast Search Input */}
-          <div className="relative flex-1 lg:w-56">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar espíritu..."
-              className="w-full bg-[#141728] border border-white/10 rounded-2xl pl-9 pr-4 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400/60 font-mono transition"
-            />
-            {searchQuery && (
-              <button 
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white"
-              >
-                ✕
-              </button>
-            )}
-          </div>
-
-          {/* Reset Current Gen Button */}
-          <button
-            onClick={onResetGen}
-            className="flex items-center gap-1.5 bg-[#141728] hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-white/10 hover:border-rose-500/30 px-3 py-1.5 rounded-2xl text-xs font-mono font-bold transition active:scale-95 shrink-0"
-            title={`Desmarcar toda la Generación ${activeGen}`}
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Limpiar Gen {activeGen}</span>
-          </button>
-
-        </div>
-
-      </div>
 
       {/* Horizontal Scrollable Family Quick Pills Bar */}
       <div 
