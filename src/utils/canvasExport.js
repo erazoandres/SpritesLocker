@@ -141,50 +141,54 @@ async function generatePosterCollectionImage(spirits, state, generationNumber, t
   ctx.fillStyle = lightRight;
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-  // --- HEADER SECTION (FORTNITE.GG / SPRITES STYLED) ---
+  // --- HEADER SECTION ---
   ctx.textAlign = 'center';
   ctx.fillStyle = '#ffffff';
-  ctx.font = '900 34px "Space Grotesk", Arial, sans-serif';
-  ctx.fillText(`SPRITESLOCKER.VERCEL.APP / ESPÍRITUS GEN ${generationNumber}`, canvasWidth / 2, 52);
+  ctx.font = '900 32px "Space Grotesk", Arial, sans-serif';
+  ctx.fillText(`MATRIZ · EL CASILLERO`, canvasWidth / 2, 48);
+
+  ctx.font = '600 13px "JetBrains Mono", monospace';
+  ctx.fillStyle = '#a78bfa';
+  ctx.fillText(`GENERACIÓN ${generationNumber} OVERRIDE`, canvasWidth / 2, 68);
 
   // Top Stat Badges (OWNED & MASTERED)
-  const badgeY = 74;
+  const badgeY = 82;
   const badgeW = 120;
-  const badgeH = 50;
+  const badgeH = 46;
   const badgeGap = 20;
   const badgeStartX = canvasWidth / 2 - badgeW - badgeGap / 2;
 
   // Box 1: OWNED
   ctx.fillStyle = 'rgba(20, 24, 40, 0.95)';
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+  ctx.strokeStyle = 'rgba(16, 185, 129, 0.3)';
   ctx.lineWidth = 1.5;
   ctx.beginPath();
   ctx.roundRect(badgeStartX, badgeY, badgeW, badgeH, 10);
   ctx.fill();
   ctx.stroke();
 
-  ctx.font = '900 16px "JetBrains Mono", monospace';
+  ctx.font = '900 15px "JetBrains Mono", monospace';
   ctx.fillStyle = '#ffffff';
-  ctx.fillText(`${countObtained} / ${spirits.length}`, badgeStartX + badgeW / 2, badgeY + 24);
+  ctx.fillText(`${countObtained} / ${spirits.length}`, badgeStartX + badgeW / 2, badgeY + 22);
   ctx.font = '800 10px "JetBrains Mono", monospace';
   ctx.fillStyle = '#10b981';
-  ctx.fillText('OBTENIDOS', badgeStartX + badgeW / 2, badgeY + 41);
+  ctx.fillText('OBTENIDOS', badgeStartX + badgeW / 2, badgeY + 37);
 
   // Box 2: MASTERED
   const badge2X = badgeStartX + badgeW + badgeGap;
   ctx.fillStyle = 'rgba(20, 24, 40, 0.95)';
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+  ctx.strokeStyle = 'rgba(245, 158, 11, 0.3)';
   ctx.beginPath();
   ctx.roundRect(badge2X, badgeY, badgeW, badgeH, 10);
   ctx.fill();
   ctx.stroke();
 
-  ctx.font = '900 16px "JetBrains Mono", monospace';
+  ctx.font = '900 15px "JetBrains Mono", monospace';
   ctx.fillStyle = '#ffffff';
-  ctx.fillText(`${countMastered} / ${spirits.length}`, badge2X + badgeW / 2, badgeY + 24);
+  ctx.fillText(`${countMastered} / ${spirits.length}`, badge2X + badgeW / 2, badgeY + 22);
   ctx.font = '800 10px "JetBrains Mono", monospace';
   ctx.fillStyle = '#f59e0b';
-  ctx.fillText('DOMINADOS', badge2X + badgeW / 2, badgeY + 41);
+  ctx.fillText('DOMINADOS', badge2X + badgeW / 2, badgeY + 37);
 
   ctx.textAlign = 'left';
 
@@ -441,26 +445,7 @@ export async function generateCollectionImage(spirits, state, generationNumber, 
   ctx.fillStyle = '#94a3b8';
   ctx.fillText(`TOTAL: ${markedSpirits.length}`, 580, 183);
 
-  // Live Visits and Live Exports Counter Badges on Top Right
-  if (totalVisits !== null && totalVisits !== undefined) {
-    ctx.textAlign = 'right';
-    ctx.fillStyle = 'rgba(18, 21, 36, 0.8)';
-    ctx.strokeStyle = 'rgba(163, 230, 53, 0.4)';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.roundRect(canvasWidth - 520, 45, 460, 44, 12);
-    ctx.fill();
-    ctx.stroke();
 
-    ctx.font = '800 18px "JetBrains Mono", monospace';
-    ctx.fillStyle = '#a3e635';
-    ctx.fillText(`👁 ${Number(totalVisits).toLocaleString()} VISITAS`, canvasWidth - 270, 73);
-
-    const exportsVal = totalExports !== null && totalExports !== undefined ? Number(totalExports) : 0;
-    ctx.fillStyle = '#a78bfa';
-    ctx.fillText(`📸 ${exportsVal.toLocaleString()} EXPORTACIONES`, canvasWidth - 80, 73);
-    ctx.textAlign = 'left';
-  }
 
   // Status Labels & Colors
   const statusColors = {
