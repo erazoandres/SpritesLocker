@@ -13,6 +13,7 @@ export default function MinimalSpriteGrid({
 }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFamily, setSelectedFamily] = useState('Todas');
+  const [activeFamilyRow, setActiveFamilyRow] = useState(null);
   const [hoveredFamily, setHoveredFamily] = useState(null);
   const [tooltipSpirit, setTooltipSpirit] = useState(null);
   const [activeMode, setActiveMode] = useState('tengo'); // 'tengo' or 'faltan'
@@ -23,6 +24,17 @@ export default function MinimalSpriteGrid({
   const [scrollStartX, setScrollStartX] = useState(0);
 
   const familyBarRef = useRef(null);
+
+  // Smooth scroll row to center of viewport
+  const scrollToFamilyRow = (famName) => {
+    setActiveFamilyRow(famName);
+    setTimeout(() => {
+      const el = document.getElementById(`family-row-${famName}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 50);
+  };
 
   // Group spirits list of families
   const familyList = useMemo(() => {
@@ -80,7 +92,10 @@ export default function MinimalSpriteGrid({
   };
 
   // Handle tile tap based on active click mode
-  const handleTileTap = (id) => {
+  const handleTileTap = (id, famName) => {
+    if (famName && activeFamilyRow !== famName) {
+      scrollToFamilyRow(famName);
+    }
     if (activeMode === 'faltan') {
       const current = userState[id] ?? 0;
       if (current === 3) {
@@ -139,7 +154,10 @@ export default function MinimalSpriteGrid({
             return (
               <button
                 key={fam}
-                onClick={() => setSelectedFamily('Todas')}
+                onClick={() => {
+                  setSelectedFamily('Todas');
+                  setActiveFamilyRow(null);
+                }}
                 className={`px-2.5 py-1 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition shrink-0 border ${
                   isSelected 
                     ? 'bg-emerald-400 text-slate-950 border-emerald-400 font-extrabold shadow-md shadow-emerald-500/20' 
@@ -170,7 +188,10 @@ export default function MinimalSpriteGrid({
               }`}
             >
               <button
-                onClick={() => setSelectedFamily(fam)}
+                onClick={() => {
+                  setSelectedFamily(fam);
+                  scrollToFamilyRow(fam);
+                }}
                 className="font-bold hover:underline decoration-emerald-400/40 text-xs"
               >
                 {fam} ({famObtained}/{famSpirits.length})
@@ -245,9 +266,23 @@ export default function MinimalSpriteGrid({
           const baseItem = famSpirits[0];
           const famObtained = famSpirits.filter(s => (userState[s.id] || 0) >= 1).length;
           const isComplete = famObtained === famSpirits.length;
+          const isRowActive = activeFamilyRow === famName;
 
           return (
-            <div key={famName} className="flex flex-col md:flex-row md:items-center gap-2 sm:gap-3 py-1.5 border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+            <div 
+              key={famName} 
+              id={`family-row-${famName}`}
+              onClick={() => {
+                if (activeFamilyRow !== famName) {
+                  scrollToFamilyRow(famName);
+                }
+              }}
+              className={`flex flex-col md:flex-row md:items-center gap-2 sm:gap-3 py-1.5 px-1 rounded-2xl transition-all duration-300 ${
+                isRowActive 
+                  ? 'bg-white/[0.04] border border-emerald-400/30 shadow-lg shadow-emerald-500/5 ring-1 ring-emerald-400/20' 
+                  : 'border-b border-white/5 hover:bg-white/[0.02]'
+              }`}
+            >
               
               {/* Left Column: Family Info */}
               <div className="w-full md:w-32 sm:md:w-40 shrink-0 px-1 space-y-0.5 text-left flex md:flex-col justify-between md:justify-center items-center md:items-start">
@@ -266,21 +301,21 @@ export default function MinimalSpriteGrid({
                 {/* Micro Batch Action Buttons */}
                 <div className="flex items-center gap-1 mt-0.5">
                   <button
-                    onClick={() => handleBatchFamily(famName, 1)}
+                    onClick={(e) => { e.stopPropagation(); handleBatchFamily(famName, 1); }}
                     className="px-1 py-0.5 rounded bg-emerald-500/10 hover:bg-emerald-500/25 text-emerald-400 text-[9px] font-mono font-bold transition flex items-center gap-0.5"
                     title={`Marcar todo ${famName} como Obtenido`}
                   >
                     ✓
                   </button>
                   <button
-                    onClick={() => handleBatchFamily(famName, 2)}
+                    onClick={(e) => { e.stopPropagation(); handleBatchFamily(famName, 2); }}
                     className="px-1 py-0.5 rounded bg-amber-500/10 hover:bg-amber-500/25 text-amber-400 text-[9px] font-mono font-bold transition flex items-center gap-0.5"
                     title={`Marcar todo ${famName} como Dominado`}
                   >
                     ★
                   </button>
                   <button
-                    onClick={() => handleBatchFamily(famName, 0)}
+                    onClick={(e) => { e.stopPropagation(); handleBatchFamily(famName, 0); }}
                     className="p-0.5 rounded bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition"
                     title={`Reiniciar ${famName}`}
                   >
@@ -310,7 +345,10 @@ export default function MinimalSpriteGrid({
                     <div
                       key={spirit.id}
                       id={`spirit-tile-${spirit.id}`}
-                      onClick={() => handleTileTap(spirit.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleTileTap(spirit.id, spirit.family);
+                      }}
                       onMouseEnter={() => setTooltipSpirit(spirit)}
                       onMouseLeave={() => setTooltipSpirit(null)}
                       className={`group relative h-32 sm:h-36 md:h-40 rounded-2xl p-1 cursor-pointer flex flex-col items-center justify-center transition-all duration-200 select-none ${
