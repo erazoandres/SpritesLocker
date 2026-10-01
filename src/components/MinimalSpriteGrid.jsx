@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef } from 'react';
-import { Search, Check, Star, RotateCcw, CheckCircle2, XCircle, Sparkles, Shield } from 'lucide-react';
+import { Search, Check, Star, RotateCcw, CheckCircle2, XCircle, Sparkles, Shield, LayoutList, LayoutGrid, Crown } from 'lucide-react';
 
 export default function MinimalSpriteGrid({ 
   spirits, 
@@ -14,21 +14,22 @@ export default function MinimalSpriteGrid({
   const [hoveredFamily, setHoveredFamily] = useState(null);
   const [tooltipSpirit, setTooltipSpirit] = useState(null);
   const [activeMode, setActiveMode] = useState('tengo'); // 'tengo' or 'faltan'
+  const [viewLayout, setViewLayout] = useState('familyRows'); // 'familyRows' (Filas por familia) or 'grid' (Matriz individual)
   
-  // Drag to scroll states
+  // Drag to scroll states for family pills bar
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [dragStartX, setDragStartX] = useState(0);
   const [scrollStartX, setScrollStartX] = useState(0);
 
   const familyBarRef = useRef(null);
 
-  // Group spirits by family
+  // Group spirits list of families
   const familyList = useMemo(() => {
     const set = new Set(spirits.map(s => s.family));
     return ['Todas', ...Array.from(set)];
   }, [spirits]);
 
-  // Filtered spirits
+  // Filtered spirits based on search query and family pill selection
   const filteredSpirits = useMemo(() => {
     return spirits.filter(s => {
       const matchFam = selectedFamily === 'Todas' || s.family === selectedFamily;
@@ -38,7 +39,19 @@ export default function MinimalSpriteGrid({
     });
   }, [spirits, searchQuery, selectedFamily]);
 
-  // Mouse Drag-to-Scroll handlers (Pull left & right manually)
+  // Group filtered spirits by family for the Family Rows Layout
+  const spiritsGroupedByFamily = useMemo(() => {
+    const groups = {};
+    filteredSpirits.forEach(spirit => {
+      if (!groups[spirit.family]) {
+        groups[spirit.family] = [];
+      }
+      groups[spirit.family].push(spirit);
+    });
+    return groups;
+  }, [filteredSpirits]);
+
+  // Mouse Drag-to-Scroll handlers for Family Pills Bar
   const handleMouseDown = (e) => {
     const container = familyBarRef.current;
     if (!container) return;
@@ -61,11 +74,11 @@ export default function MinimalSpriteGrid({
     const container = familyBarRef.current;
     if (!container) return;
     const x = e.pageX - container.offsetLeft;
-    const walk = (x - dragStartX) * 1.5; // Drag sensitivity
+    const walk = (x - dragStartX) * 1.5;
     container.scrollLeft = scrollStartX - walk;
   };
 
-  // Handle tile tap based on active mode
+  // Handle tile tap based on active click mode
   const handleTileTap = (id) => {
     if (activeMode === 'faltan') {
       const current = userState[id] ?? 0;
@@ -127,17 +140,28 @@ export default function MinimalSpriteGrid({
     }
   };
 
+  // Helper for variant badge text color accent
+  const getVariantTextColor = (variant) => {
+    switch (variant) {
+      case 'Oro': return 'text-amber-400 font-extrabold';
+      case 'Maestro de Trucos': return 'text-purple-400 font-extrabold';
+      case 'Hacker de botín': return 'text-emerald-400 font-extrabold';
+      case 'Cazarrecompensas': return 'text-rose-400 font-extrabold';
+      default: return 'text-slate-300 font-semibold';
+    }
+  };
+
   return (
     <div className="space-y-4 font-sans w-full overflow-x-hidden">
       
-      {/* HUD Quick Filter & Mode Control Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#0d0f1a]/90 p-3 sm:p-4 rounded-3xl border border-white/10 shadow-xl backdrop-blur-md">
+      {/* HUD Quick Filter, Mode Control & Layout View Switcher */}
+      <div className="flex flex-col lg:flex-row items-center justify-between gap-3 bg-[#0d0f1a]/90 p-3 sm:p-4 rounded-3xl border border-white/10 shadow-xl backdrop-blur-md">
         
-        {/* Left: Mode Switcher (Tengo vs Faltan) */}
-        <div className="flex items-center gap-1.5 bg-[#141728] p-1 rounded-2xl border border-white/10 w-full sm:w-auto">
+        {/* Left: Mode Switcher (TENGO vs FALTA) */}
+        <div className="flex items-center gap-1.5 bg-[#141728] p-1 rounded-2xl border border-white/10 w-full lg:w-auto">
           <button
             onClick={() => setActiveMode('tengo')}
-            className={`flex-1 sm:flex-none px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+            className={`flex-1 lg:flex-none px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold transition flex items-center justify-center gap-1.5 ${
               activeMode === 'tengo' 
                 ? 'bg-emerald-400 text-slate-950 font-black shadow-lg shadow-emerald-500/20' 
                 : 'text-slate-400 hover:text-white'
@@ -150,7 +174,7 @@ export default function MinimalSpriteGrid({
 
           <button
             onClick={() => setActiveMode('faltan')}
-            className={`flex-1 sm:flex-none px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+            className={`flex-1 lg:flex-none px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold transition flex items-center justify-center gap-1.5 ${
               activeMode === 'faltan' 
                 ? 'bg-rose-500 text-white font-black shadow-lg shadow-rose-500/20' 
                 : 'text-slate-400 hover:text-white'
@@ -162,17 +186,46 @@ export default function MinimalSpriteGrid({
           </button>
         </div>
 
+        {/* Center: Layout View Mode Toggle (FILAS POR FAMILIA vs MATRIZ INDIVIDUAL) */}
+        <div className="flex items-center gap-1 bg-[#141728] p-1 rounded-2xl border border-white/10 w-full sm:w-auto justify-center">
+          <button
+            onClick={() => setViewLayout('familyRows')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-mono text-xs font-bold transition ${
+              viewLayout === 'familyRows'
+                ? 'bg-cyan-500 text-slate-950 font-black shadow-md shadow-cyan-500/20'
+                : 'text-slate-400 hover:text-white'
+            }`}
+            title="Organizar todos los espíritus en filas independientes por familia"
+          >
+            <LayoutList className="w-4 h-4" />
+            <span>FILAS POR FAMILIA</span>
+          </button>
+
+          <button
+            onClick={() => setViewLayout('grid')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-mono text-xs font-bold transition ${
+              viewLayout === 'grid'
+                ? 'bg-cyan-500 text-slate-950 font-black shadow-md shadow-cyan-500/20'
+                : 'text-slate-400 hover:text-white'
+            }`}
+            title="Ver todos los espíritus en una matriz continua"
+          >
+            <LayoutGrid className="w-4 h-4" />
+            <span>MATRIZ GRID</span>
+          </button>
+        </div>
+
         {/* Right Group: Search Bar & Reset */}
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="flex items-center gap-2 w-full lg:w-auto">
           
           {/* Fast Search Input */}
-          <div className="relative flex-1 sm:w-64">
+          <div className="relative flex-1 lg:w-60">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar por nombre, habilidad..."
+              placeholder="Buscar espíritu, variante..."
               className="w-full bg-[#141728] border border-white/10 rounded-2xl pl-9 pr-4 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400/60 font-mono transition"
             />
             {searchQuery && (
@@ -221,7 +274,7 @@ export default function MinimalSpriteGrid({
                     : 'bg-[#101322] text-slate-400 border-white/10 hover:text-white hover:border-white/20'
                 }`}
               >
-                TODAS LAS FAMILIAS
+                TODAS LAS FAMILIAS ({spirits.length})
               </button>
             );
           }
@@ -274,95 +327,266 @@ export default function MinimalSpriteGrid({
         })}
       </div>
 
-      {/* OBSIDIAN NEON AAA GAMING SPIRIT CARDS MATRIX GRID (6 Columns Desktop, 2 Columns Mobile) */}
-      <div id="tour-sprite-grid" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
-        {filteredSpirits.map(spirit => {
-          const status = userState[spirit.id] ?? 0;
-          const isObtained = status === 1;
-          const isMastered = status === 2;
-          const isMissingFlagged = status === 3;
-          const isFamilyHovered = hoveredFamily && spirit.family === hoveredFamily;
+      {/* --- LAYOUT OPTION A: INDEPENDENT FAMILY ROWS SYSTEM (PÁGINA DE REFERENCIA) --- */}
+      {viewLayout === 'familyRows' ? (
+        <div id="tour-sprite-grid" className="space-y-6">
+          {Object.keys(spiritsGroupedByFamily).map(famName => {
+            const famSpirits = spiritsGroupedByFamily[famName];
+            if (!famSpirits || famSpirits.length === 0) return null;
 
-          return (
-            <div
-              key={spirit.id}
-              id={`spirit-tile-${spirit.id}`}
-              onClick={() => handleTileTap(spirit.id)}
-              onMouseEnter={() => setTooltipSpirit(spirit)}
-              onMouseLeave={() => setTooltipSpirit(null)}
-              className={`group relative w-full aspect-[3/4.1] p-3 rounded-2xl cursor-pointer flex flex-col justify-between items-center transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] select-none overflow-hidden ${
-                isFamilyHovered ? 'ring-2 ring-emerald-400 scale-[1.03] z-20' : ''
-              } ${getCardCoreBg(spirit.rarity, status)}`}
-            >
-              
-              {/* Metallic Ambient Ray Glow Background Effect */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none z-0" />
+            const baseItem = famSpirits[0];
+            const famObtained = famSpirits.filter(s => (userState[s.id] || 0) >= 1).length;
+            const famMastered = famSpirits.filter(s => userState[s.id] === 2).length;
+            const isComplete = famObtained === famSpirits.length;
 
-              {/* Card Header: Rarity Micro Badge (Left) & Tactile Status Pill (Right) */}
-              <div className="w-full flex items-center justify-between text-xs font-mono z-10">
-                
-                {/* Rarity Tag */}
-                <div className={`px-2 py-0.5 rounded-full border text-[9px] font-black uppercase tracking-wider ${getRarityBadgeStyle(spirit.rarity)}`}>
-                  {spirit.rarity || 'Especial'}
+            return (
+              <div 
+                key={famName}
+                className={`bg-[#0d0f1a]/80 p-4 sm:p-5 rounded-3xl border transition-all duration-300 backdrop-blur-md space-y-4 ${
+                  isComplete
+                    ? 'border-amber-400/40 bg-gradient-to-r from-amber-500/5 via-[#0d0f1a] to-[#0d0f1a] shadow-lg shadow-amber-500/5'
+                    : 'border-white/10 hover:border-white/20'
+                }`}
+              >
+                {/* Independent Family Row Header */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
+                  
+                  {/* Left: Family Name, Rarity & Ability */}
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="text-lg sm:text-xl font-extrabold uppercase tracking-wider text-white font-display">
+                        {famName}
+                      </h3>
+
+                      <span className={`px-2 py-0.5 rounded-full border text-[10px] font-mono font-black uppercase tracking-wider ${getRarityBadgeStyle(baseItem.rarity)}`}>
+                        {baseItem.rarity}
+                      </span>
+
+                      {baseItem.familyEn && (
+                        <span className="text-xs text-slate-500 font-mono font-semibold">
+                          ({baseItem.familyEn})
+                        </span>
+                      )}
+                    </div>
+
+                    {baseItem.ability && (
+                      <p className="text-xs text-slate-300 leading-snug font-sans max-w-3xl">
+                        {baseItem.ability}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Right: Family Progress Stats & 1-Tap Quick Action Bar */}
+                  <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
+                    
+                    {/* Progress Badge */}
+                    <div className="px-3 py-1 rounded-xl bg-[#141728] border border-white/10 font-mono text-xs flex items-center gap-2">
+                      <span className="text-slate-400 font-semibold">OBTENIDOS:</span>
+                      <strong className={`font-black ${isComplete ? 'text-amber-400' : famObtained > 0 ? 'text-emerald-400' : 'text-slate-400'}`}>
+                        {famObtained}/{famSpirits.length}
+                      </strong>
+                    </div>
+
+                    {/* Quick Family Actions */}
+                    <div className="flex items-center gap-1 bg-[#141728] p-1 rounded-xl border border-white/10">
+                      <button
+                        onClick={() => handleBatchFamily(famName, 1)}
+                        className="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/25 text-emerald-400 hover:text-emerald-300 text-[11px] font-mono font-bold transition flex items-center gap-1 active:scale-95"
+                        title={`Marcar todo ${famName} como Obtenido`}
+                      >
+                        <Check className="w-3.5 h-3.5 stroke-[3]" />
+                        <span className="hidden md:inline">TODOS</span>
+                      </button>
+
+                      <button
+                        onClick={() => handleBatchFamily(famName, 2)}
+                        className="px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/25 text-amber-400 hover:text-amber-300 text-[11px] font-mono font-bold transition flex items-center gap-1 active:scale-95"
+                        title={`Marcar todo ${famName} como Dominado`}
+                      >
+                        <Star className="w-3.5 h-3.5 fill-amber-400" />
+                        <span className="hidden md:inline">DOMINAR</span>
+                      </button>
+
+                      <button
+                        onClick={() => handleBatchFamily(famName, 0)}
+                        className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 text-[11px] font-mono transition active:scale-95"
+                        title={`Desmarcar ${famName}`}
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                  </div>
+
                 </div>
 
-                {/* Status Indicator Pill */}
-                <div className={`px-2 py-0.5 rounded-full flex items-center gap-1 text-[10px] font-black font-mono transition-all duration-200 ${
-                  isMissingFlagged
-                    ? 'bg-rose-500 text-white shadow-[0_0_12px_rgba(244,63,94,0.6)]'
-                    : isMastered 
-                    ? 'bg-amber-400 text-slate-950 shadow-[0_0_12px_rgba(251,191,36,0.6)]' 
-                    : isObtained 
-                    ? 'bg-emerald-400 text-slate-950 shadow-[0_0_12px_rgba(52,211,153,0.6)]' 
-                    : 'bg-slate-800/80 border border-white/10 text-slate-400 group-hover:border-white/30 group-hover:text-white'
+                {/* Family Row Cards Grid (Side by side horizontal cluster: 5 columns for 5 variants) */}
+                <div className={`grid gap-3 sm:gap-4 ${
+                  famSpirits.length === 1 
+                    ? 'grid-cols-1 max-w-xs' 
+                    : famSpirits.length === 3 
+                    ? 'grid-cols-2 sm:grid-cols-3' 
+                    : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-5'
                 }`}>
-                  {isMissingFlagged ? (
-                    <>
+                  {famSpirits.map(spirit => {
+                    const status = userState[spirit.id] ?? 0;
+                    const isObtained = status === 1;
+                    const isMastered = status === 2;
+                    const isMissingFlagged = status === 3;
+
+                    return (
+                      <div
+                        key={spirit.id}
+                        id={`spirit-tile-${spirit.id}`}
+                        onClick={() => handleTileTap(spirit.id)}
+                        onMouseEnter={() => setTooltipSpirit(spirit)}
+                        onMouseLeave={() => setTooltipSpirit(null)}
+                        className={`group relative w-full aspect-[3/4.1] p-3 rounded-2xl cursor-pointer flex flex-col justify-between items-center transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] select-none overflow-hidden ${getCardCoreBg(spirit.rarity, status)}`}
+                      >
+                        {/* Card Header: Rarity Micro Badge & Status Pill */}
+                        <div className="w-full flex items-center justify-between text-xs font-mono z-10">
+                          <div className={`px-2 py-0.5 rounded-full border text-[9px] font-black uppercase tracking-wider ${getRarityBadgeStyle(spirit.rarity)}`}>
+                            {spirit.rarity || 'Especial'}
+                          </div>
+
+                          <div className={`px-2 py-0.5 rounded-full flex items-center gap-1 text-[10px] font-black font-mono transition-all duration-200 ${
+                            isMissingFlagged
+                              ? 'bg-rose-500 text-white shadow-[0_0_12px_rgba(244,63,94,0.6)]'
+                              : isMastered 
+                              ? 'bg-amber-400 text-slate-950 shadow-[0_0_12px_rgba(251,191,36,0.6)]' 
+                              : isObtained 
+                              ? 'bg-emerald-400 text-slate-950 shadow-[0_0_12px_rgba(52,211,153,0.6)]' 
+                              : 'bg-slate-800/80 border border-white/10 text-slate-400 group-hover:border-white/30 group-hover:text-white'
+                          }`}>
+                            {isMissingFlagged ? (
+                              <span>FALTA</span>
+                            ) : isMastered ? (
+                              <>
+                                <Star className="w-2.5 h-2.5 fill-slate-950" />
+                                <span>DOMINADO</span>
+                              </>
+                            ) : isObtained ? (
+                              <>
+                                <Check className="w-2.5 h-2.5 stroke-[3]" />
+                                <span>TENGO</span>
+                              </>
+                            ) : (
+                              <span>+ AGREGAR</span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* 3D Floating Spirit Render */}
+                        <div className="my-auto h-[115px] w-full flex items-center justify-center z-10 relative">
+                          <img
+                            src={spirit.image}
+                            alt={`${spirit.family} ${spirit.variant}`}
+                            className="max-h-full max-w-[95%] object-contain drop-shadow-[0_12px_16px_rgba(0,0,0,0.85)] group-hover:scale-110 transition-transform duration-300 ease-out"
+                            loading="lazy"
+                          />
+                        </div>
+
+                        {/* Card Footer: Variant Name */}
+                        <div className="w-full text-center z-10 space-y-0.5 pt-1.5 border-t border-white/10 bg-black/30 -mx-3 -mb-3 p-2 rounded-b-2xl backdrop-blur-xs">
+                          <span className={`text-xs font-mono uppercase tracking-wider block truncate ${getVariantTextColor(spirit.variant)}`}>
+                            {spirit.variant}
+                          </span>
+                        </div>
+
+                      </div>
+                    );
+                  })}
+                </div>
+
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+
+        /* --- LAYOUT OPTION B: CONTINUOUS INDIVIDUAL MATRIX GRID (FLAT 6 COLUMNS) --- */
+        <div id="tour-sprite-grid" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+          {filteredSpirits.map(spirit => {
+            const status = userState[spirit.id] ?? 0;
+            const isObtained = status === 1;
+            const isMastered = status === 2;
+            const isMissingFlagged = status === 3;
+            const isFamilyHovered = hoveredFamily && spirit.family === hoveredFamily;
+
+            return (
+              <div
+                key={spirit.id}
+                id={`spirit-tile-${spirit.id}`}
+                onClick={() => handleTileTap(spirit.id)}
+                onMouseEnter={() => setTooltipSpirit(spirit)}
+                onMouseLeave={() => setTooltipSpirit(null)}
+                className={`group relative w-full aspect-[3/4.1] p-3 rounded-2xl cursor-pointer flex flex-col justify-between items-center transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] select-none overflow-hidden ${
+                  isFamilyHovered ? 'ring-2 ring-emerald-400 scale-[1.03] z-20' : ''
+                } ${getCardCoreBg(spirit.rarity, status)}`}
+              >
+                
+                {/* Ambient Glow */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none z-0" />
+
+                {/* Card Header */}
+                <div className="w-full flex items-center justify-between text-xs font-mono z-10">
+                  <div className={`px-2 py-0.5 rounded-full border text-[9px] font-black uppercase tracking-wider ${getRarityBadgeStyle(spirit.rarity)}`}>
+                    {spirit.rarity || 'Especial'}
+                  </div>
+
+                  <div className={`px-2 py-0.5 rounded-full flex items-center gap-1 text-[10px] font-black font-mono transition-all duration-200 ${
+                    isMissingFlagged
+                      ? 'bg-rose-500 text-white shadow-[0_0_12px_rgba(244,63,94,0.6)]'
+                      : isMastered 
+                      ? 'bg-amber-400 text-slate-950 shadow-[0_0_12px_rgba(251,191,36,0.6)]' 
+                      : isObtained 
+                      ? 'bg-emerald-400 text-slate-950 shadow-[0_0_12px_rgba(52,211,153,0.6)]' 
+                      : 'bg-slate-800/80 border border-white/10 text-slate-400 group-hover:border-white/30 group-hover:text-white'
+                  }`}>
+                    {isMissingFlagged ? (
                       <span>FALTA</span>
-                    </>
-                  ) : isMastered ? (
-                    <>
-                      <Star className="w-2.5 h-2.5 fill-slate-950" />
-                      <span>DOMINADO</span>
-                    </>
-                  ) : isObtained ? (
-                    <>
-                      <Check className="w-2.5 h-2.5 stroke-[3]" />
-                      <span>TENGO</span>
-                    </>
-                  ) : (
-                    <span>+ AGREGAR</span>
-                  )}
+                    ) : isMastered ? (
+                      <>
+                        <Star className="w-2.5 h-2.5 fill-slate-950" />
+                        <span>DOMINADO</span>
+                      </>
+                    ) : isObtained ? (
+                      <>
+                        <Check className="w-2.5 h-2.5 stroke-[3]" />
+                        <span>TENGO</span>
+                      </>
+                    ) : (
+                      <span>+ AGREGAR</span>
+                    )}
+                  </div>
                 </div>
-              </div>
 
-              {/* 3D Floating Spirit Render with Heavy Drop Shadow & Hover Scale */}
-              <div className="my-auto h-[120px] w-full flex items-center justify-center z-10 relative">
-                <img
-                  src={spirit.image}
-                  alt={spirit.family}
-                  className="max-h-full max-w-[95%] object-contain drop-shadow-[0_12px_16px_rgba(0,0,0,0.85)] group-hover:scale-110 transition-transform duration-300 ease-out"
-                  loading="lazy"
-                />
-              </div>
+                {/* Sprite Render */}
+                <div className="my-auto h-[120px] w-full flex items-center justify-center z-10 relative">
+                  <img
+                    src={spirit.image}
+                    alt={spirit.family}
+                    className="max-h-full max-w-[95%] object-contain drop-shadow-[0_12px_16px_rgba(0,0,0,0.85)] group-hover:scale-110 transition-transform duration-300 ease-out"
+                    loading="lazy"
+                  />
+                </div>
 
-              {/* Card Footer: Family Title & Variant Sub-badge */}
-              <div className="w-full text-center z-10 space-y-0.5 pt-1.5 border-t border-white/10 bg-black/30 -mx-3 -mb-3 p-2.5 rounded-b-2xl backdrop-blur-xs">
-                <strong className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-white block leading-tight font-display truncate">
-                  {spirit.family}
-                </strong>
-                
-                <span className={`text-[10px] font-mono font-bold uppercase tracking-wider block truncate ${
-                  isMissingFlagged ? 'text-rose-400' : isMastered ? 'text-amber-400' : isObtained ? 'text-emerald-400' : 'text-slate-400'
-                }`}>
-                  {spirit.variant}
-                </span>
-              </div>
+                {/* Card Footer */}
+                <div className="w-full text-center z-10 space-y-0.5 pt-1.5 border-t border-white/10 bg-black/30 -mx-3 -mb-3 p-2.5 rounded-b-2xl backdrop-blur-xs">
+                  <strong className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-white block leading-tight font-display truncate">
+                    {spirit.family}
+                  </strong>
+                  
+                  <span className={`text-[10px] font-mono font-bold uppercase tracking-wider block truncate ${getVariantTextColor(spirit.variant)}`}>
+                    {spirit.variant}
+                  </span>
+                </div>
 
-            </div>
-          );
-        })}
-      </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Floating Glass Tooltip when hovering over any spirit tile */}
       {tooltipSpirit && (
