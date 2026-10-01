@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import MinimalHeader from './components/MinimalHeader';
 import MinimalSpriteGrid from './components/MinimalSpriteGrid';
-import MinimalCodes from './components/MinimalCodes';
 import ExportModal from './components/ExportModal';
 import WelcomeModal from './components/WelcomeModal';
 import DemoPromptModal from './components/DemoPromptModal';
@@ -9,14 +8,9 @@ import AudioPlayer from './components/AudioPlayer';
 import Toast from './components/Toast';
 
 import { GEN2_SPIRITS } from './data/gen2_spirits';
-import { GEN1_SPIRITS } from './data/gen1_spirits';
 import { 
   loadSavedState, 
-  saveLocalState, 
-  loadActiveGen,
-  saveActiveGen,
-  loadRedeemedCodes, 
-  saveRedeemedCodes 
+  saveLocalState
 } from './utils/storage';
 import { trackVisit, fetchExportCount, trackExport } from './utils/analytics';
 import { startGuidedTour, runGuidedDemoSequence } from './utils/tour';
@@ -30,10 +24,8 @@ const PortfolioIcon = ({ className }) => (
 );
 
 export default function App() {
-  const [activeGen, setActiveGen] = useState(() => loadActiveGen());
-  const [activeTab, setActiveTab] = useState('coleccion'); // 'coleccion', 'codigos'
+  const activeGen = 2;
   const [userState, setUserState] = useState({});
-  const [redeemedCodes, setRedeemedCodes] = useState([]);
   const [toastMessage, setToastMessage] = useState('');
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [welcomeOpen, setWelcomeOpen] = useState(false);
@@ -48,11 +40,8 @@ export default function App() {
       if (!seen) setWelcomeOpen(true);
     } catch {}
 
-    const saved = loadSavedState(activeGen);
+    const saved = loadSavedState(2);
     setUserState(saved);
-
-    const savedCodes = loadRedeemedCodes();
-    setRedeemedCodes(savedCodes);
 
     // Track global visit count
     trackVisit().then(count => {
@@ -65,23 +54,13 @@ export default function App() {
     });
   }, []);
 
-  // Switch generation and restore its corresponding saved selections from LocalStorage
-  const handleSelectGen = (newGen) => {
-    if (newGen === activeGen) return;
-    saveLocalState(userState, activeGen);
-    saveActiveGen(newGen);
-    setActiveGen(newGen);
-    const savedForNewGen = loadSavedState(newGen);
-    setUserState(savedForNewGen);
-  };
-
   // Update a single spirit status and save to LocalStorage (preserves 1=Tengo, 2=Dominado, 3=Faltante)
   const handleToggleSpirit = (id) => {
     setUserState(prev => {
       const current = prev[id] || 0;
       const next = (current + 1) % 3; // 0 -> 1 -> 2 -> 0
       const updated = { ...prev, [id]: next };
-      saveLocalState(updated, activeGen);
+      saveLocalState(updated, 2);
       return updated;
     });
   };
@@ -90,36 +69,24 @@ export default function App() {
   const handleBatchUpdate = (updates) => {
     setUserState(prev => {
       const updated = { ...prev, ...updates };
-      saveLocalState(updated, activeGen);
+      saveLocalState(updated, 2);
       return updated;
     });
   };
 
-  // Reset current generation state and update LocalStorage
+  // Reset collection state and update LocalStorage
   const handleResetGen = () => {
-    const spiritsToReset = activeGen === 2 ? GEN2_SPIRITS : GEN1_SPIRITS;
-    if (!window.confirm(`¿Desmarcar todo en la Generación ${activeGen}?`)) {
+    if (!window.confirm('¿Desmarcar todo en el Casillero?')) {
       return;
     }
 
     setUserState(prev => {
-      const resetIds = new Set(spiritsToReset.map(s => s.id));
+      const resetIds = new Set(GEN2_SPIRITS.map(s => s.id));
       const updated = Object.fromEntries(
         Object.entries(prev).filter(([key]) => !resetIds.has(key))
       );
-      saveLocalState(updated, activeGen);
-      showToast(`Generación ${activeGen} desmarcada por completo`);
-      return updated;
-    });
-  };
-
-  // Toggle redeemed codes checklist
-  const handleToggleRedeemed = (codeId) => {
-    setRedeemedCodes(prev => {
-      const updated = prev.includes(codeId)
-        ? prev.filter(id => id !== codeId)
-        : [...prev, codeId];
-      saveRedeemedCodes(updated);
+      saveLocalState(updated, 2);
+      showToast('Casillero desmarcado por completo');
       return updated;
     });
   };
@@ -143,14 +110,11 @@ export default function App() {
     
     // 1. Reset current state so NOTHING is selected initially
     setUserState({});
-    
-    // Ensure view is on collection grid tab
-    setActiveTab('coleccion');
 
     setTimeout(() => {
       runGuidedDemoSequence({
         mode,
-        activeSpirits,
+        activeSpirits: GEN2_SPIRITS,
         onUpdateState: (updates) => {
           setUserState(prev => ({ ...prev, ...updates }));
         },
@@ -161,23 +125,8 @@ export default function App() {
     }, 400);
   };
 
-  // Copy plain text helper (codes, handles)
-  const handleCopyText = async (text, msg) => {
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch {
-      const textarea = document.createElement('textarea');
-      textarea.value = text;
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand('copy');
-      textarea.remove();
-    }
-    showToast(msg || `Copiado: ${text}`);
-  };
-
   // Current active spirits dataset
-  const activeSpirits = activeGen === 2 ? GEN2_SPIRITS : GEN1_SPIRITS;
+  const activeSpirits = GEN2_SPIRITS;
 
   // Validate marked count before opening export modal
   const handleOpenExportModal = () => {
@@ -197,7 +146,7 @@ export default function App() {
     });
   };
 
-  // Statistics calculation for active generation
+  // Statistics calculation for active spirits
   const activeStats = useMemo(() => {
     let obtained = 0;
     let mastered = 0;
@@ -219,41 +168,24 @@ export default function App() {
       {/* Streamlined HUD Header */}
       <MinimalHeader 
         onDownloadCapture={handleOpenExportModal}
-        activeGen={activeGen}
         totalObtained={activeStats.obtained}
         totalSpirits={activeSpirits.length}
         totalVisits={totalVisits}
         totalExports={totalExports}
-        activeTab={activeTab}
-        onSelectTab={setActiveTab}
-        onSelectGen={handleSelectGen}
         onOpenWelcome={() => setWelcomeOpen(true)}
         onStartTour={handleStartTour}
       />
 
       <main className="pb-12 max-w-7xl mx-auto px-2.5 sm:px-6 w-full overflow-x-hidden">
-        
-        {/* Main Content Tabs */}
-        {activeTab === 'coleccion' && (
-          <MinimalSpriteGrid 
-            spirits={activeSpirits}
-            userState={userState}
-            onToggleSpirit={handleToggleSpirit}
-            onBatchUpdate={handleBatchUpdate}
-            activeGen={activeGen}
-            onResetGen={handleResetGen}
-            onOpenExportModal={handleOpenExportModal}
-          />
-        )}
-
-        {activeTab === 'codigos' && (
-          <MinimalCodes 
-            onCopyCode={handleCopyText}
-            redeemedCodes={redeemedCodes}
-            onToggleRedeemed={handleToggleRedeemed}
-          />
-        )}
-
+        <MinimalSpriteGrid 
+          spirits={activeSpirits}
+          userState={userState}
+          onToggleSpirit={handleToggleSpirit}
+          onBatchUpdate={handleBatchUpdate}
+          activeGen={2}
+          onResetGen={handleResetGen}
+          onOpenExportModal={handleOpenExportModal}
+        />
       </main>
 
       {/* Minimal Footer with direct link to Portfolio (https://erazoportafolio.vercel.app/) */}
@@ -295,7 +227,7 @@ export default function App() {
         <ExportModal 
           spirits={activeSpirits}
           userState={userState}
-          activeGen={activeGen}
+          activeGen={2}
           totalVisits={totalVisits}
           totalExports={totalExports}
           onRecordExport={handleRecordExport}

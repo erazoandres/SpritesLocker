@@ -1,25 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Menu, X, Gift, Trophy, Eye, Info, Camera, HelpCircle, Globe } from 'lucide-react';
+import { Download, Menu, X, Eye, Info, Camera, HelpCircle } from 'lucide-react';
 import { startGuidedTour } from '../utils/tour';
 
 const PortfolioIcon = ({ className }) => (
   <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className}>
     <circle cx="12" cy="12" r="10" />
     <line x1="2" y1="12" x2="22" y2="12" />
-    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z" />
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z" />
   </svg>
 );
 
 export default function MinimalHeader({ 
   onDownloadCapture, 
-  activeGen, 
   totalObtained, 
   totalSpirits,
   totalVisits,
   totalExports,
-  activeTab,
-  onSelectTab,
-  onSelectGen,
   onOpenWelcome,
   onStartTour
 }) {
@@ -50,7 +46,7 @@ export default function MinimalHeader({
     }`}>
       <div className="max-w-7xl mx-auto px-3 sm:px-6 space-y-2 sm:space-y-0 w-full">
         
-        {/* Main Row: Logo, Download Action, Desktop Nav */}
+        {/* Main Row: Logo, Download Action, Desktop Stats & Controls */}
         <div className="flex items-center justify-between gap-2 w-full">
           
           {/* Logo & Title Stack: EL CASILLERO with BY ANDRÉS ERAZO */}
@@ -86,49 +82,6 @@ export default function MinimalHeader({
             </button>
           </div>
 
-          {/* Desktop Only Gen Switcher Pills */}
-          <div id="tour-gen-switcher" className="hidden sm:flex items-center bg-[#111320] p-1 rounded-xl border border-white/10 text-xs font-mono shrink-0">
-            <button
-              onClick={() => onSelectGen(2)}
-              className={`px-3 py-1 rounded-lg font-bold transition ${
-                activeGen === 2 ? 'bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/20 font-extrabold' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              GEN 2
-            </button>
-            <button
-              onClick={() => onSelectGen(1)}
-              className={`px-3 py-1 rounded-lg font-bold transition ${
-                activeGen === 1 ? 'bg-violet-500 text-white shadow-md shadow-violet-500/20 font-extrabold' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              GEN 1
-            </button>
-          </div>
-
-          {/* Section Navigation Tabs (Desktop only) */}
-          <nav className="hidden md:flex items-center gap-1 bg-[#111320] p-1.5 rounded-full border border-white/10 text-xs font-semibold">
-            <button 
-              onClick={() => onSelectTab('coleccion')}
-              className={`px-4 py-1.5 rounded-full transition flex items-center gap-1.5 ${
-                activeTab === 'coleccion' ? 'bg-emerald-400 text-slate-950 font-black shadow-md shadow-emerald-500/20 font-display' : 'text-slate-300 hover:text-emerald-400'
-              }`}
-            >
-              <Trophy className="w-3.5 h-3.5" />
-              Colección
-            </button>
-
-            <button 
-              onClick={() => onSelectTab('codigos')}
-              className={`px-4 py-1.5 rounded-full transition flex items-center gap-1.5 ${
-                activeTab === 'codigos' ? 'bg-violet-500 text-white font-black shadow-md shadow-violet-500/20 font-display' : 'text-slate-300 hover:text-violet-400'
-              }`}
-            >
-              <Gift className="w-3.5 h-3.5" />
-              Códigos
-            </button>
-          </nav>
-
           {/* Desktop Right Group (Visits, Exports, Progress, Portfolio) */}
           <div id="tour-counters" className="hidden sm:flex items-center gap-2 shrink-0">
             
@@ -142,7 +95,7 @@ export default function MinimalHeader({
 
             {/* Live Exports Counter (Document: BAmrUK0Bk8D9FTjWkCYZ, Field: exportaciones) */}
             {totalExports !== null && totalExports !== undefined && (
-              <div className="flex items-center gap-1.5 bg-[#111320] px-3 py-1.5 rounded-xl border border-violet-500/30 text-xs font-mono text-slate-400" title="Exportaciones acumuladas a captura HD (Documento BAmrUK0Bk8D9FTjWkCYZ)">
+              <div className="flex items-center gap-1.5 bg-[#111320] px-3 py-1.5 rounded-xl border border-violet-500/30 text-xs font-mono text-slate-400" title="Exportaciones acumuladas a captura HD">
                 <Camera className="w-3.5 h-3.5 text-violet-400" />
                 <span className="font-bold text-slate-200">{Number(totalExports).toLocaleString()}</span>
               </div>
@@ -154,7 +107,7 @@ export default function MinimalHeader({
               <span className="text-slate-500 font-bold">· {pct}%</span>
             </div>
 
-            {/* Portfolio Access Button (Replaces git link with https://erazoportafolio.vercel.app/) */}
+            {/* Portfolio Access Button */}
             <a
               href="https://erazoportafolio.vercel.app/"
               target="_blank"
@@ -167,7 +120,7 @@ export default function MinimalHeader({
             </a>
           </div>
 
-          {/* Download Button + Mobile Menu (Always 100% visible on Mobile & Desktop) */}
+          {/* Download Button + Mobile Menu */}
           <div className="flex items-center gap-1.5 shrink-0">
             <button 
               id="tour-download-btn"
@@ -190,28 +143,8 @@ export default function MinimalHeader({
 
         </div>
 
-        {/* Second Row on Mobile: Gen Switcher & Progress Pill & Visits & Exports */}
-        <div className="flex sm:hidden items-center justify-between gap-1.5 pt-1.5 border-t border-white/5 font-mono text-[11px] w-full">
-          {/* Mobile Gen Switcher */}
-          <div className="flex items-center bg-[#111320] p-0.5 rounded-xl border border-white/10">
-            <button
-              onClick={() => onSelectGen(2)}
-              className={`px-2.5 py-0.5 rounded-lg font-bold transition ${
-                activeGen === 2 ? 'bg-emerald-400 text-slate-950 font-extrabold' : 'text-slate-400'
-              }`}
-            >
-              GEN 2
-            </button>
-            <button
-              onClick={() => onSelectGen(1)}
-              className={`px-2.5 py-0.5 rounded-lg font-bold transition ${
-                activeGen === 1 ? 'bg-violet-500 text-white font-extrabold' : 'text-slate-400'
-              }`}
-            >
-              GEN 1
-            </button>
-          </div>
-
+        {/* Second Row on Mobile: Progress Pill & Visits & Exports */}
+        <div className="flex sm:hidden items-center justify-end gap-1.5 pt-1.5 border-t border-white/5 font-mono text-[11px] w-full">
           <div className="flex items-center gap-1.5">
             {/* Mobile Visit Counter */}
             {totalVisits !== null && totalVisits !== undefined && (
@@ -243,26 +176,6 @@ export default function MinimalHeader({
       {mobileMenuOpen && (
         <div className="md:hidden bg-[#0c0e18]/95 border-b border-emerald-500/20 px-4 py-3 space-y-2 animate-fadeIn w-full">
           <nav className="flex flex-col gap-1.5 text-xs font-bold font-display">
-            <button 
-              onClick={() => { onSelectTab('coleccion'); setMobileMenuOpen(false); }}
-              className={`px-3.5 py-2 rounded-xl text-left flex items-center gap-2.5 ${
-                activeTab === 'coleccion' ? 'bg-emerald-400 text-slate-950 font-black' : 'text-slate-200 hover:bg-white/5'
-              }`}
-            >
-              <Trophy className="w-4 h-4" />
-              Colección de Espíritus
-            </button>
-
-            <button 
-              onClick={() => { onSelectTab('codigos'); setMobileMenuOpen(false); }}
-              className={`px-3.5 py-2 rounded-xl text-left flex items-center gap-2.5 ${
-                activeTab === 'codigos' ? 'bg-violet-500 text-white font-black' : 'text-slate-200 hover:bg-white/5'
-              }`}
-            >
-              <Gift className="w-4 h-4" />
-              Códigos Secretos
-            </button>
-
             <button
               onClick={() => { handleLaunchTour(); setMobileMenuOpen(false); }}
               className="px-3.5 py-2 rounded-xl text-left flex items-center gap-2.5 text-emerald-400 hover:bg-white/5 font-mono"
