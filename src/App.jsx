@@ -176,7 +176,7 @@ export default function App() {
         onStartTour={handleStartTour}
       />
 
-      <main className="pb-12 max-w-7xl mx-auto px-2.5 sm:px-6 w-full overflow-x-hidden">
+      <main className="pt-4 sm:pt-6 pb-12 max-w-7xl mx-auto px-2.5 sm:px-6 w-full overflow-x-hidden">
         <MinimalSpriteGrid 
           spirits={activeSpirits}
           userState={userState}

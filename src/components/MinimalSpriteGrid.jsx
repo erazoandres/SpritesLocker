@@ -109,7 +109,7 @@ export default function MinimalSpriteGrid({
     <div className="space-y-2 font-sans w-full overflow-x-hidden">
       
       {/* Seamless Inline Quick Actions (No bulky container bar) */}
-      <div className="flex flex-wrap items-center justify-between gap-2 px-1 pb-1 font-mono text-xs select-none">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-1 pb-2 mb-2 sm:mb-3 border-b border-white/5 font-mono text-xs select-none">
         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">MARCADO RÁPIDO:</span>
         
         <div className="flex items-center gap-1.5 flex-wrap">
