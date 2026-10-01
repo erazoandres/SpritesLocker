@@ -321,20 +321,6 @@ export default function MinimalSpriteGrid({
         })}
       </div>
 
-      {/* Stylized App Invitation Banner inside Spirits Container Backdrop */}
-      <div className="mt-12 mb-6 p-6 rounded-3xl bg-gradient-to-r from-emerald-950/40 via-slate-900/90 to-purple-950/40 border border-emerald-500/30 shadow-[0_0_35px_rgba(16,185,129,0.15)] flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left font-sans">
-        <div>
-          <h3 className="text-lg md:text-xl font-black text-white uppercase tracking-wider flex items-center justify-center md:justify-start gap-2">
-            <span className="text-amber-400">🔥</span> ¡ARMA Y COMPARTE TU PROPIO CASILLERO DE ESPÍRITUS!
-          </h3>
-          <p className="text-xs text-slate-400 mt-1 font-mono">
-            Marca tus espíritus obtenidos, dominados y faltantes en tiempo real con este organizador.
-          </p>
-        </div>
-        <div className="px-5 py-2.5 rounded-2xl bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 font-mono font-black text-sm md:text-base tracking-wider shadow-[0_0_15px_rgba(16,185,129,0.3)] shrink-0">
-          https://spriteslocker.vercel.app/
-        </div>
-      </div>
 
       {/* Floating Glass Tooltip when hovering over any spirit tile */}
       {tooltipSpirit && (
