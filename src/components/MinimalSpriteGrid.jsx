@@ -12,18 +12,9 @@ export default function MinimalSpriteGrid({
   onResetGen
 }) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedFamily, setSelectedFamily] = useState('Todas');
   const [activeFamilyRow, setActiveFamilyRow] = useState(null);
-  const [hoveredFamily, setHoveredFamily] = useState(null);
   const [tooltipSpirit, setTooltipSpirit] = useState(null);
   const [activeMode, setActiveMode] = useState('tengo'); // 'tengo' or 'faltan'
-  
-  // Drag to scroll states for family pills bar
-  const [isMouseDown, setIsMouseDown] = useState(false);
-  const [dragStartX, setDragStartX] = useState(0);
-  const [scrollStartX, setScrollStartX] = useState(0);
-
-  const familyBarRef = useRef(null);
 
   // Smooth scroll row to center of viewport
   const scrollToFamilyRow = (famName) => {
@@ -36,60 +27,21 @@ export default function MinimalSpriteGrid({
     }, 50);
   };
 
-  // Group spirits list of families
-  const familyList = useMemo(() => {
-    const set = new Set(spirits.map(s => s.family));
-    return ['Todas', ...Array.from(set)];
-  }, [spirits]);
-
-  // Filtered spirits based on search query and family pill selection
-  const filteredSpirits = useMemo(() => {
-    return spirits.filter(s => {
-      const matchFam = selectedFamily === 'Todas' || s.family === selectedFamily;
-      const q = searchQuery.trim().toLowerCase();
-      const matchSearch = !q || `${s.family} ${s.familyEn} ${s.variant} ${s.ability || ''}`.toLowerCase().includes(q);
-      return matchFam && matchSearch;
-    });
-  }, [spirits, searchQuery, selectedFamily]);
-
-  // Group filtered spirits by family
+  // Group spirits by family
   const spiritsGroupedByFamily = useMemo(() => {
     const groups = {};
-    filteredSpirits.forEach(spirit => {
-      if (!groups[spirit.family]) {
-        groups[spirit.family] = [];
+    spirits.forEach(spirit => {
+      const q = searchQuery.trim().toLowerCase();
+      const matchSearch = !q || `${spirit.family} ${spirit.familyEn} ${spirit.variant} ${spirit.ability || ''}`.toLowerCase().includes(q);
+      if (matchSearch) {
+        if (!groups[spirit.family]) {
+          groups[spirit.family] = [];
+        }
+        groups[spirit.family].push(spirit);
       }
-      groups[spirit.family].push(spirit);
     });
     return groups;
-  }, [filteredSpirits]);
-
-  // Mouse Drag-to-Scroll handlers for Family Pills Bar
-  const handleMouseDown = (e) => {
-    const container = familyBarRef.current;
-    if (!container) return;
-    setIsMouseDown(true);
-    setDragStartX(e.pageX - container.offsetLeft);
-    setScrollStartX(container.scrollLeft);
-  };
-
-  const handleMouseLeave = () => {
-    setIsMouseDown(false);
-  };
-
-  const handleMouseUp = () => {
-    setIsMouseDown(false);
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isMouseDown) return;
-    e.preventDefault();
-    const container = familyBarRef.current;
-    if (!container) return;
-    const x = e.pageX - container.offsetLeft;
-    const walk = (x - dragStartX) * 1.5;
-    container.scrollLeft = scrollStartX - walk;
-  };
+  }, [spirits, searchQuery]);
 
   // Handle tile tap based on active click mode
   const handleTileTap = (id, famName) => {
@@ -139,86 +91,6 @@ export default function MinimalSpriteGrid({
   return (
     <div className="space-y-2 font-sans w-full overflow-x-hidden">
       
-      {/* Horizontal Scrollable Family Quick Pills Bar */}
-      <div 
-        ref={familyBarRef}
-        onMouseDown={handleMouseDown}
-        onMouseLeave={handleMouseLeave}
-        onMouseUp={handleMouseUp}
-        onMouseMove={handleMouseMove}
-        className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none cursor-grab active:cursor-grabbing select-none w-full"
-      >
-        {familyList.map(fam => {
-          const isSelected = selectedFamily === fam;
-          if (fam === 'Todas') {
-            return (
-              <button
-                key={fam}
-                onClick={() => {
-                  setSelectedFamily('Todas');
-                  setActiveFamilyRow(null);
-                }}
-                className={`px-2.5 py-1 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition shrink-0 border ${
-                  isSelected 
-                    ? 'bg-emerald-400 text-slate-950 border-emerald-400 font-extrabold shadow-md shadow-emerald-500/20' 
-                    : 'bg-[#101322] text-slate-400 border-white/10 hover:text-white hover:border-white/20'
-                }`}
-              >
-                TODAS LAS FAMILIAS ({spirits.length})
-              </button>
-            );
-          }
-
-          // Count obtained for this family
-          const famSpirits = spirits.filter(s => s.family === fam);
-          const famObtained = famSpirits.filter(s => (userState[s.id] || 0) >= 1).length;
-          const isComplete = famSpirits.length > 0 && famObtained === famSpirits.length;
-
-          return (
-            <div
-              key={fam}
-              onMouseEnter={() => setHoveredFamily(fam)}
-              onMouseLeave={() => setHoveredFamily(null)}
-              className={`flex items-center gap-1 bg-[#101322] px-2 py-1 rounded-xl border text-xs font-mono whitespace-nowrap transition shrink-0 ${
-                isSelected 
-                  ? 'border-emerald-400 text-emerald-400 bg-emerald-500/10' 
-                  : isComplete
-                  ? 'border-amber-400/50 text-amber-400 bg-amber-500/10'
-                  : 'border-white/10 text-slate-300 hover:border-white/20'
-              }`}
-            >
-              <button
-                onClick={() => {
-                  setSelectedFamily(fam);
-                  scrollToFamilyRow(fam);
-                }}
-                className="font-bold hover:underline decoration-emerald-400/40 text-xs"
-              >
-                {fam} ({famObtained}/{famSpirits.length})
-              </button>
-
-              {/* 1-Tap Batch Actions for Family */}
-              <div className="flex items-center gap-0.5 ml-1 border-l border-white/10 pl-1">
-                <button
-                  onClick={() => handleBatchFamily(fam, 1)}
-                  className="hover:text-emerald-400 text-[10px] text-slate-500 px-0.5 font-black"
-                  title={`Marcar todo ${fam} como Obtenido`}
-                >
-                  ✓
-                </button>
-                <button
-                  onClick={() => handleBatchFamily(fam, 2)}
-                  className="hover:text-amber-400 text-[10px] text-slate-500 px-0.5 font-black"
-                  title={`Marcar todo ${fam} como Dominado`}
-                >
-                  ★
-                </button>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
       {/* --- GLOBAL TOP VARIANT COLUMN HEADERS (EXACTLY MATCHING KIWEGAME REFERENCE SCREENSHOT) --- */}
       <div className="hidden md:flex items-center gap-2 sm:gap-3 px-1 py-1.5 border-b border-white/10 font-mono text-[11px] font-black uppercase tracking-wider text-slate-400 select-none">
         
