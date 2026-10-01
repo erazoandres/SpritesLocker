@@ -112,7 +112,7 @@ export default function ExportModal({ spirits, userState, activeGen, totalVisits
               onClick={() => setExportFormat('poster')}
               className="w-full bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-black py-3 px-4 rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-cyan-500/20 transition font-display"
             >
-              PROBAR EXPORTACIÓN MATRIZ COMPLETA (FORTNITE.GG)
+              PROBAR EXPORTACIÓN MATRIZ COMPLETA
             </button>
             <button
               onClick={onClose}
@@ -175,7 +175,7 @@ export default function ExportModal({ spirits, userState, activeGen, totalVisits
             }`}
           >
             <Grid className="w-3.5 h-3.5" />
-            <span>MATRIZ (FORTNITE.GG)</span>
+            <span>MATRIZ</span>
           </button>
         </div>
 
@@ -184,7 +184,7 @@ export default function ExportModal({ spirits, userState, activeGen, totalVisits
           <div className="py-12 text-center space-y-3">
             <Loader2 className="w-8 h-8 text-emerald-400 animate-spin mx-auto" />
             <p className="text-xs font-mono font-bold text-emerald-400">
-              GENERANDO CAPTURA {exportFormat === 'poster' ? 'MATRIZ FORTNITE.GG' : 'TARJETAS HD'}...
+              GENERANDO CAPTURA {exportFormat === 'poster' ? 'MATRIZ COMPLETA' : 'TARJETAS HD'}...
             </p>
           </div>
         )}

@@ -323,7 +323,7 @@ async function generatePosterCollectionImage(spirits, state, generationNumber, t
     dataUrl = canvas.toDataURL();
   }
 
-  const filename = `el-casillero-matriz-fortnite-gen${generationNumber}.png`;
+  const filename = `el-casillero-matriz-gen${generationNumber}.png`;
   return { dataUrl, filename };
 }
 
