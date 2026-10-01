@@ -130,16 +130,25 @@ async function generatePosterCollectionImage(spirits, state, generationNumber, t
 
   // Ambient Lighting Spotlights
   const lightLeft = ctx.createRadialGradient(canvasWidth * 0.25, 200, 50, canvasWidth * 0.25, 200, 600);
-  lightLeft.addColorStop(0, 'rgba(16, 185, 129, 0.12)');
+  lightLeft.addColorStop(0, 'rgba(16, 185, 129, 0.14)');
   lightLeft.addColorStop(1, 'rgba(0, 0, 0, 0)');
   ctx.fillStyle = lightLeft;
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
   const lightRight = ctx.createRadialGradient(canvasWidth * 0.75, 200, 50, canvasWidth * 0.75, 200, 600);
-  lightRight.addColorStop(0, 'rgba(245, 158, 11, 0.12)');
+  lightRight.addColorStop(0, 'rgba(245, 158, 11, 0.14)');
   lightRight.addColorStop(1, 'rgba(0, 0, 0, 0)');
   ctx.fillStyle = lightRight;
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+  // GIANT BACKDROP WATERMARK IN SPIRITS CONTAINER
+  ctx.save();
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(16, 185, 129, 0.07)';
+  ctx.font = '900 78px "Space Grotesk", Arial, sans-serif';
+  ctx.fillText('SPRITESLOCKER.VERCEL.APP', canvasWidth / 2, canvasHeight / 2 - 80);
+  ctx.fillText('¡CREA TU CASILLERO AQUÍ!', canvasWidth / 2, canvasHeight / 2 + 80);
+  ctx.restore();
 
   // --- HEADER SECTION ---
   ctx.textAlign = 'center';
@@ -302,39 +311,32 @@ async function generatePosterCollectionImage(spirits, state, generationNumber, t
   // Render Right Family Block (5 Columns)
   renderFamilyBlock(rightFamilies, leftMargin + blockWidth + centerGap);
 
-  // --- FOOTER SECTION ---
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(leftMargin, canvasHeight - 45);
-  ctx.lineTo(canvasWidth - rightMargin, canvasHeight - 45);
-  ctx.stroke();
+  // --- FOOTER INVITATION CONTAINER SECTION ---
+  const footerCardW = canvasWidth - leftMargin - rightMargin;
+  const footerCardH = 46;
+  const footerCardX = leftMargin;
+  const footerCardY = canvasHeight - 52;
 
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-  ctx.font = '600 13px "JetBrains Mono", monospace';
-  ctx.fillText('EL CASILLERO DE ESPÍRITUS · CREADO POR ANDRÉS ERAZO', leftMargin, canvasHeight - 18);
-
-  // HIGH-VISIBILITY APP CTA BADGE (Bottom Right Corner)
-  const ctaW = 460;
-  const ctaH = 34;
-  const ctaX = canvasWidth - rightMargin - ctaW;
-  const ctaY = canvasHeight - 35;
-
-  ctx.fillStyle = 'rgba(16, 185, 129, 0.18)';
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
   ctx.strokeStyle = '#10b981';
-  ctx.lineWidth = 1.5;
+  ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.roundRect(ctaX, ctaY, ctaW, ctaH, 8);
+  ctx.roundRect(footerCardX, footerCardY, footerCardW, footerCardH, 12);
   ctx.fill();
   ctx.stroke();
 
-  ctx.textAlign = 'center';
-  ctx.font = '800 12px "JetBrains Mono", monospace';
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+  ctx.font = '700 13px "JetBrains Mono", monospace';
+  ctx.fillText('EL CASILLERO DE ESPÍRITUS · POR ANDRÉS ERAZO', footerCardX + 20, footerCardY + 28);
+
+  ctx.textAlign = 'right';
+  ctx.font = '900 14px "JetBrains Mono", monospace';
   ctx.fillStyle = '#ffffff';
-  ctx.fillText('🔥 ¡CRÉA EL TUYO Y MARCA TUS ESPÍRITUS! ➔', ctaX + 155, ctaY + 21);
+  ctx.fillText('🔥 ¡ARMA Y COMPARTE TU PROPIO CASILLERO! ➔ ', footerCardX + footerCardW - 325, footerCardY + 28);
+
   ctx.fillStyle = '#a3e635';
-  ctx.font = '900 13px "JetBrains Mono", monospace';
-  ctx.fillText('spriteslocker.vercel.app', ctaX + 370, ctaY + 21);
+  ctx.font = '900 15px "JetBrains Mono", monospace';
+  ctx.fillText('https://spriteslocker.vercel.app/', footerCardX + footerCardW - 16, footerCardY + 28);
   ctx.textAlign = 'left';
 
   let dataUrl;
@@ -418,6 +420,14 @@ export async function generateCollectionImage(spirits, state, generationNumber, 
     ctx.stroke();
   }
 
+  // GIANT BACKDROP WATERMARK IN SPIRITS CARDS CONTAINER
+  ctx.save();
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(16, 185, 129, 0.07)';
+  ctx.font = '900 88px "Space Grotesk", Arial, sans-serif';
+  ctx.fillText('SPRITESLOCKER.VERCEL.APP', canvasWidth / 2, canvasHeight / 2);
+  ctx.restore();
+
   // Header Title: EL CASILLERO
   ctx.fillStyle = '#10b981';
   ctx.font = '900 56px "Space Grotesk", Arial, sans-serif';
@@ -445,27 +455,27 @@ export async function generateCollectionImage(spirits, state, generationNumber, 
   });
 
   // TOP-RIGHT HIGH-VISIBILITY APP INVITATION CARD
-  const topCtaW = 520;
-  const topCtaH = 92;
+  const topCtaW = 580;
+  const topCtaH = 104;
   const topCtaX = canvasWidth - 60 - topCtaW;
-  const topCtaY = 52;
+  const topCtaY = 46;
 
-  ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
   ctx.strokeStyle = '#10b981';
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 2.5;
   ctx.beginPath();
-  ctx.roundRect(topCtaX, topCtaY, topCtaW, topCtaH, 14);
+  ctx.roundRect(topCtaX, topCtaY, topCtaW, topCtaH, 16);
   ctx.fill();
   ctx.stroke();
 
   ctx.textAlign = 'center';
   ctx.fillStyle = '#ffffff';
-  ctx.font = '900 16px "Space Grotesk", Arial, sans-serif';
-  ctx.fillText('🔥 ¡MARCA TUS ESPÍRITUS Y ARMA TU CASILLERO!', topCtaX + topCtaW / 2, topCtaY + 36);
+  ctx.font = '900 18px "Space Grotesk", Arial, sans-serif';
+  ctx.fillText('🔥 ¡ARMA TU PROPIO CASILLERO Y MARCA TUS ESPÍRITUS!', topCtaX + topCtaW / 2, topCtaY + 40);
 
   ctx.fillStyle = '#a3e635';
-  ctx.font = '900 18px "JetBrains Mono", monospace';
-  ctx.fillText('👉 https://spriteslocker.vercel.app/', topCtaX + topCtaW / 2, topCtaY + 68);
+  ctx.font = '900 22px "JetBrains Mono", monospace';
+  ctx.fillText('👉 https://spriteslocker.vercel.app/', topCtaX + topCtaW / 2, topCtaY + 76);
   ctx.textAlign = 'left';
 
   ctx.fillStyle = 'rgba(18, 21, 36, 0.8)';
