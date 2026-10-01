@@ -13,6 +13,8 @@ const VARIANT_ACCENTS = {
   Base: 'text-slate-300',
   Oro: 'text-amber-400 font-extrabold',
   'Maestro de Trucos': 'text-purple-400 font-extrabold',
+  'Hacker de botín': 'text-emerald-400 font-extrabold',
+  'Cazarrecompensas': 'text-rose-400 font-extrabold',
   Golosina: 'text-pink-400',
   Galaxy: 'text-indigo-400',
   Gema: 'text-emerald-400',

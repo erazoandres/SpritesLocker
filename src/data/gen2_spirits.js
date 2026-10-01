@@ -1,136 +1,196 @@
-// Generation 2 Override Spirits (12 standard 3-variant families + 5 single-type spirits = 41 items)
+// Generation 2 Override Spirits (20 standard 5-variant families + 1 single Mega Man + 4 custom spirits = 105 items)
+
+const ALL_VARIANTS_ORDER = ['Base', 'Oro', 'Maestro de Trucos', 'Hacker de botín', 'Cazarrecompensas'];
+
 export const GEN2_FAMILIES = [
   {
     slug: 'arbustin',
+    webBase: 'bush',
     name: 'Arbustín',
     en: 'Bush',
     rarity: 'Raro',
     ability: 'Te camufla como arbusto después de un tiempo; al máximo nivel también se activa al eliminar.',
-    baseFile: 'T_Icon_BR_Creature_Sprite_BushRanger_L.webp',
-    cheatFile: 'T_Icon_BR_Creature_Sprite_BushRanger_Cheatmaster_L.webp',
-    goldFile: 'T_Icon_BR_Creature_Sprite_BushRanger_Gold_L.webp',
-    order: ['Base', 'Oro', 'Maestro de Trucos']
+    order: ALL_VARIANTS_ORDER
   },
   {
     slug: 'corona',
+    webBase: 'crown',
     name: 'Corona',
     en: 'Crown',
     rarity: 'Mítico',
     ability: 'Solo sube ganando partidas; las victorias con corona aceleran su progreso y desbloquean variantes.',
-    baseFile: 'T_Icon_BR_Creature_Sprite_Crown_L.webp',
-    cheatFile: 'T_Icon_BR_Creature_Sprite_Crown_Cheatmaster_L.webp',
-    goldFile: 'T_Icon_BR_Creature_Sprite_Crown_Gold_L.webp',
-    order: ['Base', 'Oro', 'Maestro de Trucos']
+    order: ALL_VARIANTS_ORDER
   },
   {
     slug: 'aventura',
+    webBase: 'adventure',
     name: 'Bandido',
     en: 'Adventure',
     rarity: 'Raro',
     ability: 'Mejora un objeto aleatorio de tu inventario cada vez que sube de nivel.',
-    baseFile: 'T_Icon_BR_Creature_Sprite_Dwarf_L.webp',
-    cheatFile: 'T_Icon_BR_Creature_Sprite_Dwarf_Cheatmaster_L.webp',
-    goldFile: 'T_Icon_BR_Creature_Sprite_Dwarf_Gold_L.webp',
-    order: ['Base', 'Oro', 'Maestro de Trucos']
+    order: ALL_VARIANTS_ORDER
   },
   {
     slug: '8-bits',
+    webBase: '8-bit',
     name: '8-Bit',
     en: '8-Bit',
     rarity: 'Raro',
     ability: 'Incluye una escopeta de 8 bits en el primer cofre y un multiplicador de puntuación para ella.',
-    baseFile: 'T_Icon_BR_Creature_Sprite_EightBitBlaster_L.webp',
-    cheatFile: 'T_Icon_BR_Creature_Sprite_EightBitBlaster_Cheatmaster_L.webp',
-    goldFile: 'T_Icon_BR_Creature_Sprite_EightBitBlaster_Gold_L.webp',
-    order: ['Base', 'Oro', 'Maestro de Trucos']
+    order: ALL_VARIANTS_ORDER
   },
   {
     slug: 'jazz-jackrabbit',
+    webBase: 'jackrabbit',
     name: 'Jazz Jackrabbit',
     en: 'Jackrabbit',
     rarity: 'Legendario',
     ability: 'Permite realizar un salto adicional en el aire; el enfriamiento disminuye al subir de nivel.',
-    baseFile: 'T_Icon_BR_Creature_Sprite_JazzJackrabbit_L.webp',
-    cheatFile: 'T_Icon_BR_Creature_Sprite_JazzJackrabbit_Cheatmaster_L.webp',
-    goldFile: 'T_Icon_BR_Creature_Sprite_JazzJackrabbit_Gold_L.webp',
-    order: ['Base', 'Oro', 'Maestro de Trucos']
+    order: ALL_VARIANTS_ORDER
   },
   {
     slug: 'jonesy',
+    webBase: 'jonesy',
     name: 'Jonesy',
     en: 'Jonesy',
     rarity: 'Raro',
     ability: 'Recupera vida o escudo tras recibir daño; la cantidad aumenta con cada nivel.',
-    baseFile: 'T_Icon_BR_Creature_Sprite_Jonesy_L.webp',
-    cheatFile: 'T_Icon_BR_Creature_Sprite_Jonesy_Cheatmaster_L.webp',
-    goldFile: 'T_Icon_BR_Creature_Sprite_Jonesy_Gold_L.webp',
-    order: ['Base', 'Oro', 'Maestro de Trucos']
+    order: ALL_VARIANTS_ORDER
   },
   {
     slug: 'explorador-tormenta',
+    webBase: 'storm-scout',
     name: 'Explorador de Tormenta',
     en: 'Storm Scout',
     rarity: 'Raro',
     ability: 'Activa Overdrive al recibir daño de tormenta y, al máximo nivel, revela los próximos círculos.',
-    baseFile: 'T_Icon_BR_Creature_Sprite_StormScout_L.webp',
-    cheatFile: 'T_Icon_BR_Creature_Sprite_StormScout_Cheatmaster_L.webp',
-    goldFile: 'T_Icon_BR_Creature_Sprite_StormScout_Gold_L.webp',
-    order: ['Base', 'Oro', 'Maestro de Trucos']
+    order: ALL_VARIANTS_ORDER
   },
   {
     slug: 'klombo',
+    webBase: 'klombo',
     name: 'Klombo',
     en: 'Klombo',
     rarity: 'Mítico',
     ability: 'Entrega objetos aleatorios por nivel y solo progresa consumiendo objetos; mejora su calidad al subir.',
-    baseFile: 'T_Icon_BR_Creature_Sprite_Klombo_L.webp',
-    cheatFile: 'T_Icon_BR_Creature_Sprite_Klombo_Cheatmaster_L.webp',
-    goldFile: 'T_Icon_BR_Creature_Sprite_Klombo_Gold_L.webp',
-    order: ['Base', 'Oro', 'Maestro de Trucos']
+    order: ALL_VARIANTS_ORDER
   },
   {
     slug: 'tails',
+    webBase: 'tails',
     name: 'Tails',
     en: 'Tails',
     rarity: 'Épico',
     ability: 'Permite planear con ayuda de Tails; la velocidad aumenta con cada nivel.',
-    baseFile: 'T_Icon_BR_Creature_Sprite_NarrowFlea_Monkey_L.webp',
-    cheatFile: 'T_Icon_BR_Creature_Sprite_NarrowFlea_Monkey_Cheatmaster_L.webp',
-    goldFile: 'T_Icon_BR_Creature_Sprite_NarrowFlea_Monkey_Gold_L.webp',
-    order: ['Base', 'Oro', 'Maestro de Trucos']
+    order: ALL_VARIANTS_ORDER
   },
   {
     slug: 'sonic',
+    webBase: 'sonic',
     name: 'Sonic',
     en: 'Sonic',
     rarity: 'Épico',
     ability: 'Aumenta la velocidad de sprint con cada nivel.',
-    baseFile: 'T_Icon_BR_Creature_Sprite_NarrowFlea_Obsidian_L.webp',
-    cheatFile: 'T_Icon_BR_Creature_Sprite_NarrowFlea_Obsidian_Cheatmaster_L.webp',
-    goldFile: 'T_Icon_BR_Creature_Sprite_NarrowFlea_Obsidian_Gold_L.webp',
-    order: ['Base', 'Oro', 'Maestro de Trucos']
+    order: ALL_VARIANTS_ORDER
   },
   {
     slug: 'sombra',
+    webBase: 'shadow',
     name: 'Shadow',
     en: 'Shadow',
     rarity: 'Épico',
     ability: 'Recarga automáticamente las armas guardadas; la recarga mejora con cada nivel.',
-    baseFile: 'T_Icon_BR_Creature_Sprite_NarrowFlea_Scribe_L.webp',
-    cheatFile: 'T_Icon_BR_Creature_Sprite_NarrowFlea_Scribe_Cheatmaster_L.webp',
-    goldFile: 'T_Icon_BR_Creature_Sprite_NarrowFlea_Scribe_Gold_L.webp',
-    order: ['Base', 'Oro', 'Maestro de Trucos']
+    order: ALL_VARIANTS_ORDER
   },
   {
     slug: 'killswitch',
+    webBase: 'killswitch',
     name: 'Killswitch',
     en: 'Killswitch',
     rarity: 'Épico',
     ability: 'Mejora la precisión al apuntar mientras saltas o caes; aumenta con cada nivel.',
-    baseFile: 'T_Icon_BR_Creature_Sprite_Killswitch_L.webp',
-    cheatFile: 'T_Icon_BR_Creature_Sprite_Killswitch_Cheatmaster_L.webp',
-    goldFile: 'T_Icon_BR_Creature_Sprite_Killswitch_Gold_L.webp',
-    order: ['Base', 'Oro', 'Maestro de Trucos']
+    order: ALL_VARIANTS_ORDER
+  },
+  {
+    slug: 'rayos-x',
+    webBase: 'x-ray',
+    name: 'Rayos X',
+    en: 'X-Ray',
+    rarity: 'Legendario',
+    ability: 'Revela la posición de cofres, contenedores y enemigos cercanos a través de muros y estructuras.',
+    order: ALL_VARIANTS_ORDER
+  },
+  {
+    slug: 'onigiri',
+    webBase: 'onigiri',
+    name: 'Onigiri',
+    en: 'Onigiri',
+    rarity: 'Raro',
+    ability: 'Regenera salud continuamente mientras estés fuera del alcance del combate activo.',
+    order: ALL_VARIANTS_ORDER
+  },
+  {
+    slug: 'protector',
+    webBase: 'overshield',
+    name: 'Protector',
+    en: 'Overshield',
+    rarity: 'Raro',
+    ability: 'Otorga un escudo de sobreprotección extra que se regenera automáticamente tras un periodo de calma.',
+    order: ALL_VARIANTS_ORDER
+  },
+  {
+    slug: 'crash-bandicoot',
+    webBase: 'crash-bandicoot',
+    name: 'Crash Bandicoot',
+    en: 'Crash Bandicoot',
+    rarity: 'Épico',
+    ability: 'Desata un ataque giratorio devastador que rompe construcciones cercanas e impulsa la velocidad.',
+    order: ALL_VARIANTS_ORDER
+  },
+  {
+    slug: 'blinky',
+    webBase: 'blinky',
+    name: 'Blinky',
+    en: 'Blinky',
+    rarity: 'Épico',
+    ability: 'Permite un impulso de teletransporte instantáneo a corta distancia para maniobras evasivas.',
+    order: ALL_VARIANTS_ORDER
+  },
+  {
+    slug: 'morgana',
+    webBase: 'morgana',
+    name: 'Morgana',
+    en: 'Morgana',
+    rarity: 'Épico',
+    ability: 'Dispara una ráfaga de sombras que ralentiza a los rivales e interrumpe sus ataques.',
+    order: ALL_VARIANTS_ORDER
+  },
+  {
+    slug: 'cumpleanos',
+    webBase: 'birthday',
+    name: 'Cumpleaños',
+    en: 'Birthday',
+    rarity: 'Raro',
+    ability: 'Genera regalos con botín especial y pastel de cumpleaños revitalizante durante la partida.',
+    order: ALL_VARIANTS_ORDER
+  },
+  {
+    slug: 'estanque',
+    webBase: 'pond',
+    name: 'Estanque',
+    en: 'Pond',
+    rarity: 'Épico',
+    ability: 'Incrementa enormemente la movilidad en el agua y regenera salud de manera sostenida al nadar.',
+    order: ALL_VARIANTS_ORDER
+  },
+  {
+    slug: 'mega-man',
+    webBase: 'mega-man',
+    name: 'Mega Man',
+    en: 'Mega Man',
+    rarity: 'Raro',
+    ability: 'Despliega un Mega Blaster con disparos de energía concentrada de alto impacto.',
+    order: ['Base']
   },
   {
     slug: 'caballero',
@@ -148,15 +208,6 @@ export const GEN2_FAMILIES = [
     rarity: 'Épico',
     ability: 'Mejora la velocidad de movimiento y aumenta la capacidad del cargador de armas energéticas.',
     customImage: '/sprites/variations/ciber.png',
-    order: ['Base']
-  },
-  {
-    slug: 'onigiri',
-    name: 'Onigiri',
-    en: 'Onigiri',
-    rarity: 'Raro',
-    ability: 'Regenera salud continuamente mientras estés fuera del alcance del combate activo.',
-    customImage: '/sprites/variations/onigiri.png',
     order: ['Base']
   },
   {
@@ -179,16 +230,40 @@ export const GEN2_FAMILIES = [
   }
 ];
 
+const getVariantSlug = (variant) => {
+  switch (variant) {
+    case 'Base': return 'base';
+    case 'Oro': return 'oro';
+    case 'Maestro de Trucos': return 'maestro-trucos';
+    case 'Hacker de botín': return 'hacker-botin';
+    case 'Cazarrecompensas': return 'cazarrecompensas';
+    default: return 'base';
+  }
+};
+
 const getImageFile = (fam, variant) => {
   if (fam.customImage) return fam.customImage;
-  if (variant === 'Base') return `/sprites/gen2/${fam.baseFile}`;
-  if (variant === 'Oro') return `/sprites/gen2/${fam.goldFile}`;
-  return `/sprites/gen2/${fam.cheatFile}`;
+  if (!fam.webBase) return `/sprites/variations/${fam.slug}.png`;
+
+  switch (variant) {
+    case 'Base':
+      return `/sprites/espiritus/${fam.webBase}.png`;
+    case 'Oro':
+      return `/sprites/espiritus/${fam.webBase}-gold.png`;
+    case 'Maestro de Trucos':
+      return `/sprites/espiritus/${fam.webBase}-cheatmaster.png`;
+    case 'Hacker de botín':
+      return `/sprites/espiritus/${fam.webBase}-loothacker.png`;
+    case 'Cazarrecompensas':
+      return `/sprites/espiritus/${fam.webBase}-bountyhunter.png`;
+    default:
+      return `/sprites/espiritus/${fam.webBase}.png`;
+  }
 };
 
 export const GEN2_SPIRITS = GEN2_FAMILIES.flatMap(fam =>
   fam.order.map(variant => ({
-    id: `g2-${fam.slug}-${variant === 'Base' ? 'base' : variant === 'Oro' ? 'oro' : 'maestro-trucos'}`,
+    id: `g2-${fam.slug}-${getVariantSlug(variant)}`,
     family: fam.name,
     familyEn: fam.en,
     variant: fam.order.length === 1 ? 'Único' : variant,
