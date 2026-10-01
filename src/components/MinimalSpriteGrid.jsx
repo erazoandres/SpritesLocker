@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef } from 'react';
-import { Search, Check, Star, RotateCcw, CheckCircle2, XCircle } from 'lucide-react';
+import { Check, Star, RotateCcw, CheckCircle2, XCircle } from 'lucide-react';
 
 const VARIANT_COLUMNS = ['Base', 'Oro', 'Maestro de Trucos', 'Hacker de botín', 'Cazarrecompensas'];
 
@@ -11,7 +11,6 @@ export default function MinimalSpriteGrid({
   activeGen,
   onResetGen
 }) {
-  const [searchQuery, setSearchQuery] = useState('');
   const [activeFamilyRow, setActiveFamilyRow] = useState(null);
   const [tooltipSpirit, setTooltipSpirit] = useState(null);
   const [activeMode, setActiveMode] = useState('tengo'); // 'tengo' or 'faltan'
@@ -31,17 +30,13 @@ export default function MinimalSpriteGrid({
   const spiritsGroupedByFamily = useMemo(() => {
     const groups = {};
     spirits.forEach(spirit => {
-      const q = searchQuery.trim().toLowerCase();
-      const matchSearch = !q || `${spirit.family} ${spirit.familyEn} ${spirit.variant} ${spirit.ability || ''}`.toLowerCase().includes(q);
-      if (matchSearch) {
-        if (!groups[spirit.family]) {
-          groups[spirit.family] = [];
-        }
-        groups[spirit.family].push(spirit);
+      if (!groups[spirit.family]) {
+        groups[spirit.family] = [];
       }
+      groups[spirit.family].push(spirit);
     });
     return groups;
-  }, [spirits, searchQuery]);
+  }, [spirits]);
 
   // Handle tile tap based on active click mode
   const handleTileTap = (id, famName) => {
@@ -115,32 +110,11 @@ export default function MinimalSpriteGrid({
   return (
     <div className="space-y-2 font-sans w-full overflow-x-hidden">
       
-      {/* --- TOP ACTION CONTROL BAR: SEARCH, QUICK FALTANTES BATCH & TAP MODE TOGGLE --- */}
-      <div id="tour-faltantes-bar" className="bg-[#101322]/90 border border-white/10 p-2.5 sm:p-3 rounded-2xl mb-2 flex flex-col md:flex-row md:items-center justify-between gap-3 backdrop-blur-md shadow-xl">
+      {/* --- TOP ACTION CONTROL BAR: QUICK FALTANTES BATCH & TAP MODE TOGGLE --- */}
+      <div id="tour-faltantes-bar" className="bg-[#101322]/90 border border-white/10 p-2.5 sm:p-3 rounded-2xl mb-2 flex items-center justify-end backdrop-blur-md shadow-xl">
         
-        {/* Search & Filter Input */}
-        <div className="relative flex-1 min-w-[220px]">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar por nombre, familia o habilidad..."
-            className="w-full bg-[#0a0b12] border border-white/10 rounded-xl pl-9 pr-8 py-2 text-xs font-sans text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400/50 focus:ring-1 focus:ring-emerald-400/30 transition"
-          />
-          {searchQuery && (
-            <button 
-              onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs font-mono font-bold"
-              title="Limpiar búsqueda"
-            >
-              ✕
-            </button>
-          )}
-        </div>
-
         {/* Action Controls & Mode Toggle */}
-        <div className="flex flex-wrap items-center justify-between md:justify-end gap-2 font-mono text-xs w-full md:w-auto">
+        <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2 font-mono text-xs w-full">
           
           {/* Mode Toggle Button: TENGO (✓) vs ME FALTA (✗) */}
           <div className="flex items-center bg-[#0a0b12] p-1 rounded-xl border border-white/10 shrink-0">
