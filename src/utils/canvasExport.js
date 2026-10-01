@@ -306,18 +306,35 @@ async function generatePosterCollectionImage(spirits, state, generationNumber, t
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
   ctx.lineWidth = 1;
   ctx.beginPath();
-  ctx.moveTo(leftMargin, canvasHeight - 40);
-  ctx.lineTo(canvasWidth - rightMargin, canvasHeight - 40);
+  ctx.moveTo(leftMargin, canvasHeight - 45);
+  ctx.lineTo(canvasWidth - rightMargin, canvasHeight - 45);
   ctx.stroke();
 
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
   ctx.font = '600 13px "JetBrains Mono", monospace';
   ctx.fillText('EL CASILLERO DE ESPÍRITUS · CREADO POR ANDRÉS ERAZO', leftMargin, canvasHeight - 18);
 
-  ctx.textAlign = 'right';
-  ctx.fillStyle = '#10b981';
-  ctx.font = '800 13px "JetBrains Mono", monospace';
-  ctx.fillText('https://spriteslocker.vercel.app/', canvasWidth - rightMargin, canvasHeight - 18);
+  // HIGH-VISIBILITY APP CTA BADGE (Bottom Right Corner)
+  const ctaW = 460;
+  const ctaH = 34;
+  const ctaX = canvasWidth - rightMargin - ctaW;
+  const ctaY = canvasHeight - 35;
+
+  ctx.fillStyle = 'rgba(16, 185, 129, 0.18)';
+  ctx.strokeStyle = '#10b981';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.roundRect(ctaX, ctaY, ctaW, ctaH, 8);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.textAlign = 'center';
+  ctx.font = '800 12px "JetBrains Mono", monospace';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText('🔥 ¡CRÉA EL TUYO Y MARCA TUS ESPÍRITUS! ➔', ctaX + 155, ctaY + 21);
+  ctx.fillStyle = '#a3e635';
+  ctx.font = '900 13px "JetBrains Mono", monospace';
+  ctx.fillText('spriteslocker.vercel.app', ctaX + 370, ctaY + 21);
   ctx.textAlign = 'left';
 
   let dataUrl;
@@ -426,6 +443,30 @@ export async function generateCollectionImage(spirits, state, generationNumber, 
     if (st === 2) countMastered++;
     if (st === 3) countMissing++;
   });
+
+  // TOP-RIGHT HIGH-VISIBILITY APP INVITATION CARD
+  const topCtaW = 520;
+  const topCtaH = 92;
+  const topCtaX = canvasWidth - 60 - topCtaW;
+  const topCtaY = 52;
+
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+  ctx.strokeStyle = '#10b981';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.roundRect(topCtaX, topCtaY, topCtaW, topCtaH, 14);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '900 16px "Space Grotesk", Arial, sans-serif';
+  ctx.fillText('🔥 ¡MARCA TUS ESPÍRITUS Y ARMA TU CASILLERO!', topCtaX + topCtaW / 2, topCtaY + 36);
+
+  ctx.fillStyle = '#a3e635';
+  ctx.font = '900 18px "JetBrains Mono", monospace';
+  ctx.fillText('👉 https://spriteslocker.vercel.app/', topCtaX + topCtaW / 2, topCtaY + 68);
+  ctx.textAlign = 'left';
 
   ctx.fillStyle = 'rgba(18, 21, 36, 0.8)';
   ctx.strokeStyle = 'rgba(16, 185, 129, 0.4)';
@@ -543,12 +584,27 @@ export async function generateCollectionImage(spirits, state, generationNumber, 
   ctx.font = '600 15px "Outfit", sans-serif';
   ctx.fillText('EL CASILLERO · Andrés Erazo', 60, canvasHeight - 20);
 
-  // OFFICIAL VERCEL WATERMARK CALL-TO-ACTION (Bottom Right Corner)
-  const watermarkText = 'INGRESA A: https://spriteslocker.vercel.app/';
-  ctx.textAlign = 'right';
-  ctx.fillStyle = '#10b981';
-  ctx.font = '800 15px "JetBrains Mono", monospace';
-  ctx.fillText(watermarkText, canvasWidth - 60, canvasHeight - 20);
+  // HIGH-VISIBILITY APP CTA BADGE (Bottom Right Corner)
+  const ctaW = 540;
+  const ctaH = 38;
+  const ctaX = canvasWidth - 60 - ctaW;
+  const ctaY = canvasHeight - 44;
+
+  ctx.fillStyle = 'rgba(16, 185, 129, 0.18)';
+  ctx.strokeStyle = '#10b981';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.roundRect(ctaX, ctaY, ctaW, ctaH, 10);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.textAlign = 'center';
+  ctx.font = '800 13px "JetBrains Mono", monospace';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText('⚡ ¡PRUEBA LA APP Y CREA EL TUYO! ➔', ctaX + 145, ctaY + 24);
+  ctx.fillStyle = '#a3e635';
+  ctx.font = '900 14px "JetBrains Mono", monospace';
+  ctx.fillText('spriteslocker.vercel.app', ctaX + 415, ctaY + 24);
   ctx.textAlign = 'left';
 
   let dataUrl;
