@@ -42,10 +42,10 @@ export const GEN2_FAMILIES = [
     order: FORT_DROP_VARIANTS_ORDER
   },
   {
-    slug: 'monstruo',
+    slug: 'vampiro',
     webBase: 'monstruo',
-    name: 'Monstruo',
-    en: 'Teeth Monster',
+    name: 'Vampiro',
+    en: 'Vampire',
     rarity: 'Legendario',
     ability: 'Desata voracidad feroz aumentando el daño en combate a corta distancia y regenerando vida al eliminar.',
     order: FORT_DROP_VARIANTS_ORDER

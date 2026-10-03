@@ -80,7 +80,19 @@ export function loadSavedState(gen = 2) {
   try {
     const key = gen === 1 ? STORAGE_KEY_GEN1 : STORAGE_KEY_GEN2;
     const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : {};
+    const parsed = raw ? JSON.parse(raw) : {};
+
+    // Legacy ID migration: g2-monstruo-* -> g2-vampiro-*
+    const migrated = {};
+    for (const [k, v] of Object.entries(parsed)) {
+      if (k.startsWith('g2-monstruo-')) {
+        const newKey = k.replace('g2-monstruo-', 'g2-vampiro-');
+        migrated[newKey] = v;
+      } else {
+        migrated[k] = v;
+      }
+    }
+    return migrated;
   } catch (err) {
     console.warn('Failed loading saved state from LocalStorage:', err);
     return {};
