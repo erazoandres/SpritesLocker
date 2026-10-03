@@ -129,7 +129,7 @@ export const GEN2_FAMILIES = [
     en: 'Sonic',
     rarity: 'Épico',
     ability: 'Aumenta la velocidad de sprint con cada nivel.',
-    order: TRICKTREAT_VARIANTS_ORDER
+    order: ALL_VARIANTS_ORDER
   },
   {
     slug: 'sombra',
@@ -228,15 +228,6 @@ export const GEN2_FAMILIES = [
     en: 'Mega Man',
     rarity: 'Raro',
     ability: 'Despliega un Mega Blaster con disparos de energía concentrada de alto impacto.',
-    order: ['Base']
-  },
-  {
-    slug: 'sonic-ciber',
-    name: 'Sonic',
-    en: 'Sonic',
-    rarity: 'Épico',
-    ability: 'Mejora la velocidad de movimiento y aumenta la capacidad del cargador de armas energéticas.',
-    customImage: '/sprites/variations/ciber.png',
     order: ['Base']
   }
 ];
