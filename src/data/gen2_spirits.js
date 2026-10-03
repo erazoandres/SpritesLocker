@@ -129,7 +129,7 @@ export const GEN2_FAMILIES = [
     en: 'Sonic',
     rarity: 'Épico',
     ability: 'Aumenta la velocidad de sprint con cada nivel.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'sombra',
