@@ -219,7 +219,7 @@ export const GEN2_FAMILIES = [
     en: 'Pond',
     rarity: 'Épico',
     ability: 'Incrementa enormemente la movilidad en el agua y regenera salud de manera sostenida al nadar.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'mega-man',
