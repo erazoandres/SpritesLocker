@@ -1,6 +1,7 @@
-// Generation 2 Override Spirits (20 standard 5-variant families + 4 Fort Drop 6-variant families + Mega Man + Sonic Ciber = 126 items)
+// Generation 2 Override Spirits (19 6-variant families with Truco o trato + 1 5-variant family + 4 Fort Drop 6-variant families + Mega Man + Sonic Ciber = 145 items)
 
 const ALL_VARIANTS_ORDER = ['Base', 'Oro', 'Maestro de Trucos', 'Hacker de botín', 'Cazarrecompensas'];
+const TRICKTREAT_VARIANTS_ORDER = ['Base', 'Oro', 'Maestro de Trucos', 'Hacker de botín', 'Cazarrecompensas', 'Truco o trato'];
 const FORT_DROP_VARIANTS_ORDER = ['Base', 'Oro', 'Matriz Verde', 'Red Azul', 'Galaxia Morada', 'Fuego Naranja'];
 
 export const GEN2_FAMILIES = [
@@ -11,7 +12,7 @@ export const GEN2_FAMILIES = [
     en: 'Bush',
     rarity: 'Raro',
     ability: 'Te camufla como arbusto después de un tiempo; al máximo nivel también se activa al eliminar.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'corona',
@@ -20,7 +21,7 @@ export const GEN2_FAMILIES = [
     en: 'Crown',
     rarity: 'Mítico',
     ability: 'Solo sube ganando partidas; las victorias con corona aceleran su progreso y desbloquean variantes.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'mapache',
@@ -65,7 +66,7 @@ export const GEN2_FAMILIES = [
     en: 'Adventure',
     rarity: 'Raro',
     ability: 'Mejora un objeto aleatorio de tu inventario cada vez que sube de nivel.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: '8-bits',
@@ -74,7 +75,7 @@ export const GEN2_FAMILIES = [
     en: '8-Bit',
     rarity: 'Raro',
     ability: 'Incluye una escopeta de 8 bits en el primer cofre y un multiplicador de puntuación para ella.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'jazz-jackrabbit',
@@ -83,7 +84,7 @@ export const GEN2_FAMILIES = [
     en: 'Jackrabbit',
     rarity: 'Legendario',
     ability: 'Permite realizar un salto adicional en el aire; el enfriamiento disminuye al subir de nivel.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'jonesy',
@@ -92,7 +93,7 @@ export const GEN2_FAMILIES = [
     en: 'Jonesy',
     rarity: 'Raro',
     ability: 'Recupera vida o escudo tras recibir daño; la cantidad aumenta con cada nivel.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'explorador-tormenta',
@@ -101,7 +102,7 @@ export const GEN2_FAMILIES = [
     en: 'Storm Scout',
     rarity: 'Raro',
     ability: 'Activa Overdrive al recibir daño de tormenta y, al máximo nivel, revela los próximos círculos.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'klombo',
@@ -110,7 +111,7 @@ export const GEN2_FAMILIES = [
     en: 'Klombo',
     rarity: 'Mítico',
     ability: 'Entrega objetos aleatorios por nivel y solo progresa consumiendo objetos; mejora su calidad al subir.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'tails',
@@ -119,7 +120,7 @@ export const GEN2_FAMILIES = [
     en: 'Tails',
     rarity: 'Épico',
     ability: 'Permite planear con ayuda de Tails; la velocidad aumenta con cada nivel.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'sonic',
@@ -128,7 +129,7 @@ export const GEN2_FAMILIES = [
     en: 'Sonic',
     rarity: 'Épico',
     ability: 'Aumenta la velocidad de sprint con cada nivel.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'sombra',
@@ -137,7 +138,7 @@ export const GEN2_FAMILIES = [
     en: 'Shadow',
     rarity: 'Épico',
     ability: 'Recarga automáticamente las armas guardadas; la recarga mejora con cada nivel.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'killswitch',
@@ -146,7 +147,7 @@ export const GEN2_FAMILIES = [
     en: 'Killswitch',
     rarity: 'Épico',
     ability: 'Mejora la precisión al apuntar mientras saltas o caes; aumenta con cada nivel.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'rayos-x',
@@ -155,7 +156,7 @@ export const GEN2_FAMILIES = [
     en: 'X-Ray',
     rarity: 'Legendario',
     ability: 'Revela la posición de cofres, contenedores y enemigos cercanos a través de muros y estructuras.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'onigiri',
@@ -164,7 +165,7 @@ export const GEN2_FAMILIES = [
     en: 'Onigiri',
     rarity: 'Raro',
     ability: 'Regenera salud continuamente mientras estés fuera del alcance del combate activo.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'protector',
@@ -173,7 +174,7 @@ export const GEN2_FAMILIES = [
     en: 'Overshield',
     rarity: 'Raro',
     ability: 'Otorga un escudo de sobreprotección extra que se regenera automáticamente tras un periodo de calma.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'crash-bandicoot',
@@ -182,7 +183,7 @@ export const GEN2_FAMILIES = [
     en: 'Crash Bandicoot',
     rarity: 'Épico',
     ability: 'Desata un ataque giratorio devastador que rompe construcciones cercanas e impulsa la velocidad.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'blinky',
@@ -191,7 +192,7 @@ export const GEN2_FAMILIES = [
     en: 'Blinky',
     rarity: 'Épico',
     ability: 'Permite un impulso de teletransporte instantáneo a corta distancia para maniobras evasivas.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'morgana',
@@ -200,7 +201,7 @@ export const GEN2_FAMILIES = [
     en: 'Morgana',
     rarity: 'Épico',
     ability: 'Dispara una ráfaga de sombras que ralentiza a los rivales e interrumpe sus ataques.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'cumpleanos',
@@ -209,7 +210,7 @@ export const GEN2_FAMILIES = [
     en: 'Birthday',
     rarity: 'Raro',
     ability: 'Genera regalos con botín especial y pastel de cumpleaños revitalizante durante la partida.',
-    order: ALL_VARIANTS_ORDER
+    order: TRICKTREAT_VARIANTS_ORDER
   },
   {
     slug: 'estanque',
@@ -247,6 +248,7 @@ const getVariantSlug = (variant) => {
     case 'Maestro de Trucos': return 'maestro-trucos';
     case 'Hacker de botín': return 'hacker-botin';
     case 'Cazarrecompensas': return 'cazarrecompensas';
+    case 'Truco o trato': return 'truco-trato';
     case 'Matriz Verde': return 'matriz-verde';
     case 'Red Azul': return 'red-azul';
     case 'Galaxia Morada': return 'galaxia-morada';
@@ -270,6 +272,8 @@ const getImageFile = (fam, variant) => {
       return `/sprites/espiritus/${fam.webBase}-loothacker.png`;
     case 'Cazarrecompensas':
       return `/sprites/espiritus/${fam.webBase}-bountyhunter.png`;
+    case 'Truco o trato':
+      return `/sprites/espiritus/${fam.webBase}-tricktreat.png`;
     case 'Matriz Verde':
       return `/sprites/espiritus/${fam.webBase}-greenmatrix.png`;
     case 'Red Azul':

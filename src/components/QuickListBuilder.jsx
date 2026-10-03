@@ -60,6 +60,18 @@ export default function QuickListBuilder({
     onShowToast('Todas las variantes Maestro marcadas como Obtenidas');
   };
 
+  // Preset 4: Mark all Truco o trato variants as Obtained (1)
+  const handleMarkAllTrickTreatObtained = () => {
+    const updates = {};
+    spirits.forEach(s => {
+      if (s.variant === 'Truco o trato') {
+        updates[s.id] = 1;
+      }
+    });
+    onBatchUpdate(updates);
+    onShowToast('Todas las variantes Truco o trato marcadas como Obtenidas');
+  };
+
   // Mark an entire family as Obtained or Mastered
   const handleMarkFamilyStatus = (familyName, targetStatus) => {
     const familySpirits = familyGroups[familyName] || [];
@@ -112,6 +124,14 @@ export default function QuickListBuilder({
           >
             <CheckCircle2 className="w-3.5 h-3.5" />
             <span>MARCAR MAESTROS DE TRUCOS COMO OBTENIDOS</span>
+          </button>
+
+          <button
+            onClick={handleMarkAllTrickTreatObtained}
+            className="bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/30 px-3.5 py-2 rounded-xl text-xs font-extrabold transition active:scale-95 flex items-center gap-1.5"
+          >
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            <span>MARCAR TRUCO O TRATO COMO OBTENIDAS</span>
           </button>
         </div>
       </div>
