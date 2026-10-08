@@ -351,11 +351,274 @@ async function generatePosterCollectionImage(spirits, state, generationNumber, t
 }
 
 /**
+ * Helper to draw hand-drawn red ink scribble marks on Canvas 2D
+ */
+function drawRedScribbleOnCanvas(ctx, x, y, width, height, index) {
+  ctx.save();
+  ctx.strokeStyle = '#ff1e27';
+  ctx.lineWidth = 4.5;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.shadowColor = 'rgba(255, 30, 39, 0.85)';
+  ctx.shadowBlur = 8;
+
+  const variant = index % 4;
+  ctx.beginPath();
+  if (variant === 0) {
+    ctx.moveTo(x + width * 0.15, y + height * 0.55);
+    ctx.bezierCurveTo(x + width * 0.3, y + height * 0.75, x + width * 0.35, y + height * 0.8, x + width * 0.45, y + height * 0.75);
+    ctx.bezierCurveTo(x + width * 0.55, y + height * 0.6, x + width * 0.65, y + height * 0.3, x + width * 0.8, y + height * 0.25);
+    ctx.bezierCurveTo(x + width * 0.6, y + height * 0.45, x + width * 0.45, y + height * 0.7, x + width * 0.35, y + height * 0.65);
+    ctx.bezierCurveTo(x + width * 0.25, y + height * 0.55, x + width * 0.3, y + height * 0.38, x + width * 0.45, y + height * 0.44);
+    ctx.bezierCurveTo(x + width * 0.6, y + height * 0.5, x + width * 0.7, y + height * 0.75, x + width * 0.85, y + height * 0.7);
+  } else if (variant === 1) {
+    ctx.moveTo(x + width * 0.2, y + height * 0.38);
+    ctx.bezierCurveTo(x + width * 0.45, y + height * 0.12, x + width * 0.7, y + height * 0.44, x + width * 0.5, y + height * 0.75);
+    ctx.bezierCurveTo(x + width * 0.3, y + height * 0.94, x + width * 0.15, y + height * 0.56, x + width * 0.4, y + height * 0.44);
+    ctx.bezierCurveTo(x + width * 0.65, y + height * 0.31, x + width * 0.8, y + height * 0.56, x + width * 0.9, y + height * 0.75);
+  } else if (variant === 2) {
+    ctx.moveTo(x + width * 0.15, y + height * 0.3);
+    ctx.quadraticCurveTo(x + width * 0.5, y + height * 0.18, x + width * 0.7, y + height * 0.38);
+    ctx.quadraticCurveTo(x + width * 0.3, y + height * 0.56, x + width * 0.2, y + height * 0.68);
+    ctx.quadraticCurveTo(x + width * 0.6, y + height * 0.75, x + width * 0.85, y + height * 0.5);
+  } else {
+    ctx.moveTo(x + width * 0.2, y + height * 0.55);
+    ctx.bezierCurveTo(x + width * 0.35, y + height * 0.68, x + width * 0.4, y + height * 0.8, x + width * 0.45, y + height * 0.8);
+    ctx.bezierCurveTo(x + width * 0.6, y + height * 0.5, x + width * 0.7, y + height * 0.3, x + width * 0.85, y + height * 0.18);
+  }
+  ctx.stroke();
+  ctx.restore();
+}
+
+/**
+ * Generates an HD PNG collection capture image FAITHFULLY RECREATING the user's reference screenshot layout:
+ * - Full 16:9 HD Canvas (1920 x 1080)
+ * - Deep dark purple radial swirl background
+ * - Top header banner: EL CASILLERO DE ESPÍRITUS / DULCE O TRUCO
+ * - 3 rows of 8 (8, 8, 7) spirits with 3D character renders, metallic rounded square boxes & red scribble marks
+ */
+async function generateDulceOTrucoCollectionImage(spirits, state) {
+  const canvasWidth = 1920;
+  const canvasHeight = 1080;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Canvas context no disponible');
+
+  // Preload Base64 Data URIs for all spirits
+  const loadedImagesMap = {};
+  await Promise.all(
+    spirits.map(async item => {
+      const img = await loadImageAsDataUrl(item.image);
+      if (img) loadedImagesMap[item.id] = img;
+    })
+  );
+
+  // Background: Deep dark purple radial & linear gradient
+  const bgGradient = ctx.createLinearGradient(0, 0, 0, canvasHeight);
+  bgGradient.addColorStop(0, '#1c082e');
+  bgGradient.addColorStop(0.5, '#12041f');
+  bgGradient.addColorStop(1, '#090112');
+  ctx.fillStyle = bgGradient;
+  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+  // Ambient Lighting Spotlights
+  const centerAura = ctx.createRadialGradient(canvasWidth / 2, 250, 50, canvasWidth / 2, 250, 700);
+  centerAura.addColorStop(0, 'rgba(168, 85, 247, 0.25)');
+  centerAura.addColorStop(1, 'rgba(0, 0, 0, 0)');
+  ctx.fillStyle = centerAura;
+  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+  // --- TOP TV BROADCAST LED TICKER BAR ---
+  ctx.save();
+  const topBarH = 50;
+  ctx.fillStyle = '#0a0416';
+  ctx.fillRect(0, 0, canvasWidth, topBarH);
+
+  // Top Neon Trim Gradient Line
+  const topTrimGrad = ctx.createLinearGradient(0, 0, canvasWidth, 0);
+  topTrimGrad.addColorStop(0, '#a855f7');
+  topTrimGrad.addColorStop(0.5, '#fbbf24');
+  topTrimGrad.addColorStop(1, '#34d399');
+  ctx.fillStyle = topTrimGrad;
+  ctx.fillRect(0, 0, canvasWidth, 3);
+
+  // Bottom Border Line of Top Bar
+  ctx.fillStyle = 'rgba(168, 85, 247, 0.6)';
+  ctx.fillRect(0, topBarH - 2, canvasWidth, 2);
+
+  // Ticker Text
+  ctx.textAlign = 'center';
+  ctx.font = '900 22px "JetBrains Mono", monospace';
+  ctx.fillStyle = '#fde047';
+  ctx.shadowColor = 'rgba(251, 191, 36, 0.9)';
+  ctx.shadowBlur = 12;
+  ctx.fillText('🎃 BIENVENIDOS A LA EDICIÓN DULCE O TRUCO 👻    ⚡ EL CASILLERO DE ESPÍRITUS 🎮    🎃 BIENVENIDOS A LA EDICIÓN DULCE O TRUCO 👻', canvasWidth / 2, 33);
+  ctx.restore();
+
+  // --- GRID SECTION (3 ROWS OF 8 SPIRITS) ---
+  const cols = 8;
+  const gridMarginX = 260;
+  const colWidth = Math.floor((canvasWidth - gridMarginX * 2) / cols);
+  const startY = 150;
+  const rowGap = 260;
+
+  spirits.forEach((spirit, index) => {
+    const col = index % cols;
+    const row = Math.floor(index / cols);
+
+    let cellX = gridMarginX + col * colWidth;
+    let cellY = startY + row * rowGap;
+
+    // Centering 3rd row if it has 7 items
+    if (row === 2 && spirits.length % cols !== 0) {
+      const row3Count = spirits.length - 16;
+      const row3Offset = (canvasWidth - (row3Count * colWidth)) / 2;
+      cellX = row3Offset + col * colWidth;
+    }
+
+    const centerX = cellX + colWidth / 2;
+
+    const status = state[spirit.id] ?? 0;
+    const isObtained = status === 1 || status === 2;
+    const isMissing = status === 3;
+    const img = loadedImagesMap[spirit.id];
+
+    // 1. Floating 3D Spirit Character Render
+    if (img && img.width > 0) {
+      const maxImgW = colWidth - 20;
+      const maxImgH = 130;
+      let drawW = img.width;
+      let drawH = img.height;
+      const ratio = Math.min(maxImgW / drawW, maxImgH / drawH);
+      drawW = Math.floor(drawW * ratio);
+      drawH = Math.floor(drawH * ratio);
+
+      const imgX = Math.floor(centerX - drawW / 2);
+      const imgY = Math.floor(cellY + maxImgH - drawH);
+
+      // Glowing backlight if obtained
+      if (isObtained) {
+        ctx.save();
+        ctx.shadowColor = 'rgba(239, 68, 68, 0.4)';
+        ctx.shadowBlur = 30;
+        ctx.drawImage(img, imgX, imgY, drawW, drawH);
+        ctx.restore();
+      }
+
+      ctx.save();
+      if (isMissing) ctx.globalAlpha = 0.6;
+      ctx.drawImage(img, imgX, imgY, drawW, drawH);
+      ctx.restore();
+    }
+
+    // 2. Metallic Rounded-Square Box Underneath
+    const boxSize = 82;
+    const boxX = Math.floor(centerX - boxSize / 2);
+    const boxY = cellY + 138;
+
+    ctx.save();
+    ctx.fillStyle = isObtained
+      ? 'rgba(37, 27, 54, 0.95)'
+      : isMissing
+      ? 'rgba(41, 19, 29, 0.95)'
+      : 'rgba(32, 24, 48, 0.9)';
+
+    ctx.strokeStyle = isObtained
+      ? '#ef4444'
+      : isMissing
+      ? '#f43f5e'
+      : 'rgba(255, 255, 255, 0.35)';
+
+    ctx.lineWidth = isObtained || isMissing ? 3 : 2;
+    if (isObtained) {
+      ctx.shadowColor = 'rgba(239, 68, 68, 0.7)';
+      ctx.shadowBlur = 16;
+    } else if (isMissing) {
+      ctx.shadowColor = 'rgba(244, 63, 94, 0.7)';
+      ctx.shadowBlur = 16;
+    }
+
+    ctx.beginPath();
+    ctx.roundRect(boxX, boxY, boxSize, boxSize, 14);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+
+    // 3. Mark Content inside Box
+    if (isObtained) {
+      drawRedScribbleOnCanvas(ctx, boxX, boxY, boxSize, boxSize, index);
+    } else if (isMissing) {
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#f43f5e';
+      ctx.font = '900 36px Arial, sans-serif';
+      ctx.shadowColor = 'rgba(244, 63, 94, 0.9)';
+      ctx.shadowBlur = 10;
+      ctx.fillText('✗', centerX, boxY + 54);
+      ctx.restore();
+    }
+
+    // 4. Spirit Family Name Caption
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.font = '900 15px "JetBrains Mono", monospace';
+    ctx.fillStyle = isObtained ? '#fde047' : isMissing ? '#fb7185' : '#94a3b8';
+    ctx.fillText(spirit.family.toUpperCase(), centerX, boxY + boxSize + 22);
+    ctx.restore();
+  });
+
+  // --- BOTTOM TV BROADCAST LED TICKER BAR FOOTER ---
+  ctx.save();
+  const botBarH = 50;
+  const botBarY = canvasHeight - botBarH;
+  ctx.fillStyle = '#0a0416';
+  ctx.fillRect(0, botBarY, canvasWidth, botBarH);
+
+  // Top Border Line of Bottom Bar
+  ctx.fillStyle = 'rgba(168, 85, 247, 0.6)';
+  ctx.fillRect(0, botBarY, canvasWidth, 2);
+
+  // Bottom Trim Line Gradient
+  const botTrimGrad = ctx.createLinearGradient(0, 0, canvasWidth, 0);
+  botTrimGrad.addColorStop(0, '#34d399');
+  botTrimGrad.addColorStop(0.5, '#fbbf24');
+  botTrimGrad.addColorStop(1, '#a855f7');
+  ctx.fillStyle = botTrimGrad;
+  ctx.fillRect(0, canvasHeight - 3, canvasWidth, 3);
+
+  // Ticker Text
+  ctx.textAlign = 'center';
+  ctx.font = '900 20px "JetBrains Mono", monospace';
+  ctx.fillStyle = '#d8b4fe';
+  ctx.shadowColor = 'rgba(168, 85, 247, 0.9)';
+  ctx.shadowBlur = 12;
+  ctx.fillText('💥 EVENTO EN VIVO: DULCE O TRUCO 🌟    🔥 MARCA TUS ESPÍRITUS FAVORITOS    ⚡ https://spriteslocker.vercel.app/', canvasWidth / 2, botBarY + 32);
+  ctx.restore();
+
+  let dataUrl;
+  try {
+    dataUrl = canvas.toDataURL('image/png');
+  } catch (err) {
+    dataUrl = canvas.toDataURL();
+  }
+
+  const filename = 'el-casillero-dulce-o-truco.png';
+  return { dataUrl, filename };
+}
+
+/**
  * Generates an HD PNG poster image containing EXCLUSIVELY the marked/selected spirits.
  * Styled in Obsidian Neon Emerald & Hyper Violet aesthetic.
  * Stamps official Vercel call-to-action watermark: 'INGRESA A: https://spriteslocker.vercel.app/'
  */
 export async function generateCollectionImage(spirits, state, generationNumber, filterType = 'todos', totalVisits = null, totalExports = null, formatType = 'standard') {
+  if (formatType === 'dulce' || (spirits.length <= 24 && spirits.every(s => s.variant === 'Truco o trato' || s.variant === 'Fuego Naranja'))) {
+    return generateDulceOTrucoCollectionImage(spirits, state);
+  }
+
   if (formatType === 'poster') {
     return generatePosterCollectionImage(spirits, state, generationNumber, totalVisits, totalExports);
   }

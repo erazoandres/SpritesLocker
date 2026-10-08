@@ -7,7 +7,9 @@ export default function MinimalHeader({
   totalObtained, 
   totalSpirits,
   onOpenWelcome,
-  onStartTour
+  onStartTour,
+  currentView = 'main',
+  onSelectView
 }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -34,10 +36,10 @@ export default function MinimalHeader({
         ? 'bg-[#0a0b12]/95 backdrop-blur-md border-b border-emerald-500/20 py-2.5 shadow-2xl shadow-black/90' 
         : 'bg-[#0a0b12]/80 backdrop-blur-sm py-3 border-b border-white/5'
     }`}>
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 w-full flex items-center justify-between gap-3">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 w-full flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
         
-        {/* Left Side: Brand Logo & Tutorial Button */}
-        <div id="tour-brand" className="flex items-center gap-2.5 shrink-0">
+        {/* Left Side: Brand Logo & Tutorial Button & View Switcher */}
+        <div id="tour-brand" className="flex items-center gap-2 sm:gap-3 shrink-0 flex-wrap">
           <button 
             onClick={onOpenWelcome} 
             className="flex items-center gap-2.5 text-left group transition"
@@ -57,11 +59,22 @@ export default function MinimalHeader({
               </span>
             </div>
           </button>
+
+          {/* Dulce o Truco Standalone CTA Button */}
+          {onSelectView && (
+            <button
+              onClick={() => onSelectView('dulce')}
+              className="px-3 py-1.5 rounded-xl font-black text-xs transition flex items-center gap-1.5 border relative bg-gradient-to-r from-purple-950/90 via-amber-950/90 to-orange-950/90 text-amber-300 hover:text-white border-amber-500/60 shadow-[0_0_14px_rgba(249,115,22,0.55)] hover:shadow-[0_0_20px_rgba(245,158,11,0.85)] hover:border-amber-400 active:scale-95 font-mono cursor-pointer"
+              title="Ir a la edición especial Dulce o Truco"
+            >
+              <span className="drop-shadow-[0_0_6px_rgba(251,191,36,0.85)]">Dulce o Truco 🍭🍬</span>
+            </button>
+          )}
           
           {/* Guided Tour Button */}
           <button
             onClick={handleLaunchTour}
-            className="hidden sm:flex items-center gap-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold transition active:scale-95"
+            className="hidden md:flex items-center gap-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold transition active:scale-95"
             title="Iniciar tutorial guiado interactivo de la página"
           >
             <HelpCircle className="w-3.5 h-3.5 text-emerald-400" />

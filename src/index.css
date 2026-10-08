@@ -221,3 +221,14 @@ body {
   color: #ffffff !important;
   border-color: rgba(255, 255, 255, 0.3) !important;
 }
+
+/* Retro Digital Gamer Marquee Ticker Animation */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: inline-flex;
+  animation: marquee 16s linear infinite;
+}

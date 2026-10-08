@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Eye, Camera } from 'lucide-react';
 import MinimalHeader from './components/MinimalHeader';
 import MinimalSpriteGrid from './components/MinimalSpriteGrid';
+import DulceOTrucoView from './components/DulceOTrucoView';
 import ExportModal from './components/ExportModal';
 import WelcomeModal from './components/WelcomeModal';
 import DemoPromptModal from './components/DemoPromptModal';
@@ -25,7 +26,17 @@ const PortfolioIcon = ({ className }) => (
 );
 
 export default function App() {
-  const activeGen = 2;
+  // Determine initial route based on URL pathname or hash
+  const getInitialRoute = () => {
+    const path = window.location.pathname.toLowerCase();
+    const hash = window.location.hash.toLowerCase();
+    if (path.includes('dulce') || path.includes('truco') || hash.includes('dulce') || hash.includes('truco')) {
+      return 'dulce';
+    }
+    return 'main';
+  };
+
+  const [currentView, setCurrentView] = useState(getInitialRoute);
   const [userState, setUserState] = useState({});
   const [toastMessage, setToastMessage] = useState('');
   const [exportModalOpen, setExportModalOpen] = useState(false);
@@ -33,6 +44,28 @@ export default function App() {
   const [demoPromptOpen, setDemoPromptOpen] = useState(false);
   const [totalVisits, setTotalVisits] = useState(null);
   const [totalExports, setTotalExports] = useState(null);
+
+  // Sync route state with URL pathname/hash changes
+  const handleNavigateView = (view) => {
+    setCurrentView(view);
+    const targetPath = view === 'dulce' ? '/dulce-o-truco' : '/';
+    if (window.location.pathname !== targetPath) {
+      window.history.pushState({ view }, '', targetPath);
+    }
+  };
+
+  // Listen to popstate (browser Back / Forward buttons)
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentView(getInitialRoute());
+    };
+    window.addEventListener('popstate', handlePopState);
+    window.addEventListener('hashchange', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('hashchange', handlePopState);
+    };
+  }, []);
 
   // Initialize startup: check first-time visitor & load saved user selections
   useEffect(() => {
@@ -126,12 +159,25 @@ export default function App() {
     }, 400);
   };
 
-  // Current active spirits dataset
-  const activeSpirits = GEN2_SPIRITS;
+  // Derive Dulce o Truco spirits dataset
+  const dulceSpirits = useMemo(() => {
+    const filtered = GEN2_SPIRITS.filter(
+      s => s.variant === 'Truco o trato' || s.variant === 'Fuego Naranja'
+    );
+    const trickOrTreat = filtered.filter(s => s.variant === 'Truco o trato');
+    const fuegoNaranja = filtered.filter(s => s.variant === 'Fuego Naranja');
+    return [...trickOrTreat, ...fuegoNaranja];
+  }, []);
+
+  // Current active spirits dataset based on current view
+  const activeSpirits = useMemo(() => {
+    return currentView === 'dulce' ? dulceSpirits : GEN2_SPIRITS;
+  }, [currentView, dulceSpirits]);
 
   // Validate marked count before opening export modal
   const handleOpenExportModal = () => {
-    const markedCount = activeSpirits.filter(s => (userState[s.id] || 0) >= 1 || (userState[s.id] || 0) === 3).length;
+    const targetSpirits = currentView === 'dulce' ? dulceSpirits : GEN2_SPIRITS;
+    const markedCount = targetSpirits.filter(s => (userState[s.id] || 0) >= 1 || (userState[s.id] || 0) === 3).length;
     if (markedCount === 0) {
       showToast('⚠️ Marca al menos 1 espíritu para exportar');
       alert('Debes seleccionar o marcar al menos un espíritu en tu casillero (Tengo, Dominado o Faltante) antes de exportar la captura.');
@@ -163,6 +209,37 @@ export default function App() {
     };
   }, [activeSpirits, userState]);
 
+  if (currentView === 'dulce') {
+    return (
+      <>
+        <DulceOTrucoView
+          userState={userState}
+          onToggleSpirit={handleToggleSpirit}
+          onBatchUpdate={handleBatchUpdate}
+          onSwitchToMain={() => handleNavigateView('main')}
+          onOpenExportModal={handleOpenExportModal}
+        />
+
+        {/* Export Canvas Capture Modal for Dulce o Truco view (strictly exports dulceSpirits) */}
+        {exportModalOpen && (
+          <ExportModal 
+            spirits={dulceSpirits}
+            userState={userState}
+            activeGen={2}
+            totalVisits={totalVisits}
+            totalExports={totalExports}
+            onRecordExport={handleRecordExport}
+            onClose={() => setExportModalOpen(false)}
+            onShowToast={showToast}
+          />
+        )}
+
+        {/* Toast Feedback */}
+        <Toast message={toastMessage} />
+      </>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#0a0b12] text-slate-100 selection:bg-emerald-400 selection:text-slate-950 max-w-full overflow-x-hidden">
       
@@ -173,6 +250,8 @@ export default function App() {
         totalSpirits={activeSpirits.length}
         onOpenWelcome={() => setWelcomeOpen(true)}
         onStartTour={handleStartTour}
+        currentView={currentView}
+        onSelectView={handleNavigateView}
       />
 
       <main className="pt-4 sm:pt-6 pb-12 max-w-7xl mx-auto px-2.5 sm:px-6 w-full overflow-x-hidden">
