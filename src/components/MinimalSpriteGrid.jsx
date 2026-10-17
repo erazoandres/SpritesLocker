@@ -153,8 +153,8 @@ export default function MinimalSpriteGrid({
           <span>FAMILIA</span>
         </div>
 
-        {/* 5 Column Variant Titles */}
-        <div className="grid grid-cols-5 gap-2 sm:gap-3 flex-1 text-center">
+        {/* 6 Column Variant Titles */}
+        <div className="grid grid-cols-6 gap-2 sm:gap-3 flex-1 text-center">
           <div className="flex items-center justify-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-slate-400" />
             <span className="text-slate-300">BASE</span>
@@ -178,6 +178,11 @@ export default function MinimalSpriteGrid({
           <div className="flex items-center justify-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-pink-400" />
             <span className="text-pink-400">CAZARRECOMPENSAS</span>
+          </div>
+
+          <div className="flex items-center justify-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-purple-400" />
+            <span className="text-purple-400">DULCE O TRUCO</span>
           </div>
         </div>
 
@@ -310,6 +315,11 @@ export default function MinimalSpriteGrid({
                             status === 0 ? 'opacity-85 hover:opacity-100' : 'opacity-100'
                           }`}
                           loading="lazy"
+                          onError={(e) => {
+                            if (spirit.remoteImage && e.target.src !== spirit.remoteImage) {
+                              e.target.src = spirit.remoteImage;
+                            }
+                          }}
                         />
                       </div>
 

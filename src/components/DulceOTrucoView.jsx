@@ -301,8 +301,12 @@ export default function DulceOTrucoView({
                       }`}
                       loading="lazy"
                       onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = '/sprites/espiritus/bush.png';
+                        if (spirit.remoteImage && e.target.src !== spirit.remoteImage) {
+                          e.target.src = spirit.remoteImage;
+                        } else {
+                          e.target.onerror = null;
+                          e.target.src = '/sprites/espiritus/bush.png';
+                        }
                       }}
                     />
                   </div>

@@ -6,6 +6,54 @@ const FORT_DROP_VARIANTS_ORDER = ['Base', 'Oro', 'Matriz Verde', 'Red Azul', 'Ga
 
 export const GEN2_FAMILIES = [
   {
+    slug: 'miel',
+    name: 'Miel',
+    en: 'Honey',
+    rarity: 'Épico',
+    ability: 'Los impactos con armas a distancia tienen probabilidad de invocar abejas en la ubicación del impacto que infligen daño continuo.',
+    order: TRICKTREAT_VARIANTS_ORDER,
+    customImages: {
+      'Base': '/sprites/gen2/T_Icon_BR_Creature_Sprite_WinnerE_L.webp',
+      'Oro': '/sprites/gen2/T_Icon_BR_Creature_Sprite_WinnerE_Gold_L.webp',
+      'Maestro de Trucos': '/sprites/gen2/T_Icon_BR_Creature_Sprite_WinnerE_Cheatmaster_L.webp',
+      'Hacker de botín': '/sprites/gen2/T_Icon_BR_Creature_Sprite_WinnerE_Hacker_L.webp',
+      'Cazarrecompensas': '/sprites/gen2/T_Icon_BR_Creature_Sprite_WinnerE_BountyHunter_L.webp',
+      'Truco o trato': '/sprites/gen2/T_Icon_BR_Creature_Sprite_WinnerE_TrickTreat_L.webp'
+    },
+    remoteImages: {
+      'Base': 'https://icharlydex.com/sprites/gen2/T_Icon_BR_Creature_Sprite_WinnerE_L.webp',
+      'Oro': 'https://icharlydex.com/sprites/gen2/T_Icon_BR_Creature_Sprite_WinnerE_Gold_L.webp',
+      'Maestro de Trucos': 'https://icharlydex.com/sprites/gen2/T_Icon_BR_Creature_Sprite_WinnerE_Cheatmaster_L.webp',
+      'Hacker de botín': 'https://icharlydex.com/sprites/gen2/T_Icon_BR_Creature_Sprite_WinnerE_Hacker_L.webp',
+      'Cazarrecompensas': 'https://icharlydex.com/sprites/gen2/T_Icon_BR_Creature_Sprite_WinnerE_BountyHunter_L.webp',
+      'Truco o trato': 'https://icharlydex.com/sprites/gen2/T_Icon_BR_Creature_Sprite_WinnerE_TrickTreat_L.webp'
+    }
+  },
+  {
+    slug: 'one-wish-willow',
+    name: 'One Wish Willow',
+    en: 'One Wish Willow',
+    rarity: 'Mítico',
+    ability: 'Extrae automáticamente los espíritus de los rivales eliminados y repele a los enemigos cercanos al recibir daño.',
+    order: TRICKTREAT_VARIANTS_ORDER,
+    customImages: {
+      'Base': '/sprites/gen2/T_Icon_BR_Creature_Sprite_CargoLying_L.webp',
+      'Oro': '/sprites/gen2/T_Icon_BR_Creature_Sprite_CargoLying_Gold_L.webp',
+      'Maestro de Trucos': '/sprites/gen2/T_Icon_BR_Creature_Sprite_CargoLying_Cheatmaster_L.webp',
+      'Hacker de botín': '/sprites/gen2/T_Icon_BR_Creature_Sprite_CargoLying_Hacker_L.webp',
+      'Cazarrecompensas': '/sprites/gen2/T_Icon_BR_Creature_Sprite_CargoLying_BountyHunter_L.webp',
+      'Truco o trato': '/sprites/gen2/T_Icon_BR_Creature_Sprite_CargoLying_TrickTreat_L.webp'
+    },
+    remoteImages: {
+      'Base': 'https://icharlydex.com/sprites/gen2/T_Icon_BR_Creature_Sprite_CargoLying_L.webp',
+      'Oro': 'https://icharlydex.com/sprites/gen2/T_Icon_BR_Creature_Sprite_CargoLying_Gold_L.webp',
+      'Maestro de Trucos': 'https://icharlydex.com/sprites/gen2/T_Icon_BR_Creature_Sprite_CargoLying_Cheatmaster_L.webp',
+      'Hacker de botín': 'https://icharlydex.com/sprites/gen2/T_Icon_BR_Creature_Sprite_CargoLying_Hacker_L.webp',
+      'Cazarrecompensas': 'https://icharlydex.com/sprites/gen2/T_Icon_BR_Creature_Sprite_CargoLying_BountyHunter_L.webp',
+      'Truco o trato': 'https://icharlydex.com/sprites/gen2/T_Icon_BR_Creature_Sprite_CargoLying_TrickTreat_L.webp'
+    }
+  },
+  {
     slug: 'arbustin',
     webBase: 'bush',
     name: 'Arbustín',
@@ -249,6 +297,7 @@ const getVariantSlug = (variant) => {
 };
 
 const getImageFile = (fam, variant) => {
+  if (fam.customImages && fam.customImages[variant]) return fam.customImages[variant];
   if (fam.customImage) return fam.customImage;
   if (!fam.webBase) return `/sprites/variations/${fam.slug}.png`;
 
@@ -287,6 +336,7 @@ export const GEN2_SPIRITS = GEN2_FAMILIES.flatMap(fam =>
     rarity: variant === 'Base' || fam.order.length === 1 ? fam.rarity : 'Especial',
     summonCost: 0,
     image: getImageFile(fam, variant),
+    remoteImage: fam.remoteImages ? fam.remoteImages[variant] : null,
     generation: 2,
     ability: fam.ability
   }))

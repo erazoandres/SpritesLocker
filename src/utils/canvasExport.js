@@ -458,12 +458,16 @@ async function generateDulceOTrucoCollectionImage(spirits, state) {
   ctx.fillText('🎃 BIENVENIDOS A LA EDICIÓN DULCE O TRUCO 👻    ⚡ EL CASILLERO DE ESPÍRITUS 🎮    🎃 BIENVENIDOS A LA EDICIÓN DULCE O TRUCO 👻', canvasWidth / 2, 33);
   ctx.restore();
 
-  // --- GRID SECTION (3 ROWS OF 8 SPIRITS) ---
+  // --- GRID SECTION (ROWS OF 8 SPIRITS) ---
   const cols = 8;
-  const gridMarginX = 260;
+  const gridMarginX = 240;
   const colWidth = Math.floor((canvasWidth - gridMarginX * 2) / cols);
-  const startY = 150;
-  const rowGap = 260;
+  const totalRows = Math.ceil(spirits.length / cols);
+  const startY = totalRows > 3 ? 95 : 150;
+  const rowGap = totalRows > 3 ? 225 : 260;
+  const maxImgH = totalRows > 3 ? 105 : 130;
+  const boxSize = totalRows > 3 ? 72 : 82;
+  const boxOffsetY = totalRows > 3 ? 115 : 138;
 
   spirits.forEach((spirit, index) => {
     const col = index % cols;
@@ -472,11 +476,12 @@ async function generateDulceOTrucoCollectionImage(spirits, state) {
     let cellX = gridMarginX + col * colWidth;
     let cellY = startY + row * rowGap;
 
-    // Centering 3rd row if it has 7 items
-    if (row === 2 && spirits.length % cols !== 0) {
-      const row3Count = spirits.length - 16;
-      const row3Offset = (canvasWidth - (row3Count * colWidth)) / 2;
-      cellX = row3Offset + col * colWidth;
+    // Centering last row if incomplete
+    const isLastRow = row === totalRows - 1;
+    const lastRowCount = spirits.length % cols || cols;
+    if (isLastRow && lastRowCount !== cols) {
+      const lastRowOffset = (canvasWidth - (lastRowCount * colWidth)) / 2;
+      cellX = lastRowOffset + col * colWidth;
     }
 
     const centerX = cellX + colWidth / 2;
@@ -489,7 +494,6 @@ async function generateDulceOTrucoCollectionImage(spirits, state) {
     // 1. Floating 3D Spirit Character Render
     if (img && img.width > 0) {
       const maxImgW = colWidth - 20;
-      const maxImgH = 130;
       let drawW = img.width;
       let drawH = img.height;
       const ratio = Math.min(maxImgW / drawW, maxImgH / drawH);
@@ -515,9 +519,8 @@ async function generateDulceOTrucoCollectionImage(spirits, state) {
     }
 
     // 2. Metallic Rounded-Square Box Underneath
-    const boxSize = 82;
     const boxX = Math.floor(centerX - boxSize / 2);
-    const boxY = cellY + 138;
+    const boxY = cellY + boxOffsetY;
 
     ctx.save();
     ctx.fillStyle = isObtained
@@ -554,19 +557,19 @@ async function generateDulceOTrucoCollectionImage(spirits, state) {
       ctx.save();
       ctx.textAlign = 'center';
       ctx.fillStyle = '#f43f5e';
-      ctx.font = '900 36px Arial, sans-serif';
+      ctx.font = totalRows > 3 ? '900 30px Arial, sans-serif' : '900 36px Arial, sans-serif';
       ctx.shadowColor = 'rgba(244, 63, 94, 0.9)';
       ctx.shadowBlur = 10;
-      ctx.fillText('✗', centerX, boxY + 54);
+      ctx.fillText('✗', centerX, boxY + (totalRows > 3 ? 46 : 54));
       ctx.restore();
     }
 
     // 4. Spirit Family Name Caption
     ctx.save();
     ctx.textAlign = 'center';
-    ctx.font = '900 15px "JetBrains Mono", monospace';
+    ctx.font = totalRows > 3 ? '900 13px "JetBrains Mono", monospace' : '900 15px "JetBrains Mono", monospace';
     ctx.fillStyle = isObtained ? '#fde047' : isMissing ? '#fb7185' : '#94a3b8';
-    ctx.fillText(spirit.family.toUpperCase(), centerX, boxY + boxSize + 22);
+    ctx.fillText(spirit.family.toUpperCase(), centerX, boxY + boxSize + (totalRows > 3 ? 18 : 22));
     ctx.restore();
   });
 
@@ -615,7 +618,7 @@ async function generateDulceOTrucoCollectionImage(spirits, state) {
  * Stamps official Vercel call-to-action watermark: 'INGRESA A: https://spriteslocker.vercel.app/'
  */
 export async function generateCollectionImage(spirits, state, generationNumber, filterType = 'todos', totalVisits = null, totalExports = null, formatType = 'standard') {
-  if (formatType === 'dulce' || (spirits.length <= 24 && spirits.every(s => s.variant === 'Truco o trato' || s.variant === 'Fuego Naranja'))) {
+  if (formatType === 'dulce' || (spirits.length <= 40 && spirits.every(s => s.variant === 'Truco o trato' || s.variant === 'Fuego Naranja'))) {
     return generateDulceOTrucoCollectionImage(spirits, state);
   }
 
